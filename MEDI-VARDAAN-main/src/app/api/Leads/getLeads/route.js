@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getMockLeads } from '../mockStorage.js';
+import { getMockLeads } from '@/api/mocks/leads.js';
 
 const API_BASE_URL = "https://bmetrics.in/APIDemo/api";
 

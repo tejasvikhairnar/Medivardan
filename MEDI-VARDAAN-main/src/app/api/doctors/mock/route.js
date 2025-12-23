@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getMockDoctors } from '../mockStorage.js';
+import { getMockDoctors } from '@/api/mocks/doctors.js';
 
 export async function GET(request) {
   try {

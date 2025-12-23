@@ -3,7 +3,7 @@
  */
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { saveCancellationTreatment } from "@/api/accounts.api";
+import { saveCancellationTreatment } from "@/api/client/accounts";
 import { toast } from "sonner"; // Assuming sonner is used, or generic toast
 
 /**

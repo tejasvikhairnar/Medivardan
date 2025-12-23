@@ -85,6 +85,7 @@ axiosClient.interceptors.response.use(
                 case 500:
                     // Server error
                     console.error("Server error occurred");
+                    console.error("Full URL attempted:", errorDetails.fullUrl);
                     break;
                 default:
                     break;

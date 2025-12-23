@@ -22,6 +22,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Settings, Phone, MessageSquare, Eye, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { Virtuoso } from "react-virtuoso";
 
 export default function EnquiryFollowupsPage() {
   const router = useRouter();
@@ -158,6 +159,10 @@ export default function EnquiryFollowupsPage() {
     // Navigate to followup details page
     router.push(`/enquiry/followup-details?id=${followup.srNo}`);
   };
+
+
+
+
 
   const handleMessage = (followup) => {
     if (followup.mobileNo) {
@@ -341,174 +346,178 @@ export default function EnquiryFollowupsPage() {
 
       {/* Followups List */}
       {!isLoading && !error && filteredFollowups.length > 0 && (
-        <div className="space-y-4">
-          {filteredFollowups.map((followup) => (
-            <Card key={followup.srNo} className="border-gray-200 dark:border-gray-800">
-            <CardContent className="p-0">
-              <div className="grid grid-cols-1 lg:grid-cols-12">
-                {/* Sr. No. Column */}
-                <div className="lg:col-span-1 bg-green-50 dark:bg-green-900/20 p-4 flex items-center justify-center border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-gray-700">
-                  <div className="text-center">
-                    <div className="text-xs text-gray-500 dark:text-gray-400 font-semibold mb-1">
-                      Sr. No.
+        <Virtuoso
+          useWindowScroll
+          data={filteredFollowups}
+          itemContent={(index, followup) => (
+            <div className="pb-4">
+              <Card key={followup.srNo} className="border-gray-200 dark:border-gray-800">
+                <CardContent className="p-0">
+                  <div className="grid grid-cols-1 lg:grid-cols-12">
+                    {/* Sr. No. Column */}
+                    <div className="lg:col-span-1 bg-green-50 dark:bg-green-900/20 p-4 flex items-center justify-center border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-gray-700">
+                      <div className="text-center">
+                        <div className="text-xs text-gray-500 dark:text-gray-400 font-semibold mb-1">
+                          Sr. No.
+                        </div>
+                        <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                          {followup.srNo}
+                        </div>
+                      </div>
                     </div>
-                    <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                      {followup.srNo}
+
+                    {/* Enquiry Details Table */}
+                    <div className="lg:col-span-8 p-4">
+                      <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 bg-green-50 dark:bg-green-900/20 px-3 py-2 rounded">
+                        Enquiry Details
+                      </h3>
+                      <Table>
+                        <TableBody>
+                          <TableRow className="border-b border-gray-200 dark:border-gray-700">
+                            <TableCell className="font-medium text-gray-700 dark:text-gray-300 py-2 px-3 bg-gray-50 dark:bg-gray-800 w-1/4">
+                              Visitor Name:
+                            </TableCell>
+                            <TableCell className="py-2 px-3 w-1/4">
+                              {followup.visitorName}
+                            </TableCell>
+                            <TableCell className="font-medium text-gray-700 dark:text-gray-300 py-2 px-3 bg-gray-50 dark:bg-gray-800 w-1/4">
+                              Enquiry For:
+                            </TableCell>
+                            <TableCell className="py-2 px-3 w-1/4">
+                              {followup.enquiryFor}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow className="border-b border-gray-200 dark:border-gray-700">
+                            <TableCell className="font-medium text-gray-700 dark:text-gray-300 py-2 px-3 bg-gray-50 dark:bg-gray-800">
+                              Mobile No:
+                            </TableCell>
+                            <TableCell className="py-2 px-3">
+                              {followup.mobileNo}
+                            </TableCell>
+                            <TableCell className="font-medium text-gray-700 dark:text-gray-300 py-2 px-3 bg-gray-50 dark:bg-gray-800">
+                              Telephone No:
+                            </TableCell>
+                            <TableCell className="py-2 px-3">
+                              {followup.telephoneNo || "-"}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow className="border-b border-gray-200 dark:border-gray-700">
+                            <TableCell className="font-medium text-gray-700 dark:text-gray-300 py-2 px-3 bg-gray-50 dark:bg-gray-800">
+                              Enquiry Date:
+                            </TableCell>
+                            <TableCell className="py-2 px-3">
+                              {followup.enquiryDate}
+                            </TableCell>
+                            <TableCell className="font-medium text-gray-700 dark:text-gray-300 py-2 px-3 bg-gray-50 dark:bg-gray-800">
+                              Followup Date:
+                            </TableCell>
+                            <TableCell className="py-2 px-3">
+                              {followup.followupDate}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow className="border-b border-gray-200 dark:border-gray-700">
+                            <TableCell className="font-medium text-gray-700 dark:text-gray-300 py-2 px-3 bg-gray-50 dark:bg-gray-800">
+                              Source Type:
+                            </TableCell>
+                            <TableCell className="py-2 px-3">
+                              {followup.sourceType}
+                            </TableCell>
+                            <TableCell className="font-medium text-gray-700 dark:text-gray-300 py-2 px-3 bg-gray-50 dark:bg-gray-800">
+                              Total Followups:
+                            </TableCell>
+                            <TableCell className="py-2 px-3">
+                              {followup.totalFollowups}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow className="border-b border-gray-200 dark:border-gray-700">
+                            <TableCell className="font-medium text-gray-700 dark:text-gray-300 py-2 px-3 bg-gray-50 dark:bg-gray-800">
+                              Assigned to Doctor:
+                            </TableCell>
+                            <TableCell className="py-2 px-3">
+                              {followup.assignedToDoctor}
+                            </TableCell>
+                            <TableCell className="font-medium text-gray-700 dark:text-gray-300 py-2 px-3 bg-gray-50 dark:bg-gray-800">
+                              Enquiry Type:
+                            </TableCell>
+                            <TableCell className="py-2 px-3">
+                              <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-200 dark:bg-orange-900/30 dark:text-orange-400">
+                                {followup.enquiryType}
+                              </Badge>
+                            </TableCell>
+                          </TableRow>
+                          <TableRow className="border-b border-gray-200 dark:border-gray-700">
+                            <TableCell className="font-medium text-gray-700 dark:text-gray-300 py-2 px-3 bg-gray-50 dark:bg-gray-800">
+                              Assigned to Center:
+                            </TableCell>
+                            <TableCell className="py-2 px-3">
+                              {followup.assignedToCenter}
+                            </TableCell>
+                            <TableCell className="font-medium text-gray-700 dark:text-gray-300 py-2 px-3 bg-gray-50 dark:bg-gray-800">
+                              Followups Status
+                            </TableCell>
+                            <TableCell className="py-2 px-3">
+                              {followup.followupsStatus || "-"}
+                            </TableCell>
+                          </TableRow>
+                          <TableRow>
+                            <TableCell className="font-medium text-gray-700 dark:text-gray-300 py-2 px-3 bg-gray-50 dark:bg-gray-800">
+                              Emailid:
+                            </TableCell>
+                            <TableCell className="py-2 px-3">
+                              {followup.emailId || "-"}
+                            </TableCell>
+                            <TableCell className="font-medium text-gray-700 dark:text-gray-300 py-2 px-3 bg-gray-50 dark:bg-gray-800">
+                              Patient Status:
+                            </TableCell>
+                            <TableCell className="py-2 px-3">
+                              {followup.patientStatus}
+                            </TableCell>
+                          </TableRow>
+                        </TableBody>
+                      </Table>
+                    </div>
+
+                    {/* Action Column */}
+                    <div className="lg:col-span-3 bg-gray-50 dark:bg-gray-800 p-4 flex flex-col items-center justify-center gap-3 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-700">
+                      <div className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        Action
+                      </div>
+                      <div className="flex flex-row lg:flex-col gap-3">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="border-blue-500 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                          onClick={() => handleCall(followup)}
+                          title={`Call ${followup.mobileNo}`}
+                        >
+                          <Phone className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="border-gray-500 text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700"
+                          onClick={() => handleMessage(followup)}
+                          title={`Message ${followup.mobileNo}`}
+                        >
+                          <MessageSquare className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="border-green-500 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20"
+                          onClick={() => handleView(followup)}
+                          title="View details"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                </div>
-
-                {/* Enquiry Details Table */}
-                <div className="lg:col-span-8 p-4">
-                  <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 bg-green-50 dark:bg-green-900/20 px-3 py-2 rounded">
-                    Enquiry Details
-                  </h3>
-                  <Table>
-                    <TableBody>
-                      <TableRow className="border-b border-gray-200 dark:border-gray-700">
-                        <TableCell className="font-medium text-gray-700 dark:text-gray-300 py-2 px-3 bg-gray-50 dark:bg-gray-800 w-1/4">
-                          Visitor Name:
-                        </TableCell>
-                        <TableCell className="py-2 px-3 w-1/4">
-                          {followup.visitorName}
-                        </TableCell>
-                        <TableCell className="font-medium text-gray-700 dark:text-gray-300 py-2 px-3 bg-gray-50 dark:bg-gray-800 w-1/4">
-                          Enquiry For:
-                        </TableCell>
-                        <TableCell className="py-2 px-3 w-1/4">
-                          {followup.enquiryFor}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow className="border-b border-gray-200 dark:border-gray-700">
-                        <TableCell className="font-medium text-gray-700 dark:text-gray-300 py-2 px-3 bg-gray-50 dark:bg-gray-800">
-                          Mobile No:
-                        </TableCell>
-                        <TableCell className="py-2 px-3">
-                          {followup.mobileNo}
-                        </TableCell>
-                        <TableCell className="font-medium text-gray-700 dark:text-gray-300 py-2 px-3 bg-gray-50 dark:bg-gray-800">
-                          Telephone No:
-                        </TableCell>
-                        <TableCell className="py-2 px-3">
-                          {followup.telephoneNo || "-"}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow className="border-b border-gray-200 dark:border-gray-700">
-                        <TableCell className="font-medium text-gray-700 dark:text-gray-300 py-2 px-3 bg-gray-50 dark:bg-gray-800">
-                          Enquiry Date:
-                        </TableCell>
-                        <TableCell className="py-2 px-3">
-                          {followup.enquiryDate}
-                        </TableCell>
-                        <TableCell className="font-medium text-gray-700 dark:text-gray-300 py-2 px-3 bg-gray-50 dark:bg-gray-800">
-                          Followup Date:
-                        </TableCell>
-                        <TableCell className="py-2 px-3">
-                          {followup.followupDate}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow className="border-b border-gray-200 dark:border-gray-700">
-                        <TableCell className="font-medium text-gray-700 dark:text-gray-300 py-2 px-3 bg-gray-50 dark:bg-gray-800">
-                          Source Type:
-                        </TableCell>
-                        <TableCell className="py-2 px-3">
-                          {followup.sourceType}
-                        </TableCell>
-                        <TableCell className="font-medium text-gray-700 dark:text-gray-300 py-2 px-3 bg-gray-50 dark:bg-gray-800">
-                          Total Followups:
-                        </TableCell>
-                        <TableCell className="py-2 px-3">
-                          {followup.totalFollowups}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow className="border-b border-gray-200 dark:border-gray-700">
-                        <TableCell className="font-medium text-gray-700 dark:text-gray-300 py-2 px-3 bg-gray-50 dark:bg-gray-800">
-                          Assigned to Doctor:
-                        </TableCell>
-                        <TableCell className="py-2 px-3">
-                          {followup.assignedToDoctor}
-                        </TableCell>
-                        <TableCell className="font-medium text-gray-700 dark:text-gray-300 py-2 px-3 bg-gray-50 dark:bg-gray-800">
-                          Enquiry Type:
-                        </TableCell>
-                        <TableCell className="py-2 px-3">
-                          <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-200 dark:bg-orange-900/30 dark:text-orange-400">
-                            {followup.enquiryType}
-                          </Badge>
-                        </TableCell>
-                      </TableRow>
-                      <TableRow className="border-b border-gray-200 dark:border-gray-700">
-                        <TableCell className="font-medium text-gray-700 dark:text-gray-300 py-2 px-3 bg-gray-50 dark:bg-gray-800">
-                          Assigned to Center:
-                        </TableCell>
-                        <TableCell className="py-2 px-3">
-                          {followup.assignedToCenter}
-                        </TableCell>
-                        <TableCell className="font-medium text-gray-700 dark:text-gray-300 py-2 px-3 bg-gray-50 dark:bg-gray-800">
-                          Followups Status
-                        </TableCell>
-                        <TableCell className="py-2 px-3">
-                          {followup.followupsStatus || "-"}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-medium text-gray-700 dark:text-gray-300 py-2 px-3 bg-gray-50 dark:bg-gray-800">
-                          Emailid:
-                        </TableCell>
-                        <TableCell className="py-2 px-3">
-                          {followup.emailId || "-"}
-                        </TableCell>
-                        <TableCell className="font-medium text-gray-700 dark:text-gray-300 py-2 px-3 bg-gray-50 dark:bg-gray-800">
-                          Patient Status:
-                        </TableCell>
-                        <TableCell className="py-2 px-3">
-                          {followup.patientStatus}
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </div>
-
-                {/* Action Column */}
-                <div className="lg:col-span-3 bg-gray-50 dark:bg-gray-800 p-4 flex flex-col items-center justify-center gap-3 border-t lg:border-t-0 lg:border-l border-gray-200 dark:border-gray-700">
-                  <div className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Action
-                  </div>
-                  <div className="flex flex-row lg:flex-col gap-3">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="border-blue-500 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20"
-                      onClick={() => handleCall(followup)}
-                      title={`Call ${followup.mobileNo}`}
-                    >
-                      <Phone className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="border-gray-500 text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700"
-                      onClick={() => handleMessage(followup)}
-                      title={`Message ${followup.mobileNo}`}
-                    >
-                      <MessageSquare className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="border-green-500 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20"
-                      onClick={() => handleView(followup)}
-                      title="View details"
-                    >
-                      <Eye className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-        </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+        />
       )}
     </div>
   );

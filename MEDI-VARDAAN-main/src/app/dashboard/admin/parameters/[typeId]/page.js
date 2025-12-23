@@ -1,6 +1,6 @@
 "use client";
 
-import { getParameterTypeData } from "@/api/parameterType";
+import { getParameterTypeData } from "@/api/client/parameterType";
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState, useMemo } from "react";
@@ -9,7 +9,7 @@ import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import GenericTable from "@/components/common/GenericTable";
 import { Spinner } from "@/components/ui/spinner";
-import { getUser } from "@/api/getUser";
+import { getUser } from "@/api/client/getUser";
 
 function ParameterType() {
   const router = useRouter();

@@ -1,5 +1,5 @@
 "use client";
-import { getUser } from '@/api/getUser';
+import { getUser } from '@/api/client/getUser';
 import GenericTable from '@/components/common/GenericTable';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -20,7 +20,7 @@ import { IndianRupee } from 'lucide-react';
 import { Users } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
-import { dashboardCount } from '@/api/dashboardCount';
+import { dashboardCount } from '@/api/client/dashboardCount';
 import { useClinics } from '@/hooks/useClinics';
 
 function page() {

@@ -43,7 +43,7 @@ import { IndianRupee } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { setParameterType } from "@/store/slices/parameterType";
 import { useDispatch } from "react-redux";
-import { dashboardCount } from "@/api/dashboardCount";
+// import { dashboardCount } from "@/api/client/dashboardCount";
 import { useQuery } from "@tanstack/react-query";
 import {
   flexRender,
@@ -53,8 +53,8 @@ import {
 } from "@tanstack/react-table";
 import GenericTable from "@/components/common/GenericTable";
 import { Spinner } from "@/components/ui/spinner";
-import { getUser } from "@/api/getUser";
-import { useDashboardData } from "@/hooks/useDashboardData";
+import { getUser } from "@/api/client/getUser";
+// import { useDashboardData } from "@/hooks/useDashboardData";
 
 
 export default function DashboardPage() {
@@ -67,23 +67,32 @@ export default function DashboardPage() {
   let userDetails=getUser();
 
 
+
   const UserID=userDetails?.userData?.userId;
   const UserRole=userDetails?.userData?.roleName;
   
-    const { data, isLoading, error } = useDashboardData(region, UserID);
+    // const { data, isLoading, error } = useDashboardData(region, UserID);
+    const data = []; 
+    const isLoading = false; 
+    const error = null;
 
 
-    const { data:dashCountData, isLoading:dashLoading, isError, error:dashError } = useQuery({
-        queryKey: ["dashboardCount",region,UserID,period],
-         queryFn: () =>
-       dashboardCount.getDashboardCountData(
-          region,
-          UserID,
-          period
-        ),
-      enabled: !!region && !!UserID && !!period,
-        // staleTime: 1000 * 60 * 5, // optional cache time (5 mins)
-      });
+    // const { data:dashCountData, isLoading:dashLoading, isError, error:dashError } = useQuery({
+    //     queryKey: ["dashboardCount",region,UserID,period],
+    //      queryFn: () =>
+    //    dashboardCount.getDashboardCountData(
+    //       region,
+    //       UserID,
+    //       period
+    //     ),
+    //   enabled: !!region && !!UserID && !!period,
+    //     // staleTime: 1000 * 60 * 5, // optional cache time (5 mins)
+    //   });
+    
+    const dashCountData = []; 
+    const dashLoading = false; 
+    const isError = false; 
+    const dashError = null;
 
 
       let cardsData= dashCountData?.[0]?.dashboardCounts?.[0];

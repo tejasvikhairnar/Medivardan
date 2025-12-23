@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { LogOut, Menu } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { getUser } from "@/api/getUser";
+import { getUser } from "@/api/client/getUser";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export default function HeaderLayout({ onToggle, sidebarOpen }) {

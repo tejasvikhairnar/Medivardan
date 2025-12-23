@@ -26,7 +26,8 @@ import {
 } from "@/components/ui/table";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Settings, Eye, Edit, Calendar, X, Loader2 } from "lucide-react";
+
+import { Settings, Eye, Edit, Calendar, X, Loader2, Trash2, Clock } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function DoctorRegistrationPage() {
@@ -1184,65 +1185,69 @@ export default function DoctorRegistrationPage() {
         </Card>
       )}
 
-      {/* Search Filters */}
-      <Card className="border-gray-200 dark:border-gray-800">
-        <CardContent className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-            <Input
-              placeholder="Doctor Name"
-              value={filters.doctorName}
-              onChange={(e) => handleFilterChange("doctorName", e.target.value)}
-              className="border-gray-300 dark:border-gray-700"
-            />
-            <Input
-              placeholder="Mobile No."
-              value={filters.mobileNo}
-              onChange={(e) => handleFilterChange("mobileNo", e.target.value)}
-              className="border-gray-300 dark:border-gray-700"
-            />
-            <Select
-              value={filters.panel}
-              onValueChange={(value) => handleFilterChange("panel", value)}
-            >
-              <SelectTrigger className="border-gray-300 dark:border-gray-700">
-                <SelectValue placeholder="Panvel" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Panels</SelectItem>
-                <SelectItem value="panvel">Panvel</SelectItem>
-                <SelectItem value="pune">Pune</SelectItem>
-                <SelectItem value="mumbai">Mumbai</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button
-              onClick={handleSearch}
-              className="bg-orange-600 hover:bg-orange-700 text-white"
-            >
-              Search
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Search Filters - Hidden when form is open */}
+      {!showAddForm && (
+        <Card className="border-gray-200 dark:border-gray-800">
+          <CardContent className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+              <Input
+                placeholder="Doctor Name"
+                value={filters.doctorName}
+                onChange={(e) => handleFilterChange("doctorName", e.target.value)}
+                className="border-gray-300 dark:border-gray-700"
+              />
+              <Input
+                placeholder="Mobile No."
+                value={filters.mobileNo}
+                onChange={(e) => handleFilterChange("mobileNo", e.target.value)}
+                className="border-gray-300 dark:border-gray-700"
+              />
+              <Select
+                value={filters.panel}
+                onValueChange={(value) => handleFilterChange("panel", value)}
+              >
+                <SelectTrigger className="border-gray-300 dark:border-gray-700">
+                  <SelectValue placeholder="Panvel" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Panels</SelectItem>
+                  <SelectItem value="panvel">Panvel</SelectItem>
+                  <SelectItem value="pune">Pune</SelectItem>
+                  <SelectItem value="mumbai">Mumbai</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button
+                onClick={handleSearch}
+                className="bg-orange-600 hover:bg-orange-700 text-white"
+              >
+                Search
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
-      {/* Action Buttons */}
-      <div className="flex items-center justify-end gap-3">
-        {/* <Button
-          onClick={handleExcelUpload}
-          variant="outline"
-          className="bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
-        >
-          Excel Upload
-        </Button> */}
-        <Button
-          onClick={handleAddNew}
-          className="bg-blue-600 hover:bg-blue-700 text-white"
-        >
-          Add New
-        </Button>
-      </div>
+      {/* Action Buttons - Hidden when form is open */}
+      {!showAddForm && (
+        <div className="flex items-center justify-end gap-3">
+          {/* <Button
+            onClick={handleExcelUpload}
+            variant="outline"
+            className="bg-blue-600 hover:bg-blue-700 text-white border-blue-600"
+          >
+            Excel Upload
+          </Button> */}
+          <Button
+            onClick={handleAddNew}
+            className="bg-blue-600 hover:bg-blue-700 text-white"
+          >
+            Add New
+          </Button>
+        </div>
+      )}
 
-      {/* Error Message */}
-      {error && (
+      {/* Error Message - Hidden when form is open */}
+      {!showAddForm && error && (
         <div className="bg-red-50 dark:bg-red-900/20 border-2 border-red-500 dark:border-red-700 rounded-lg p-6 shadow-lg">
           <div className="flex items-start gap-3">
             <div className="flex-shrink-0">
@@ -1264,19 +1269,20 @@ export default function DoctorRegistrationPage() {
         </div>
       )}
 
-      {/* Doctors Table */}
-      <Card className="border-gray-200 dark:border-gray-800">
-        <CardContent className="p-0">
-          <div className="overflow-x-auto">
-            {isLoading ? (
-              <div className="flex items-center justify-center py-12">
-                <div className="text-center">
-                  <Loader2 className="w-12 h-12 animate-spin text-blue-600 mx-auto mb-4" />
-                  <p className="text-gray-600 dark:text-gray-400">Loading doctors...</p>
+      {/* Doctors Table - Hidden when form is open */}
+      {!showAddForm && (
+        <Card className="border-gray-200 dark:border-gray-800">
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              {isLoading ? (
+                <div className="flex items-center justify-center py-12">
+                  <div className="text-center">
+                    <Loader2 className="w-12 h-12 animate-spin text-blue-600 mx-auto mb-4" />
+                    <p className="text-gray-600 dark:text-gray-400">Loading doctors...</p>
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <Table>
+              ) : (
+                <Table>
               <TableHeader>
                 <TableRow className="bg-green-100 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/20">
                   <TableHead className="font-semibold text-gray-900 dark:text-gray-100">
@@ -1298,7 +1304,7 @@ export default function DoctorRegistrationPage() {
                     Reg Date
                   </TableHead>
                   <TableHead className="font-semibold text-gray-900 dark:text-gray-100 text-center">
-                    Actions
+                    Actions *
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -1354,7 +1360,12 @@ export default function DoctorRegistrationPage() {
                         <button
                           className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
                         >
-                          <Calendar className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                          <Clock className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                        </button>
+                        <button
+                          className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+                        >
+                          <Trash2 className="w-4 h-4 text-gray-600 dark:text-red-400" />
                         </button>
                       </div>
                     </TableCell>
@@ -1373,6 +1384,7 @@ export default function DoctorRegistrationPage() {
           </div>
         </CardContent>
       </Card>
+      )}
 
       {/* Excel Download Icon
       <div className="flex items-start">

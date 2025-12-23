@@ -1,5 +1,5 @@
 "use client";
-import { reportsService } from "@/api/reports.service";
+import { reportsService } from "@/api/client/reports";
 import GenericTable from "@/components/common/GenericTable";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";

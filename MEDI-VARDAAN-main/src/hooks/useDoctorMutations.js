@@ -4,7 +4,7 @@
  */
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { upsertDoctor, deleteDoctor } from "@/api/doctor.api";
+import { upsertDoctor, deleteDoctor } from "@/api/client/doctors";
 import { transformFormDataToAPI } from "@/utils/doctorTransformers";
 
 /**

@@ -4,7 +4,7 @@
  */
 
 import { useQuery } from "@tanstack/react-query";
-import { getAllDoctors } from "@/api/doctor.api";
+import { getAllDoctors } from "@/api/client/doctors";
 import { transformAPIDoctorToDisplay } from "@/utils/doctorTransformers";
 
 /**

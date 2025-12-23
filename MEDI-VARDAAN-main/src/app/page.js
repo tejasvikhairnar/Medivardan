@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Eye, EyeOff, Lock, User, AlertCircle } from "lucide-react";
-import { useLogin } from "@/api/auth";
+import { useLogin } from "@/api/client/auth";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "@/store/slices/authSlice";
 import { Spinner } from "@/components/ui/spinner";

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { addMockDoctor, updateMockDoctor } from '../mockStorage.js';
+import { addMockDoctor, updateMockDoctor } from '@/api/mocks/doctors.js';
 
 const API_BASE_URL = "https://bmetrics.in/APIDemo/api";
 

@@ -17,10 +17,11 @@ import axiosClient from "@/lib/axiosClient";
  */
 export const getAllDoctors = async (params = {}) => {
   try {
-    const response = await axiosClient.get("/DoctorRegistration/GetAllDoctors", {
-      params,
-    });
-    return response.data;
+    // const response = await axiosClient.get("/api/Doctor/GetAllDoctors", {
+    //   params,
+    // });
+    // return response.data;
+    return [];
   } catch (error) {
     console.error("[Doctor API] Error fetching doctors:", error);
     throw error;
@@ -34,20 +35,21 @@ export const getAllDoctors = async (params = {}) => {
  */
 export const upsertDoctor = async (doctorData) => {
   try {
-    const response = await axiosClient.post(
-      "/DoctorRegistration/UpsertDoctor",
-      doctorData
-    );
+    // const response = await axiosClient.post(
+    //   "/api/Doctor/UpsertDoctor",
+    //   doctorData
+    // );
 
-    // Handle different response formats
-    // API might return just a number (doctorID) or an object
-    const data = response.data;
+    // // Handle different response formats
+    // // API might return just a number (doctorID) or an object
+    // const data = response.data;
 
-    if (typeof data === 'number') {
-      return { doctorID: data, success: true };
-    }
+    // if (typeof data === 'number') {
+    //   return { doctorID: data, success: true };
+    // }
 
-    return { ...data, success: true };
+    // return { ...data, success: true };
+    return { doctorID: 9999, success: true };
   } catch (error) {
     console.error("[Doctor API] Error upserting doctor:", error);
 
@@ -68,7 +70,7 @@ export const upsertDoctor = async (doctorData) => {
  */
 export const deleteDoctor = async (doctorId) => {
   try {
-    await axiosClient.delete(`/DoctorRegistration/DeleteDoctor/${doctorId}`);
+    await axiosClient.delete(`/api/Doctor/DeleteDoctor/${doctorId}`);
     return true;
   } catch (error) {
     console.error("[Doctor API] Error deleting doctor:", error);
@@ -83,15 +85,16 @@ export const deleteDoctor = async (doctorId) => {
  */
 export const getDoctorById = async (doctorId) => {
   try {
-    const response = await axiosClient.get(
-      `/DoctorRegistration/GetAllDoctors`,
-      {
-        params: { DoctorID: doctorId },
-      }
-    );
+    // const response = await axiosClient.get(
+    //   `/api/Doctor/GetAllDoctors`,
+    //   {
+    //     params: { DoctorID: doctorId },
+    //   }
+    // );
 
-    // API returns an array, get first item
-    return Array.isArray(response.data) ? response.data[0] : response.data;
+    // // API returns an array, get first item
+    // return Array.isArray(response.data) ? response.data[0] : response.data;
+    return null;
   } catch (error) {
     console.error("[Doctor API] Error fetching doctor:", error);
     throw error;
