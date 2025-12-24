@@ -64,13 +64,13 @@ export default function BookAppointmentFormPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-sm">
+    <div className="max-w-4xl mx-auto p-6 bg-card text-card-foreground rounded-lg shadow-sm border border-border">
       {/* Clinic & Doctor Information */}
       <div className="mb-8">
-        <h2 className="text-gray-700 font-semibold mb-4">Clinic & Doctor Information</h2>
+        <h2 className="text-foreground font-semibold mb-4">Clinic & Doctor Information</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="clinicName" className="text-gray-600">
+            <Label htmlFor="clinicName" className="text-muted-foreground">
               Clinic Name <span className="text-red-500">*</span>
             </Label>
             <Input
@@ -78,11 +78,11 @@ export default function BookAppointmentFormPage() {
               name="clinicName"
               value={formData.clinicName}
               onChange={handleChange}
-              className="bg-white"
+              className="bg-background border-input"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="doctorName" className="text-gray-600">
+            <Label htmlFor="doctorName" className="text-muted-foreground">
               Doctor Name <span className="text-red-500">*</span>
             </Label>
             <Input
@@ -91,7 +91,7 @@ export default function BookAppointmentFormPage() {
               placeholder="Enter doctor name"
               value={formData.doctorName}
               onChange={handleChange}
-              className="bg-white"
+              className="bg-background border-input"
             />
           </div>
         </div>
@@ -99,10 +99,10 @@ export default function BookAppointmentFormPage() {
 
       {/* Patient Information */}
       <div className="mb-8">
-        <h2 className="text-gray-700 font-semibold mb-4">Patient Information</h2>
+        <h2 className="text-foreground font-semibold mb-4">Patient Information</h2>
         <div className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="patientName" className="text-gray-600">
+            <Label htmlFor="patientName" className="text-muted-foreground">
               Patient Name <span className="text-red-500">*</span>
             </Label>
             <Input
@@ -111,13 +111,13 @@ export default function BookAppointmentFormPage() {
               placeholder="Enter full name"
               value={formData.patientName}
               onChange={handleChange}
-              className="bg-white"
+              className="bg-background border-input"
             />
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2 relative">
-              <Label htmlFor="dob" className="text-gray-600">
+              <Label htmlFor="dob" className="text-muted-foreground">
                 Date of Birth <span className="text-red-500">*</span>
               </Label>
               <div className="relative">
@@ -128,12 +128,12 @@ export default function BookAppointmentFormPage() {
                   placeholder="dd-mm-yyyy"
                   value={formData.dob}
                   onChange={handleChange}
-                  className="bg-white block w-full"
+                  className="bg-background border-input block w-full"
                 />
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="age" className="text-gray-600">
+              <Label htmlFor="age" className="text-muted-foreground">
                 Age (Years)
               </Label>
               <Input
@@ -141,7 +141,7 @@ export default function BookAppointmentFormPage() {
                 name="age"
                 value={formData.age}
                 readOnly
-                className="bg-gray-50"
+                className="bg-muted border-input"
               />
             </div>
           </div>
@@ -150,10 +150,10 @@ export default function BookAppointmentFormPage() {
 
       {/* Appointment Schedule */}
       <div className="mb-8">
-        <h2 className="text-gray-700 font-semibold mb-4">Appointment Schedule</h2>
+        <h2 className="text-foreground font-semibold mb-4">Appointment Schedule</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-             <Label htmlFor="appointmentDate" className="text-gray-600">
+             <Label htmlFor="appointmentDate" className="text-muted-foreground">
                 Appointment Date <span className="text-red-500">*</span>
              </Label>
              <Input
@@ -163,11 +163,11 @@ export default function BookAppointmentFormPage() {
                 placeholder="dd-mm-yyyy"
                 value={formData.appointmentDate}
                 onChange={handleChange}
-                className="bg-white"
+                className="bg-background border-input"
              />
           </div>
           <div className="space-y-2">
-             <Label htmlFor="appointmentTime" className="text-gray-600">
+             <Label htmlFor="appointmentTime" className="text-muted-foreground">
                 Appointment Time <span className="text-red-500">*</span>
              </Label>
              <div className="relative">
@@ -178,7 +178,7 @@ export default function BookAppointmentFormPage() {
                     placeholder="--:--"
                     value={formData.appointmentTime}
                     onChange={handleChange}
-                    className="bg-white"
+                    className="bg-background border-input"
                 />
              </div>
           </div>
@@ -186,7 +186,7 @@ export default function BookAppointmentFormPage() {
       </div>
 
       {/* Footer */}
-      <div className="flex flex-col md:flex-row items-center justify-between pt-4 border-t border-gray-100 mt-8">
+      <div className="flex flex-col md:flex-row items-center justify-between pt-4 border-t border-border mt-8">
         <div className="text-sm text-red-500 mb-4 md:mb-0">
           * Required fields
         </div>
@@ -194,7 +194,7 @@ export default function BookAppointmentFormPage() {
           <Button 
             variant="outline" 
             onClick={handleCancel}
-            className="px-6 border-gray-300 text-gray-700 hover:bg-gray-50"
+            className="px-6 border-border text-foreground hover:bg-accent hover:text-accent-foreground"
           >
             Cancel
           </Button>

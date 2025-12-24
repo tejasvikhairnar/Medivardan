@@ -238,6 +238,41 @@ export default function Sidebar({ open }) {
         menuID: 'consultation',
         menuName: 'Consultation',
         menuPath: '/MIS/consultation'
+      },
+      {
+        menuID: 'new-patient-report',
+        menuName: 'New Patient Report',
+        menuPath: '/MIS/new-patient-report'
+      },
+      {
+        menuID: 'patient-visit-report',
+        menuName: 'Patient Visit Report',
+        menuPath: '/MIS/patient-visit-report'
+      },
+      {
+        menuID: 'repeat-patient-report',
+        menuName: 'Repeat Patient Report',
+        menuPath: '/MIS/repeat-patient-report'
+      },
+      {
+        menuID: 'patient-clinic-transfer',
+        menuName: 'Patient Clinic Transfer',
+        menuPath: '/MIS/patient-clinic-transfer'
+      },
+      {
+        menuID: 'patient-merge-delete',
+        menuName: 'Patient Merge and Delete',
+        menuPath: '/MIS/patient-merge-delete'
+      },
+      {
+        menuID: 'visitor',
+        menuName: 'Visitor',
+        menuPath: '/MIS/visitor'
+      },
+      {
+        menuID: 'consent',
+        menuName: 'Consent',
+        menuPath: '/MIS/consent'
       }
     ]
   };
