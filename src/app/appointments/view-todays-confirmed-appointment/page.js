@@ -12,16 +12,45 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import CustomPagination from "@/components/ui/custom-pagination";
 
 export default function ViewTodaysConfirmedAppointments() {
   const [patientName, setPatientName] = useState("");
   const [patientNo, setPatientNo] = useState("");
-  const [results, setResults] = useState([]);
+  
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
+
+  // Mock Data
+  const [results, setResults] = useState([
+    { patientNo: "P001", patientName: "Aarav Sharma", mobileNo: "9876543210", doctor: "Dr. Kinnari Lade" },
+    { patientNo: "P002", patientName: "Vivaan Patil", mobileNo: "8765432109", doctor: "Dr. Rajesh Kumar" },
+    { patientNo: "P003", patientName: "Aditya Verma", mobileNo: "7654321098", doctor: "Dr. Priya Singh" },
+    { patientNo: "P004", patientName: "Vihaan Singh", mobileNo: "6543210987", doctor: "Dr. Kinnari Lade" },
+    { patientNo: "P005", patientName: "Arjun Mehta", mobileNo: "9988776655", doctor: "Dr. Rajesh Kumar" },
+    { patientNo: "P006", patientName: "Sai Iyer", mobileNo: "8877665544", doctor: "Dr. Priya Singh" },
+    { patientNo: "P007", patientName: "Reyansh Reddy", mobileNo: "7766554433", doctor: "Dr. Kinnari Lade" },
+    { patientNo: "P008", patientName: "Ayaan Nair", mobileNo: "6655443322", doctor: "Dr. Rajesh Kumar" },
+    { patientNo: "P009", patientName: "Krishna Das", mobileNo: "5544332211", doctor: "Dr. Priya Singh" },
+    { patientNo: "P010", patientName: "Ishaan Kapoor", mobileNo: "9998887776", doctor: "Dr. Kinnari Lade" },
+  ]);
 
   const handleSearch = () => {
-    // Placeholder for search logic
+    setCurrentPage(1);
+    // In a real app, you might fetch data here or filter locally
     console.log("Searching for:", { patientName, patientNo });
   };
+
+  const filteredResults = results.filter((item) =>
+    item.patientName.toLowerCase().includes(patientName.toLowerCase()) && 
+    item.patientNo.toLowerCase().includes(patientNo.toLowerCase())
+  );
+
+  // Pagination Logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredResults.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
     <div className="p-6 bg-white dark:bg-gray-900 min-h-screen">
@@ -74,10 +103,10 @@ export default function ViewTodaysConfirmedAppointments() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {results.length > 0 ? (
-              results.map((item, index) => (
+            {currentItems.length > 0 ? (
+              currentItems.map((item, index) => (
                 <TableRow key={index} className="text-center border-gray-200 dark:border-gray-700 dark:hover:bg-gray-800/50">
-                  <TableCell className="dark:text-gray-300">{index + 1}</TableCell>
+                  <TableCell className="dark:text-gray-300">{indexOfFirstItem + index + 1}</TableCell>
                   <TableCell className="dark:text-gray-300">{item.patientNo}</TableCell>
                   <TableCell className="dark:text-gray-300">{item.patientName}</TableCell>
                   <TableCell className="dark:text-gray-300">{item.mobileNo}</TableCell>
@@ -97,6 +126,17 @@ export default function ViewTodaysConfirmedAppointments() {
           </TableBody>
         </Table>
       </div>
+
+       {/* Pagination */}
+       <div className="flex justify-end pt-4">
+             <CustomPagination 
+                totalItems={filteredResults.length} 
+                itemsPerPage={itemsPerPage} 
+                currentPage={currentPage} 
+                onPageChange={setCurrentPage} 
+            />
+       </div>
+
     </div>
   );
 }

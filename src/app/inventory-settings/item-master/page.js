@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Settings, Pencil, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Settings, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -19,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import CustomPagination from "@/components/ui/custom-pagination";
 
 export default function ItemMaster() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -129,15 +130,10 @@ export default function ItemMaster() {
     item.brandName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentData = filteredData.slice(startIndex, startIndex + itemsPerPage);
-
-  const handlePageChange = (newPage) => {
-    if (newPage >= 1 && newPage <= totalPages) {
-      setCurrentPage(newPage);
-    }
-  };
+  // Pagination Logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
 
   const handleAdd = () => {
     setIsView("form");
@@ -154,8 +150,9 @@ export default function ItemMaster() {
   const handleDelete = (id) => {
     if (confirm("Are you sure you want to delete this item?")) {
       setData(data.filter((item) => item.id !== id));
-      if (currentPage > 1 && Math.ceil((data.length - 1) / itemsPerPage) < currentPage) {
-        setCurrentPage(currentPage - 1);
+      // Reset page if current page becomes empty
+      if (currentItems.length === 1 && currentPage > 1) {
+          setCurrentPage(prev => prev - 1);
       }
     }
   };
@@ -179,34 +176,33 @@ export default function ItemMaster() {
   return (
     <div className="p-6 bg-white dark:bg-gray-900 min-h-screen space-y-6">
       <div className="flex items-center gap-2 border-b border-gray-200 dark:border-gray-800 pb-4">
-        <Settings className="w-5 h-5 text-red-500" />
+        <Settings className="w-5 h-5 text-red-500 animate-spin-slow" />
         <h1 className="text-lg font-bold text-red-500 uppercase tracking-wide">
-          ITEM
+          ITEM MASTER
         </h1>
       </div>
 
       {isView === "list" ? (
         <>
            <div className="space-y-4">
-              <div className="flex justify-between items-end">
-                 <div className="flex-1 max-w-4xl space-y-2">
-                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Search</label>
+              <div className="flex flex-col md:flex-row justify-between items-end gap-4">
+                 <div className="flex-1 w-full md:max-w-xl space-y-2">
                      <div className="flex gap-2">
                         <Input
-                            placeholder="Name or Brand"
+                            placeholder="Search by Name or Brand..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 max-w-xl"
+                            className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 flex-1"
                         />
                          <Button onClick={() => setSearchTerm("")} className="bg-[#D35400] hover:bg-[#A04000] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap">
                             Clear
                         </Button>
+                        <Button onClick={handleAdd} className="bg-[#0e7490] hover:bg-[#0891b2] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap">
+                            Add New Item
+                        </Button>
                     </div>
                 </div>
-
-                <Button onClick={handleAdd} className="bg-[#0e7490] hover:bg-[#0891b2] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap">
-                    Add New Item
-                </Button>
+                 <div className="text-sm text-gray-500">Total : {filteredData.length}</div>
               </div>
           </div>
 
@@ -224,12 +220,12 @@ export default function ItemMaster() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {currentData.length > 0 ? (
-                    currentData.map((row) => (
+                {currentItems.length > 0 ? (
+                    currentItems.map((row, index) => (
                     <TableRow key={row.id} className="border-gray-200 dark:border-gray-700 dark:hover:bg-gray-800/50">
-                        <TableCell className="dark:text-gray-300">{row.id}</TableCell>
+                        <TableCell className="dark:text-gray-300">{indexOfFirstItem + index + 1}</TableCell>
                         <TableCell className="dark:text-gray-300">{row.inventoryType}</TableCell>
-                        <TableCell className="dark:text-gray-300">{row.itemName}</TableCell>
+                        <TableCell className="dark:text-gray-300 font-medium">{row.itemName}</TableCell>
                         <TableCell className="dark:text-gray-300">{row.brandName}</TableCell>
                         <TableCell className="dark:text-gray-300">{row.packagingType}</TableCell>
                         <TableCell className="dark:text-gray-300">{row.price}</TableCell>
@@ -262,69 +258,75 @@ export default function ItemMaster() {
           </div>
 
            <div className="flex justify-between items-center pt-2">
-            <div className="text-sm text-gray-500">
-                Showing {startIndex + 1} to {Math.min(startIndex + itemsPerPage, filteredData.length)} of {filteredData.length} entries
-            </div>
-            <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}>
-                    <ChevronLeft className="h-4 w-4" />
-                </Button>
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                    <Button key={page} variant={currentPage === page ? "default" : "outline"} size="sm" onClick={() => handlePageChange(page)} className={currentPage === page ? "bg-[#1E6B8C] hover:bg-[#15526d] text-white" : ""}>
-                        {page}
-                    </Button>
-                ))}
-                <Button variant="outline" size="sm" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}>
-                    <ChevronRight className="h-4 w-4" />
-                </Button>
-            </div>
-          </div>
+             <div className="text-sm text-gray-500 invisible">Spacing</div>
+             <CustomPagination 
+                totalItems={filteredData.length} 
+                itemsPerPage={itemsPerPage} 
+                currentPage={currentPage} 
+                onPageChange={setCurrentPage} 
+            />
+           </div>
         </>
       ) : (
-         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm space-y-6">
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                    <label className="text-sm font-medium">Inventory Type</label>
-                    <Select value={formData.inventoryType} onValueChange={(val) => setFormData({...formData, inventoryType: val})}>
-                        <SelectTrigger><SelectValue placeholder="-- Select Inventory Type --" /></SelectTrigger>
-                        <SelectContent>
-                             {inventoryTypes.map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}
-                             {!inventoryTypes.includes("MATERIAL") && <SelectItem value="MATERIAL">MATERIAL</SelectItem>}
-                        </SelectContent>
-                    </Select>
-                </div>
-                 <div className="space-y-2">
-                     <label className="text-sm font-medium">Item Name*</label>
-                    <Input placeholder="Item Name" value={formData.itemName} onChange={(e) => setFormData({ ...formData, itemName: e.target.value })} />
-                </div>
-                 <div className="space-y-2">
-                    <label className="text-sm font-medium">Brand Name</label>
-                    <Select value={formData.brandName} onValueChange={(val) => setFormData({...formData, brandName: val})}>
-                        <SelectTrigger><SelectValue placeholder="-- Select Brand --" /></SelectTrigger>
-                        <SelectContent>
-                             {brandNames.map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}
-                        </SelectContent>
-                    </Select>
-                </div>
-                 <div className="space-y-2">
-                    <label className="text-sm font-medium">Packaging Type</label>
-                    <Select value={formData.packagingType} onValueChange={(val) => setFormData({...formData, packagingType: val})}>
-                        <SelectTrigger><SelectValue placeholder="-- Select Packaging Type --" /></SelectTrigger>
-                        <SelectContent>
-                             {packagingTypes.map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}
-                        </SelectContent>
-                    </Select>
-                </div>
-                <div className="space-y-2">
-                    <label className="text-sm font-medium">Price</label>
-                    <Input placeholder="Price" value={formData.price} onChange={(e) => setFormData({ ...formData, price: e.target.value })} />
-                </div>
-           </div>
+         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm space-y-6 max-w-4xl mx-auto">
+            <div className="space-y-4">
+               <h3 className="font-bold text-red-500 border-b pb-2 uppercase">{editingId ? 'Edit Item' : 'Add New Item'}</h3>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium">Inventory Type <span className="text-red-500">*</span></label>
+                        <Select value={formData.inventoryType} onValueChange={(val) => setFormData({...formData, inventoryType: val})}>
+                            <SelectTrigger className="bg-white dark:bg-gray-800"><SelectValue placeholder="-- Select Inventory Type --" /></SelectTrigger>
+                            <SelectContent>
+                                {inventoryTypes.map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}
+                                {!inventoryTypes.includes("MATERIAL") && <SelectItem value="MATERIAL">MATERIAL</SelectItem>}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium">Item Name <span className="text-red-500">*</span></label>
+                        <Input 
+                            placeholder="Enter Item Name" 
+                            value={formData.itemName} 
+                            onChange={(e) => setFormData({ ...formData, itemName: e.target.value })} 
+                            className="bg-white dark:bg-gray-800"
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium">Brand Name</label>
+                        <Select value={formData.brandName} onValueChange={(val) => setFormData({...formData, brandName: val})}>
+                            <SelectTrigger className="bg-white dark:bg-gray-800"><SelectValue placeholder="-- Select Brand --" /></SelectTrigger>
+                            <SelectContent>
+                                {brandNames.map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium">Packaging Type</label>
+                        <Select value={formData.packagingType} onValueChange={(val) => setFormData({...formData, packagingType: val})}>
+                            <SelectTrigger className="bg-white dark:bg-gray-800"><SelectValue placeholder="-- Select Packaging Type --" /></SelectTrigger>
+                            <SelectContent>
+                                {packagingTypes.map(type => <SelectItem key={type} value={type}>{type}</SelectItem>)}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium">Price</label>
+                        <Input 
+                            placeholder="0.00" 
+                            value={formData.price} 
+                            onChange={(e) => setFormData({ ...formData, price: e.target.value })} 
+                            className="bg-white dark:bg-gray-800"
+                        />
+                    </div>
+               </div>
+            </div>
 
-          <div className="flex justify-center gap-4 pt-4">
-            <Button onClick={handleSubmit} className="bg-green-700 hover:bg-green-800 text-white min-w-[100px]">Submit</Button>
-            <Button onClick={handleCancel} variant="destructive" className="bg-red-700 hover:bg-red-800 min-w-[100px]">Cancel</Button>
-          </div>
+            <div className="flex justify-end gap-4 pt-4 border-t border-gray-100 dark:border-gray-800">
+                <Button onClick={handleCancel} variant="outline" className="min-w-[100px]">Cancel</Button>
+                <Button onClick={handleSubmit} className="bg-[#1E6B8C] hover:bg-[#15526d] text-white min-w-[100px]">
+                    {editingId ? "Update" : "Save"}
+                </Button>
+           </div>
         </div>
       )}
     </div>

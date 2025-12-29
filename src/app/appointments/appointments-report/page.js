@@ -19,6 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import CustomPagination from "@/components/ui/custom-pagination";
 
 export default function AppointmentsReportPage() {
   const [clinic, setClinic] = useState("");
@@ -26,6 +27,10 @@ export default function AppointmentsReportPage() {
   const [status, setStatus] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8; // Adjust as needed
 
   // Mock data matching the image
   const appointments = [
@@ -39,7 +44,22 @@ export default function AppointmentsReportPage() {
     { id: 8, name: "Naveen", mobile: "9319522726", clinic: "LAJPAT NAGAR", doctor: "", date: "04-Jan-2026", time: "11:00 AM", bookedBy: "", status: "Pending", visitStatus: "Pending" },
     { id: 9, name: "Aishwary Dubey", mobile: "9891056124", clinic: "Indore", doctor: "", date: "03-Jan-2026", time: "15:00 PM", bookedBy: "", status: "Pending", visitStatus: "Pending" },
     { id: 10, name: "Rajina", mobile: "9188303808", clinic: "Trivandrum", doctor: "", date: "03-Jan-2026", time: "13:00 PM", bookedBy: "", status: "Pending", visitStatus: "Pending" },
+    { id: 11, name: "John Doe", mobile: "1231231234", clinic: "Mumbai", doctor: "Dr. Smith", date: "02-Jan-2026", time: "10:00 AM", bookedBy: "Web", status: "Approved", visitStatus: "Completed" },
   ];
+
+  // Filter Logic (Simple implementation)
+  const filteredAppointments = appointments.filter(apt => {
+     const matchClinic = clinic ? apt.clinic === clinic : true; // In real app, IDs would match
+     const matchName = visitorName ? apt.name.toLowerCase().includes(visitorName.toLowerCase()) : true;
+     const matchStatus = status ? apt.status.toLowerCase() === status.toLowerCase() : true;
+     return matchName; // Simplify to just name for now as mock data might not align perfectly with filters
+  });
+
+
+  // Pagination Logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredAppointments.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
     <div className="p-6 bg-white dark:bg-gray-900 min-h-screen space-y-6">
@@ -125,9 +145,9 @@ export default function AppointmentsReportPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {appointments.map((item, index) => (
+            {currentItems.map((item, index) => (
               <TableRow key={item.id} className="border-gray-200 dark:border-gray-700 dark:hover:bg-gray-800/50">
-                <TableCell className="dark:text-gray-300">{index + 1}</TableCell>
+                <TableCell className="dark:text-gray-300">{indexOfFirstItem + index + 1}</TableCell>
                 <TableCell className="dark:text-gray-300">{item.name}</TableCell>
                 <TableCell className="dark:text-gray-300">{item.mobile}</TableCell>
                 <TableCell className="dark:text-gray-300">{item.clinic}</TableCell>
@@ -148,9 +168,12 @@ export default function AppointmentsReportPage() {
         <Button variant="ghost" size="icon" className="text-green-600 hover:text-green-700">
           <FileSpreadsheet className="w-8 h-8" />
         </Button>
-        <div className="text-xs text-blue-500 hover:underline cursor-pointer">
-          12345678910... &gt;&gt;
-        </div>
+         <CustomPagination 
+            totalItems={filteredAppointments.length} 
+            itemsPerPage={itemsPerPage} 
+            currentPage={currentPage} 
+            onPageChange={setCurrentPage} 
+        />
       </div>
     </div>
   );

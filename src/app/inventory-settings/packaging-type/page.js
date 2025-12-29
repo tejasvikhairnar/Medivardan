@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Settings, Pencil, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
+import { Settings, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -12,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import CustomPagination from "@/components/ui/custom-pagination";
 
 export default function PackagingType() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -40,15 +41,10 @@ export default function PackagingType() {
     item.packagingType.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentData = filteredData.slice(startIndex, startIndex + itemsPerPage);
-
-  const handlePageChange = (newPage) => {
-    if (newPage >= 1 && newPage <= totalPages) {
-      setCurrentPage(newPage);
-    }
-  };
+  // Pagination Logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
 
   const handleAdd = () => {
     setIsView("form");
@@ -65,8 +61,9 @@ export default function PackagingType() {
   const handleDelete = (id) => {
     if (confirm("Are you sure you want to delete this packaging type?")) {
       setData(data.filter((item) => item.id !== id));
-      if (currentPage > 1 && Math.ceil((data.length - 1) / itemsPerPage) < currentPage) {
-        setCurrentPage(currentPage - 1);
+      // Reset page if current page becomes empty
+      if (currentItems.length === 1 && currentPage > 1) {
+          setCurrentPage(prev => prev - 1);
       }
     }
   };
@@ -89,7 +86,7 @@ export default function PackagingType() {
   return (
     <div className="p-6 bg-white dark:bg-gray-900 min-h-screen space-y-6">
       <div className="flex items-center gap-2 border-b border-gray-200 dark:border-gray-800 pb-4">
-        <Settings className="w-5 h-5 text-red-500" />
+        <Settings className="w-5 h-5 text-red-500 animate-spin-slow" />
         <h1 className="text-lg font-bold text-red-500 uppercase tracking-wide">PACKAGING TYPE</h1>
       </div>
 
@@ -123,11 +120,11 @@ export default function PackagingType() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {currentData.length > 0 ? (
-                    currentData.map((row) => (
+                {currentItems.length > 0 ? (
+                    currentItems.map((row, index) => (
                     <TableRow key={row.id} className="border-gray-200 dark:border-gray-700 dark:hover:bg-gray-800/50">
-                        <TableCell className="dark:text-gray-300">{row.id}</TableCell>
-                        <TableCell className="dark:text-gray-300">{row.packagingType}</TableCell>
+                        <TableCell className="dark:text-gray-300">{indexOfFirstItem + index + 1}</TableCell>
+                        <TableCell className="dark:text-gray-300 font-medium">{row.packagingType}</TableCell>
                         <TableCell className="dark:text-gray-300">
                             <div className="flex items-center justify-center gap-4">
                                 <Button variant="ghost" size="icon" onClick={() => handleEdit(row)} className="h-4 w-4 text-gray-600 hover:text-blue-600">
@@ -153,28 +150,34 @@ export default function PackagingType() {
           </div>
 
           <div className="flex justify-between items-center pt-2">
-            <div className="text-sm text-gray-500">Showing {startIndex + 1} to {Math.min(startIndex + itemsPerPage, filteredData.length)} of {filteredData.length} entries</div>
-            <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}><ChevronLeft className="h-4 w-4" /></Button>
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                    <Button key={page} variant={currentPage === page ? "default" : "outline"} size="sm" onClick={() => handlePageChange(page)} className={currentPage === page ? "bg-[#1E6B8C] hover:bg-[#15526d] text-white" : ""}>{page}</Button>
-                ))}
-                <Button variant="outline" size="sm" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}><ChevronRight className="h-4 w-4" /></Button>
-            </div>
+             <div className="text-sm text-gray-500 invisible">Spacing</div>
+             <CustomPagination 
+                totalItems={filteredData.length} 
+                itemsPerPage={itemsPerPage} 
+                currentPage={currentPage} 
+                onPageChange={setCurrentPage} 
+            />
           </div>
         </>
       ) : (
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm space-y-6">
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm space-y-6 max-w-2xl mx-auto">
            <div className="space-y-4">
-               <h3 className="font-bold text-red-500">PACKAGING TYPE</h3>
+               <h3 className="font-bold text-red-500 border-b pb-2 uppercase">{editingId ? 'Edit Packaging Type' : 'Add New Packaging Type'}</h3>
                <div className="space-y-2">
-                    <label className="text-sm font-medium">Packaging Type Name</label>
-                    <Input value={formData.packagingType} onChange={(e) => setFormData({ ...formData, packagingType: e.target.value })} className="w-full" />
+                    <label className="text-sm font-medium">Packaging Type Name <span className="text-red-500">*</span></label>
+                    <Input 
+                        value={formData.packagingType} 
+                        onChange={(e) => setFormData({ ...formData, packagingType: e.target.value })} 
+                        className="w-full bg-white dark:bg-gray-800" 
+                        placeholder="Enter Packaging Type"
+                    />
                 </div>
            </div>
-          <div className="flex justify-center gap-4 pt-4">
-            <Button onClick={handleSubmit} className="bg-green-700 hover:bg-green-800 text-white min-w-[100px]">Submit</Button>
-            <Button onClick={handleCancel} variant="destructive" className="bg-red-700 hover:bg-red-800 min-w-[100px]">Cancel</Button>
+          <div className="flex justify-end gap-4 pt-4 border-t border-gray-100 dark:border-gray-800">
+            <Button onClick={handleCancel} variant="outline" className="min-w-[100px]">Cancel</Button>
+            <Button onClick={handleSubmit} className="bg-[#1E6B8C] hover:bg-[#15526d] text-white min-w-[100px]">
+                {editingId ? "Update" : "Save"}
+            </Button>
           </div>
         </div>
       )}

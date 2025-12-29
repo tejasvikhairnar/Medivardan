@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Settings, CheckCircle2, Trash2 } from "lucide-react";
+import { Settings, CheckCircle2, Trash2, Plus, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,6 +14,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import CustomPagination from "@/components/ui/custom-pagination";
 
 const EMPLOYEES_DATA = [
   {
@@ -22,7 +31,7 @@ const EMPLOYEES_DATA = [
     name: "sneha gaikwad",
     mobile: "7738328642",
     email: "",
-    regDate: "21-08-2019",
+    regDate: "2019-08-21",
     photo: null,
   },
   {
@@ -31,7 +40,7 @@ const EMPLOYEES_DATA = [
     name: "sayali palshetkar",
     mobile: "8424930024",
     email: "",
-    regDate: "06-11-2019",
+    regDate: "2019-11-06",
     photo: null,
   },
   {
@@ -40,7 +49,7 @@ const EMPLOYEES_DATA = [
     name: "Account a",
     mobile: "5566448855",
     email: "",
-    regDate: "13-03-2020",
+    regDate: "2020-03-13",
     photo: null,
   },
   {
@@ -49,7 +58,7 @@ const EMPLOYEES_DATA = [
     name: "Nikita Rajaram Mhapankar",
     mobile: "9004310736",
     email: "",
-    regDate: "28-08-2020",
+    regDate: "2020-08-28",
     photo: null,
   },
   {
@@ -58,7 +67,7 @@ const EMPLOYEES_DATA = [
     name: "seher shaikh",
     mobile: "9022942698",
     email: "",
-    regDate: "09-09-2020",
+    regDate: "2020-09-09",
     photo: null,
   },
   {
@@ -67,39 +76,104 @@ const EMPLOYEES_DATA = [
     name: "Mahek Kanojiya",
     mobile: "7700011473",
     email: "mahekanojiya01@gmail.com",
-    regDate: "30-09-2020",
+    regDate: "2020-09-30",
     photo: null,
   },
 ];
 
 const EmployeePage = () => {
   const [employees, setEmployees] = useState(EMPLOYEES_DATA);
-  const [filteredEmployees, setFilteredEmployees] = useState(EMPLOYEES_DATA);
   
+  // Search States
   const [searchName, setSearchName] = useState("");
   const [searchMobile, setSearchMobile] = useState("");
   const [searchEmpCode, setSearchEmpCode] = useState("");
 
+  // Pagination States
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  // Dialog States
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentId, setCurrentId] = useState(null);
+  const [formData, setFormData] = useState({
+    empCode: "",
+    name: "",
+    mobile: "",
+    email: "",
+    regDate: new Date().toISOString().split('T')[0], // Default today
+  });
+
+  // Filter Logic
+  const filteredEmployees = employees.filter((emp) => {
+    const matchesName = emp.name.toLowerCase().includes(searchName.toLowerCase());
+    const matchesMobile = emp.mobile.includes(searchMobile);
+    const matchesCode = emp.empCode.toLowerCase().includes(searchEmpCode.toLowerCase());
+    return matchesName && matchesMobile && matchesCode;
+  });
+
+  // Pagination Logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredEmployees.slice(indexOfFirstItem, indexOfLastItem);
+
   const handleSearch = () => {
-    let result = employees;
+    setCurrentPage(1); // Reset to first page on search
+  };
 
-    if (searchName) {
-      result = result.filter((emp) =>
-        emp.name.toLowerCase().includes(searchName.toLowerCase())
-      );
-    }
-    if (searchMobile) {
-      result = result.filter((emp) =>
-        emp.mobile.includes(searchMobile)
-      );
-    }
-    if (searchEmpCode) {
-      result = result.filter((emp) =>
-        emp.empCode.toLowerCase().includes(searchEmpCode.toLowerCase())
-      );
-    }
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-    setFilteredEmployees(result);
+  const openAddDialog = () => {
+    setIsEditing(false);
+    setFormData({
+      empCode: "",
+      name: "",
+      mobile: "",
+      email: "",
+      regDate: new Date().toISOString().split('T')[0],
+    });
+    setIsDialogOpen(true);
+  };
+
+  const openEditDialog = (emp) => {
+    setIsEditing(true);
+    setCurrentId(emp.id);
+    setFormData({
+      empCode: emp.empCode,
+      name: emp.name,
+      mobile: emp.mobile,
+      email: emp.email || "",
+      regDate: emp.regDate,
+    });
+    setIsDialogOpen(true);
+  };
+
+  const handleSave = () => {
+    if (isEditing) {
+      setEmployees((prev) =>
+        prev.map((emp) =>
+          emp.id === currentId ? { ...emp, ...formData } : emp
+        )
+      );
+    } else {
+      const newEmployee = {
+        id: employees.length + 1, // Simple ID generation
+        ...formData,
+        photo: null,
+      };
+      setEmployees((prev) => [...prev, newEmployee]);
+    }
+    setIsDialogOpen(false);
+  };
+
+  const handleDelete = (id) => {
+    if (confirm("Are you sure you want to delete this employee?")) {
+      setEmployees((prev) => prev.filter((emp) => emp.id !== id));
+    }
   };
 
   return (
@@ -158,7 +232,11 @@ const EmployeePage = () => {
 
           {/* Add New Button (Right Aligned) */}
           <div className="flex justify-end">
-            <Button className="bg-[#1F618D] hover:bg-[#154360] text-white dark:bg-blue-700 dark:hover:bg-blue-800">
+            <Button 
+                onClick={openAddDialog}
+                className="bg-[#1F618D] hover:bg-[#154360] text-white dark:bg-blue-700 dark:hover:bg-blue-800"
+            >
+              <Plus className="w-4 h-4 mr-2" />
               Add New
             </Button>
           </div>
@@ -175,52 +253,150 @@ const EmployeePage = () => {
                   <TableHead className="text-gray-700 dark:text-gray-200 font-semibold">Mobile No.</TableHead>
                   <TableHead className="text-gray-700 dark:text-gray-200 font-semibold">Email ID</TableHead>
                   <TableHead className="text-gray-700 dark:text-gray-200 font-semibold">Reg Date</TableHead>
-                  <TableHead className="w-24 text-right text-gray-700 dark:text-gray-200 font-semibold"></TableHead>
+                  <TableHead className="w-24 text-right text-gray-700 dark:text-gray-200 font-semibold">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredEmployees.map((emp, index) => (
-                  <TableRow 
-                    key={emp.id} 
-                    className="border-b last:border-b-0 border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
-                  >
-                    <TableCell className="font-medium text-gray-900 dark:text-gray-100">{index + 1}</TableCell>
-                    <TableCell>
-                      <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center">
-                        <span className="text-gray-400 dark:text-gray-600 text-xs">Photo</span>
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-gray-700 dark:text-gray-300">{emp.empCode}</TableCell>
-                    <TableCell className="text-gray-700 dark:text-gray-300 uppercase">{emp.name}</TableCell>
-                    <TableCell className="text-gray-700 dark:text-gray-300">{emp.mobile}</TableCell>
-                    <TableCell className="text-gray-700 dark:text-gray-300">{emp.email}</TableCell>
-                    <TableCell className="text-gray-700 dark:text-gray-300">{emp.regDate}</TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          className="h-8 w-8 text-gray-500 hover:text-green-600 dark:text-gray-400 dark:hover:text-green-400"
-                        >
-                          <CheckCircle2 size={16} />
-                        </Button>
-                        <Button
-                          size="icon"
-                          variant="ghost" 
-                          className="h-8 w-8 text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400"
-                        >
-                          <Trash2 size={16} />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {currentItems.length > 0 ? (
+                    currentItems.map((emp, index) => (
+                    <TableRow 
+                        key={emp.id} 
+                        className="border-b last:border-b-0 border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                    >
+                        <TableCell className="font-medium text-gray-900 dark:text-gray-100">{indexOfFirstItem + index + 1}</TableCell>
+                        <TableCell>
+                        <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 flex items-center justify-center">
+                            <span className="text-gray-400 dark:text-gray-600 text-xs">Photo</span>
+                        </div>
+                        </TableCell>
+                        <TableCell className="text-gray-700 dark:text-gray-300">{emp.empCode}</TableCell>
+                        <TableCell className="text-gray-700 dark:text-gray-300 uppercase">{emp.name}</TableCell>
+                        <TableCell className="text-gray-700 dark:text-gray-300">{emp.mobile}</TableCell>
+                        <TableCell className="text-gray-700 dark:text-gray-300">{emp.email}</TableCell>
+                        <TableCell className="text-gray-700 dark:text-gray-300">{emp.regDate}</TableCell>
+                        <TableCell className="text-right">
+                        <div className="flex justify-end gap-2">
+                             <Button
+                            size="icon"
+                            variant="ghost"
+                            onClick={() => openEditDialog(emp)}
+                            className="h-8 w-8 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
+                            >
+                            <Pencil size={16} />
+                            </Button>
+                            <Button
+                            size="icon"
+                            variant="ghost" 
+                            onClick={() => handleDelete(emp.id)}
+                            className="h-8 w-8 text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400"
+                            >
+                            <Trash2 size={16} />
+                            </Button>
+                        </div>
+                        </TableCell>
+                    </TableRow>
+                    ))
+                ) : (
+                    <TableRow>
+                        <TableCell colSpan={8} className="text-center py-8 text-gray-500">
+                            No employees found
+                        </TableCell>
+                    </TableRow>
+                )}
               </TableBody>
             </Table>
           </div>
 
+          {/* Pagination */}
+           <div className="flex justify-end">
+                 <CustomPagination 
+                    totalItems={filteredEmployees.length} 
+                    itemsPerPage={itemsPerPage} 
+                    currentPage={currentPage} 
+                    onPageChange={setCurrentPage} 
+                />
+           </div>
+
         </CardContent>
       </Card>
+    
+      {/* Add/Edit Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>{isEditing ? "Edit Employee" : "Add New Employee"}</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="empCode" className="text-right">
+                Emp Code
+              </Label>
+              <Input
+                id="empCode"
+                name="empCode"
+                value={formData.empCode}
+                onChange={handleInputChange}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="name" className="text-right">
+                Name
+              </Label>
+              <Input
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="mobile" className="text-right">
+                Mobile
+              </Label>
+              <Input
+                id="mobile"
+                name="mobile"
+                value={formData.mobile}
+                onChange={handleInputChange}
+                className="col-span-3"
+              />
+            </div>
+             <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="email" className="text-right">
+                Email
+              </Label>
+              <Input
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                className="col-span-3"
+              />
+            </div>
+             <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="regDate" className="text-right">
+                Reg Date
+              </Label>
+              <Input
+                id="regDate"
+                name="regDate"
+                type="date"
+                value={formData.regDate}
+                onChange={handleInputChange}
+                className="col-span-3"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="submit" onClick={handleSave} className="bg-blue-600 hover:bg-blue-700 text-white">
+                {isEditing ? "Update" : "Save"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
     </div>
   );
 };

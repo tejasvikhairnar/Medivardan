@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { Settings, Trash2, FileSpreadsheet } from "lucide-react";
+import { Settings, Trash2, FileSpreadsheet, Plus, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
@@ -13,6 +14,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import CustomPagination from "@/components/ui/custom-pagination";
+import { exportToExcel } from "@/utils/exportToExcel";
 
 const AREA_MANAGERS_DATA = [
   { id: 1, name: "Dr.RUCHII BHANSALI" },
@@ -28,19 +38,75 @@ const AREA_MANAGERS_DATA = [
 
 const AreaManagerPage = () => {
   const [areaManagers, setAreaManagers] = useState(AREA_MANAGERS_DATA);
-  const [filteredManagers, setFilteredManagers] = useState(AREA_MANAGERS_DATA);
   const [searchName, setSearchName] = useState("");
+  
+  // Pagination States
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  // Dialog States
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentId, setCurrentId] = useState(null);
+  const [formData, setFormData] = useState({ name: "" });
+
+  // Filter Logic
+  const filteredManagers = areaManagers.filter((manager) =>
+    manager.name.toLowerCase().includes(searchName.toLowerCase())
+  );
+
+  // Pagination Logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredManagers.slice(indexOfFirstItem, indexOfLastItem);
 
   const handleSearch = () => {
-    let result = areaManagers;
+    setCurrentPage(1);
+  };
 
-    if (searchName) {
-      result = result.filter((manager) =>
-        manager.name.toLowerCase().includes(searchName.toLowerCase())
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const openAddDialog = () => {
+    setIsEditing(false);
+    setFormData({ name: "" });
+    setIsDialogOpen(true);
+  };
+
+  const openEditDialog = (manager) => {
+    setIsEditing(true);
+    setCurrentId(manager.id);
+    setFormData({ name: manager.name });
+    setIsDialogOpen(true);
+  };
+
+  const handleSave = () => {
+    if (isEditing) {
+      setAreaManagers((prev) =>
+        prev.map((m) =>
+          m.id === currentId ? { ...m, ...formData } : m
+        )
       );
+    } else {
+      const newManager = {
+        id: areaManagers.length + 1,
+        ...formData,
+      };
+      setAreaManagers((prev) => [...prev, newManager]);
     }
+    setIsDialogOpen(false);
+  };
 
-    setFilteredManagers(result);
+  const handleDelete = (id) => {
+    if (confirm("Are you sure you want to delete this area manager?")) {
+      setAreaManagers((prev) => prev.filter((m) => m.id !== id));
+    }
+  };
+
+    const handleExport = () => {
+    exportToExcel(filteredManagers, "Area_Managers");
   };
 
   return (
@@ -75,7 +141,10 @@ const AreaManagerPage = () => {
               >
                 Search
               </Button>
-              <Button className="bg-[#1F618D] hover:bg-[#154360] text-white dark:bg-blue-700 dark:hover:bg-blue-800">
+              <Button 
+                onClick={openAddDialog}
+                className="bg-[#1F618D] hover:bg-[#154360] text-white dark:bg-blue-700 dark:hover:bg-blue-800"
+            >
                 Add New
               </Button>
             </div>
@@ -91,45 +160,99 @@ const AreaManagerPage = () => {
                 <TableRow className="border-b border-gray-200 dark:border-gray-700 hover:bg-transparent">
                   <TableHead className="w-16 text-gray-700 dark:text-gray-200 font-bold">Sr No.</TableHead>
                   <TableHead className="text-gray-700 dark:text-gray-200 font-bold">Area Manager</TableHead>
-                  <TableHead className="w-16 text-center text-gray-700 dark:text-gray-200 font-bold">#</TableHead>
+                  <TableHead className="w-24 text-center text-gray-700 dark:text-gray-200 font-bold">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredManagers.map((manager, index) => (
-                  <TableRow 
-                    key={manager.id} 
-                    className="border-b last:border-b-0 border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
-                  >
-                    <TableCell className="font-medium text-gray-900 dark:text-gray-100">{index + 1}</TableCell>
-                    <TableCell className="text-blue-600 hover:text-blue-800 dark:text-blue-400 cursor-pointer">
-                      {manager.name}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <Button
-                        size="icon"
-                        variant="ghost" 
-                        className="h-8 w-8 text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400"
-                      >
-                        <Trash2 size={16} />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {currentItems.length > 0 ? (
+                    currentItems.map((manager, index) => (
+                    <TableRow 
+                        key={manager.id} 
+                        className="border-b last:border-b-0 border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
+                    >
+                        <TableCell className="font-medium text-gray-900 dark:text-gray-100">{indexOfFirstItem + index + 1}</TableCell>
+                        <TableCell className="text-blue-600 hover:text-blue-800 dark:text-blue-400 cursor-pointer">
+                        {manager.name}
+                        </TableCell>
+                        <TableCell className="text-center">
+                         <div className="flex justify-center gap-2">
+                             <Button
+                                size="icon"
+                                variant="ghost"
+                                onClick={() => openEditDialog(manager)}
+                                className="h-8 w-8 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
+                                >
+                                <Pencil size={16} />
+                            </Button>
+                            <Button
+                                size="icon"
+                                variant="ghost" 
+                                onClick={() => handleDelete(manager.id)}
+                                className="h-8 w-8 text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400"
+                            >
+                                <Trash2 size={16} />
+                            </Button>
+                         </div>
+                        </TableCell>
+                    </TableRow>
+                    ))
+                ) : (
+                    <TableRow>
+                        <TableCell colSpan={3} className="text-center py-8 text-gray-500">
+                            No area managers found
+                        </TableCell>
+                    </TableRow>
+                )}
               </TableBody>
             </Table>
           </div>
 
-          {/* Export Icon */}
-          <div>
-            <Button variant="ghost" className="p-0 hover:bg-transparent">
+          {/* Export Icon & Pagination */}
+          <div className="flex justify-between items-center">
+             <Button variant="ghost" className="p-0 hover:bg-transparent" onClick={handleExport}>
               <div className="w-8 h-8 flex items-center justify-center bg-green-700 rounded text-white hover:bg-green-800 transition-colors">
                 <FileSpreadsheet size={20} />
               </div>
             </Button>
+            
+            <CustomPagination 
+                totalItems={filteredManagers.length} 
+                itemsPerPage={itemsPerPage} 
+                currentPage={currentPage} 
+                onPageChange={setCurrentPage} 
+            />
           </div>
 
         </CardContent>
       </Card>
+
+       {/* Add/Edit Dialog */}
+       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>{isEditing ? "Edit Area Manager" : "Add New Area Manager"}</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="name" className="text-right">
+                Name
+              </Label>
+              <Input
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                className="col-span-3"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="submit" onClick={handleSave} className="bg-blue-600 hover:bg-blue-700 text-white">
+                {isEditing ? "Update" : "Save"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
