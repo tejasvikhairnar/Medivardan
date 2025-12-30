@@ -6,6 +6,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 
+import { upsertAppointment } from "@/api/client/appointments"
+import { transformAppointmentFormData } from "@/utils/appointmentTransformers"
+
 export default function BookAppointmentFormPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -47,16 +50,30 @@ export default function BookAppointmentFormPage() {
     setFormData(prev => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // Validate required fields
     if (!formData.clinicName || !formData.doctorName || !formData.patientName || !formData.dob || !formData.appointmentDate || !formData.appointmentTime) {
       alert("Please fill in all required fields marked with *")
       return
     }
     
-    console.log("Booking Appointment:", formData)
-    // Add logic to submit data or navigate
-    // router.push(...)
+    try {
+        console.log("Submitting Appointment:", formData)
+        
+        // Transform data
+        const apiPayload = transformAppointmentFormData(formData);
+        
+        // Call API
+        const response = await upsertAppointment(apiPayload);
+        
+        if (response) {
+            alert("Appointment booked successfully!");
+            router.push("/appointments/all-appointments-list");
+        }
+    } catch (error) {
+        console.error("Failed to book appointment:", error);
+        alert("Failed to book appointment. Please try again.");
+    }
   }
 
   const handleCancel = () => {
