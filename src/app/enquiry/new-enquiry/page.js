@@ -58,8 +58,8 @@ export default function NewLeadPage() {
       // Add pagination params
       const queryParams = {
         ...cleanFilters,
-        PageNumber: 1, // Always fetch from page 1
-        PageSize: 1000, // Fetch large batch for client-side pagination
+        PageNumber: searchFilters.pageNumber || 1, // Use passed page or default to 1
+        PageSize: pageSize, // Use state pageSize (20)
       };
 
       const data = await getLeads(queryParams);
@@ -69,7 +69,7 @@ export default function NewLeadPage() {
       // Transform API data to match table structure
       const transformedLeads = Array.isArray(data) ? data.map((lead, index) => ({
         srNo: index + 1, // Absolute index for client-side list
-        leadNo: lead.enquiryNo || "-",
+        leadNo: (lead.EnquiryID || lead.enquiryId || lead.enquiryID || lead.id) ? `E${lead.EnquiryID || lead.enquiryId || lead.enquiryID || lead.id}` : (lead.enquiryNo || "-"),
         name: `${lead.firstName || ""} ${lead.lastName || ""}`.trim() || "-",
         mobileNo: lead.mobile || "-",
         clinicName: lead.clinicName || "-",
@@ -124,14 +124,19 @@ export default function NewLeadPage() {
     router.push("/enquiry/add-enquiry-form");
   };
 
-  // Client-side Pagination Logic
-  const indexOfLastItem = currentPage * pageSize;
-  const indexOfFirstItem = indexOfLastItem - pageSize;
-  const currentItems = leads.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(leads.length / pageSize);
+  // Client-side Pagination Logic (REMOVED)
+  // const indexOfLastItem = currentPage * pageSize;
+  // const indexOfFirstItem = indexOfLastItem - pageSize;
+  // const currentItems = leads.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = leads; // Server returns only current page items
+  // const totalPages = Math.ceil(leads.length / pageSize); 
+  // TODO: We need total count from API for real pagination. For now, assuming "Next" is available if we got full page.
+  // Increased to 10000 to allow access up to 200,000 records (User reported 2000 limit with 100 pages)
+  const totalPages = 10000;
 
   const handlePageChangeWrapper = (newPage) => {
     setCurrentPage(newPage);
+    fetchLeads({ ...filters, pageNumber: newPage });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -260,20 +265,29 @@ export default function NewLeadPage() {
                     <TableCell className="text-gray-900 dark:text-gray-100">{lead.date}</TableCell>
                     <TableCell>
                       <div className="flex items-center justify-center gap-2">
+                        {/* View Button */}
                         <button
+                          onClick={() => router.push(`/enquiry/add-enquiry-form?mode=view&id=${lead.EnquiryID || lead.enquiryId || lead.enquiryID || lead.id || lead.leadNo?.replace('E','')}`)} // Fallback ID extraction
                           className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
-                        >
-                          <CheckCircle className="w-4 h-4 text-green-600" />
-                        </button>
-                        <button
-                          className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+                          title="View Details"
                         >
                           <Eye className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                         </button>
-                        <button
+                        
+                        {/* Edit Button - Using CheckCircle for now as 'Action' */}
+                         <button
+                          onClick={() => router.push(`/enquiry/add-enquiry-form?mode=edit&id=${lead.EnquiryID || lead.enquiryId || lead.enquiryID || lead.id || lead.leadNo?.replace('E','')}`)}
                           className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+                           title="Edit Lead"
                         >
-                          <Trash2 className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                          <Settings className="w-4 h-4 text-blue-600" /> 
+                        </button>
+
+                        <button
+                          className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded opacity-50 cursor-not-allowed"
+                          title="Delete (Disabled)"
+                        >
+                          <Trash2 className="w-4 h-4 text-gray-400" />
                         </button>
                       </div>
                     </TableCell>

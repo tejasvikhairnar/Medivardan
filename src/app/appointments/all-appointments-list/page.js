@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { Settings, Check, X } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { Settings, Check, X, Search } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
@@ -12,65 +12,155 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { getAppointments } from '@/api/client/appointments'
+import { Pagination } from '@/components/Pagination'
 
 export default function AllAppointmentsListPage() {
-  const [approvalFilter, setApprovalFilter] = useState('approve')
+  const [approvalFilter, setApprovalFilter] = useState('all') // Changed default to 'all' to see data initially
   const [visitorName, setVisitorName] = useState('')
   const [mobileNo, setMobileNo] = useState('')
-  const [selectedClinic, setSelectedClinic] = useState('Panvel')
-  const [selectedDoctor, setSelectedDoctor] = useState('')
+  const [selectedClinic, setSelectedClinic] = useState('all')
+  const [selectedDoctor, setSelectedDoctor] = useState('all') // Changed to handle 'all'
   const [fromDate, setFromDate] = useState('')
   const [toDate, setToDate] = useState('')
+  
+  const [appointments, setAppointments] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
-  // Mock appointments data with approval status
-  const [appointments, setAppointments] = useState([
-    { id: 1, name: 'Sourabh Desai', doctorName: 'Dr. Kinnari Lade', date: '20-Sep-2025', time: '18 00 PM', status: 'approved' },
-    { id: 2, name: 'Sayali Date', doctorName: 'Dr. Rajesh Kumar', date: '18-Sep-2025', time: '14 00 PM', status: 'approved' },
-    { id: 3, name: 'H Dinakar Shetty', doctorName: 'Dr. Priya Singh', date: '20-Sep-2025', time: '11 00 AM', status: 'approved' },
-    { id: 4, name: 'Ram Patil', doctorName: 'Dr. Kinnari Lade', date: '27-Sep-2025', time: '14 00 PM', status: 'approved' },
-    { id: 5, name: 'Vinayk Dalvi', doctorName: 'Dr. Rajesh Kumar', date: '27-Sep-2025', time: '12 30 PM', status: 'approved' },
-    { id: 6, name: 'Eshu', doctorName: 'Dr. Kinnari Lade', date: '26-Sep-2025', time: '19 30 PM', status: 'rejected' },
-    { id: 7, name: 'Devidas Bhimrao Patil', doctorName: 'Dr. Priya Singh', date: '27-Sep-2025', time: '18 00 PM', status: 'approved' },
-    { id: 8, name: 'Bhagat', doctorName: 'Dr. Kinnari Lade', date: '27-Sep-2025', time: '19 00 PM', status: 'rejected' },
-    { id: 9, name: 'Deepak Patil', doctorName: 'Dr. Rajesh Kumar', date: '15-Oct-2025', time: '19 00 PM', status: 'approved' },
-    { id: 10, name: 'Devisldas patil', doctorName: 'Dr. Kinnari Lade', date: '16-Oct-2025', time: '19 00 PM', status: 'rejected' },
-  ])
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(100); // Default items per page (Increased from 10 as per user request)
+
+  // Fetch Appointments
+  const fetchAppointments = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      // Pass filters if backend supports them, otherwise client-side filtering is simpler for now
+      // The backend API provided uses Mode=1 & DoctorID=32. We can make DoctorID dynamic.
+      const params = {
+        Mode: '1',
+         // If selectedDoctor is 'all' or empty, maybe send a default or omit? 
+         // User provided DoctorID=32 in example. Let's use 32 as default if nothing selected, or maybe '0' for all?
+         // For now, let's Stick to the provided '32' or dynamic if user selects.
+        // If 'all', sending nothing (or undefined) is cleaner if we want to fetch everything
+        DoctorID: selectedDoctor !== 'all' && selectedDoctor !== '0' ? selectedDoctor : undefined 
+      };
+      
+      const data = await getAppointments(params);
+      
+      if (Array.isArray(data)) {
+        setAppointments(data);
+      } else {
+        console.warn('API returned non-array data:', data);
+        setAppointments([]);
+      }
+    } catch (err) {
+      console.error('Failed to fetch appointments:', err);
+      setError('Failed to load appointments. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAppointments();
+  }, [selectedDoctor]); // Re-fetch when doctor changes
 
   const handleApprove = (appointmentId) => {
-    setAppointments(prevAppointments =>
-      prevAppointments.map(apt =>
-        apt.id === appointmentId ? { ...apt, status: 'approved' } : apt
-      )
-    )
+    // Implement API call for approval
+    console.log('Approving:', appointmentId);
   }
 
   const handleReject = (appointmentId) => {
-    setAppointments(prevAppointments =>
-      prevAppointments.map(apt =>
-        apt.id === appointmentId ? { ...apt, status: 'rejected' } : apt
-      )
-    )
+    // Implement API call for rejection
+     console.log('Rejecting:', appointmentId);
   }
 
   const handleSearch = () => {
-    // Implement search logic here
-    console.log('Searching with filters:', { visitorName, mobileNo, selectedClinic, selectedDoctor, fromDate, toDate, approvalFilter })
+    // Re-fetch or just filter client-side since we have data
+    // If backend supports search params, call fetchAppointments() here.
+    // For now, client-side filtering below is sufficient for displayed list.
+    setCurrentPage(1); // Reset to page 1 on search
   }
 
-  // Filter appointments based on approval status
+  // Client-side Filtering
   const filteredAppointments = appointments.filter(apt => {
-    if (approvalFilter === 'all') return true
-    if (approvalFilter === 'approve') return apt.status === 'approved'
-    if (approvalFilter === 'reject') return apt.status === 'rejected'
-    return true
-  })
+    // 1. Approval Filter
+    if (approvalFilter !== 'all') {
+      const status = (apt.Status || apt.status || '').toLowerCase(); // Adjust key based on API
+      if (approvalFilter === 'approve' && status !== 'approved') return false;
+      if (approvalFilter === 'reject' && status !== 'rejected') return false;
+    }
 
-  // Further filter by search criteria
-  const searchFilteredAppointments = filteredAppointments.filter(apt => {
-    const matchName = visitorName ? apt.name.toLowerCase().includes(visitorName.toLowerCase()) : true
-    const matchMobile = mobileNo ? true : true // Add mobile matching logic when data available
-    return matchName && matchMobile
-  })
+    // 2. Name Search
+    if (visitorName) {
+       const term = visitorName.toLowerCase();
+       const name = (apt.PatientName || apt.FirstName || apt.firstName || apt.name || '').toLowerCase();
+       const docName = (apt.DoctorName || apt.doctorName || '').toLowerCase();
+       // Allowing search by Patient or Doctor name for better UX
+       if (!name.includes(term) && !docName.includes(term)) return false;
+    }
+
+    // 3. Mobile Search
+    if (mobileNo) {
+       const term = String(mobileNo);
+       const mobile = String(apt.MobileNo || apt.PhoneNo || apt.mobile || apt.Mobile || '');
+       if (!mobile.includes(term)) return false;
+    }
+    
+    // 4. Clinic Filter
+    if (selectedClinic !== 'all') {
+        const clinic = (apt.ClinicName || apt.clinicName || '').toLowerCase();
+        if (!clinic.includes(selectedClinic.toLowerCase())) return false;
+    }
+
+    // 5. Date Range Filter
+    if (fromDate || toDate) {
+        const aptDateStr = apt.AppointmentDate || apt.appointmentDate || apt.startDate;
+        if (!aptDateStr) return false; // Filter out invalid dates if range is active
+        
+        const aptDate = new Date(aptDateStr);
+        // Normalize time to 00:00:00 for accurate date comparison
+        const checkDate = new Date(aptDate.getFullYear(), aptDate.getMonth(), aptDate.getDate());
+
+        if (fromDate) {
+            const fDate = new Date(fromDate);
+            const fromCheck = new Date(fDate.getFullYear(), fDate.getMonth(), fDate.getDate());
+            if (checkDate < fromCheck) return false;
+        }
+
+        if (toDate) {
+            const tDate = new Date(toDate);
+            const toCheck = new Date(tDate.getFullYear(), tDate.getMonth(), tDate.getDate());
+            if (checkDate > toCheck) return false;
+        }
+    }
+
+    return true;
+  });
+
+  // Client-side Pagination Logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredAppointments.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredAppointments.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+  
+  // Transform Data for Table Display
+  // Adjust keys based on actual API response structure (checking both Pascal and camelCase)
+  const displayItems = currentItems.map(apt => ({
+      id: apt.AppointmentID || apt.appointmentId || apt.id,
+      name: `${apt.FirstName || apt.firstName || ''} ${apt.LastName || apt.lastName || ''}`.trim() || apt.PatientName || 'N/A',
+      doctorName: apt.DoctorName || apt.doctorName || (apt.doctorID ? `Dr. ID ${apt.doctorID}` : 'N/A'),
+      date: (apt.AppointmentDate || apt.appointmentDate || apt.startDate) ? new Date(apt.AppointmentDate || apt.appointmentDate || apt.startDate).toLocaleDateString() : 'N/A',
+      time: apt.TimeSlot || apt.AppointmentTime || apt.appointmentTime || apt.startTime || 'N/A',
+      status: String(apt.Status || apt.status || (apt.isActive ? 'Active' : 'Inactive')).toLowerCase()
+  }));
 
   return (
     <div className="p-6 space-y-6">
@@ -108,26 +198,28 @@ export default function AllAppointmentsListPage() {
         <div>
           <Select value={selectedClinic} onValueChange={setSelectedClinic}>
             <SelectTrigger className="w-full">
-              <SelectValue />
+              <SelectValue placeholder="Select Clinic" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Panvel">Panvel</SelectItem>
-              <SelectItem value="Mumbai">Mumbai</SelectItem>
-              <SelectItem value="Pune">Pune</SelectItem>
+              <SelectItem value="all">All Clinics</SelectItem>
+              <SelectItem value="panvel">Panvel</SelectItem>
+              <SelectItem value="mumbai">Mumbai</SelectItem>
+              <SelectItem value="pune">Pune</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
-        {/* Doctor Name */}
+        {/* Doctor Name - Defaulting to ID 32 for now as per user, but allow "All" logically */}
         <div>
           <Select value={selectedDoctor} onValueChange={setSelectedDoctor}>
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="--- Select ---" />
+              <SelectValue placeholder="Select Doctor" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="doctor1">Dr. Kinnari Lade</SelectItem>
-              <SelectItem value="doctor2">Dr. Rajesh Kumar</SelectItem>
-              <SelectItem value="doctor3">Dr. Priya Singh</SelectItem>
+               {/* Values should matching backend DoctorIDs if possible */}
+              <SelectItem value="all">All Doctors</SelectItem>
+              <SelectItem value="32">Dr. Kinnari Lade (ID: 32)</SelectItem>
+              <SelectItem value="33">Dr. Rajesh Kumar</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -199,12 +291,18 @@ export default function AllAppointmentsListPage() {
           onClick={handleSearch}
           className="bg-orange-600 hover:bg-orange-700 text-white px-8"
         >
+          <Search className="w-4 h-4 mr-2" />
           Search
         </Button>
       </div>
 
       {/* Appointments Table */}
-      <div className="border border-border rounded-lg overflow-hidden">
+      <div className="border border-border rounded-lg overflow-hidden bg-white dark:bg-card">
+        {loading ? (
+             <div className="p-8 text-center text-muted-foreground">Loading appointments...</div>
+        ) : error ? (
+             <div className="p-8 text-center text-red-500">{error}</div>
+        ) : (
         <table className="w-full">
           <thead>
             <tr className="bg-green-100 dark:bg-green-900/20">
@@ -213,47 +311,47 @@ export default function AllAppointmentsListPage() {
               <th className="px-4 py-3 text-left text-sm font-medium">Doctor Name</th>
               <th className="px-4 py-3 text-left text-sm font-medium">Date</th>
               <th className="px-4 py-3 text-left text-sm font-medium">Time</th>
-              {approvalFilter === 'all' && (
-                <th className="px-4 py-3 text-center text-sm font-medium">Status</th>
-              )}
+              <th className="px-4 py-3 text-center text-sm font-medium">Status</th>
               <th className="px-4 py-3 text-center text-sm font-medium">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {searchFilteredAppointments.map((appointment, index) => (
+            {displayItems.length > 0 ? (
+                displayItems.map((appointment, index) => (
               <tr
-                key={appointment.id}
+                key={appointment.id || index}
                 className="border-t border-border hover:bg-accent/50 transition-colors"
               >
-                <td className="px-4 py-3 text-sm">{index + 1}</td>
+                <td className="px-4 py-3 text-sm">{indexOfFirstItem + index + 1}</td>
                 <td className="px-4 py-3 text-sm">{appointment.name}</td>
                 <td className="px-4 py-3 text-sm">{appointment.doctorName}</td>
                 <td className="px-4 py-3 text-sm">{appointment.date}</td>
                 <td className="px-4 py-3 text-sm">{appointment.time}</td>
-                {approvalFilter === 'all' && (
-                  <td className="px-4 py-3">
+                <td className="px-4 py-3">
                     <div className="flex items-center justify-center">
                       {appointment.status === 'approved' ? (
                         <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 flex items-center gap-1">
                           <Check className="w-3 h-3" />
                           Approved
                         </span>
-                      ) : (
+                      ) : appointment.status === 'rejected' ? (
                         <span className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 flex items-center gap-1">
                           <X className="w-3 h-3" />
                           Rejected
                         </span>
+                      ) : (
+                        <span className="px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400">
+                          {appointment.status}
+                        </span>
                       )}
                     </div>
                   </td>
-                )}
                 <td className="px-4 py-3">
                   <div className="flex items-center justify-center gap-2">
                     <button
                       onClick={() => handleApprove(appointment.id)}
                       className="p-1.5 rounded-full bg-green-100 hover:bg-green-200 dark:bg-green-900/30 dark:hover:bg-green-900/50 text-green-600 dark:text-green-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       title="Approve"
-                      disabled={appointment.status === 'approved'}
                     >
                       <Check className="w-4 h-4" />
                     </button>
@@ -261,28 +359,44 @@ export default function AllAppointmentsListPage() {
                       onClick={() => handleReject(appointment.id)}
                       className="p-1.5 rounded-full bg-red-100 hover:bg-red-200 dark:bg-red-900/30 dark:hover:bg-red-900/50 text-red-600 dark:text-red-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       title="Reject"
-                      disabled={appointment.status === 'rejected'}
                     >
                       <X className="w-4 h-4" />
                     </button>
                   </div>
                 </td>
               </tr>
-            ))}
+            ))
+            ) : (
+                <tr>
+                    <td colSpan="7" className="text-center py-12 text-muted-foreground">
+                        No appointments found.
+                    </td>
+                </tr>
+            )}
           </tbody>
         </table>
+        )}
       </div>
 
-      {searchFilteredAppointments.length === 0 && (
-        <div className="text-center py-12 text-muted-foreground">
-          No appointments found for the selected filter.
-        </div>
-      )}
-
-      {/* Pagination Info */}
+       {/* Pagination Controls */}
+       {!loading && !error && filteredAppointments.length > 0 && (
+         <div className="mt-4">
+           {/* Reusing the Pagination logic/component if available or building simple one */}
+           {/* If CustomPagination is available: */}
+           <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+            />
+         </div>
+       )}
+      
+      {/* Pagination Info simple fallback if component fails or for debug */}
+      {/* 
       <div className="flex justify-end text-sm text-muted-foreground">
-        Showing {searchFilteredAppointments.length} of {appointments.length} appointments
+        Showing {displayItems.length} of {filteredAppointments.length} appointments
       </div>
+      */}
     </div>
   )
 }

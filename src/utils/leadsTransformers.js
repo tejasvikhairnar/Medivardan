@@ -32,8 +32,8 @@ const LEAD_SOURCE_MAP = {
  */
 export const transformFormDataToAPI = (formData) => {
   return {
-    // Original fields (based on user curl)
-    enquiryID: 0,
+    // Exact Schema from User's CURL
+    enquiryID: formData.enquiryID || 0,
     clinicID: formData.clinicName ? CLINIC_ID_MAP[formData.clinicName] : 0,
     sourceid: formData.leadSource ? LEAD_SOURCE_MAP[formData.leadSource] : 0,
     roleId: 0,
@@ -43,11 +43,11 @@ export const transformFormDataToAPI = (formData) => {
     lastName: formData.lastName || "",
     dateBirth: formData.dateOfBirth ? new Date(formData.dateOfBirth).toISOString() : new Date().toISOString(),
     age: formData.age || "0",
-    gender: formData.gender || "",
+    gender: formData.gender || "Male",
     address: formData.address || "",
-    countryId: 1,
-    stateid: 1,
-    cityid: 1,
+    countryId: 0,
+    stateid: 0,
+    cityid: 0,
     area: formData.area || "",
     email: formData.email || "",
     mobile: formData.mobileNo1 || "",
@@ -56,7 +56,7 @@ export const transformFormDataToAPI = (formData) => {
     folllowupdate: new Date().toISOString(),
     interestLevel: formData.interestLevel || "1",
     interestLevelCode: formData.interestLevel || "1",
-    createdBy: 1,
+    createdBy: 0,
     receivedByEmpId: 0,
     assignToEmpId: 0,
     telecallerToEmpId: 0,
@@ -65,7 +65,7 @@ export const transformFormDataToAPI = (formData) => {
     modifiedBy: 0,
     isActive: true,
     pstatus: formData.patientStatus || "Co-operative",
-    mode: 1 // Insert mode
+    mode: formData.enquiryID ? 2 : 1 // 1 = Insert, 2 = Update (Assuming backend convention based on 'mode': 0 in curl)
   };
 };
 

@@ -15,17 +15,23 @@ import {
 } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Settings } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { upsertLead } from "@/api/client/leads";
+import { useRouter, useSearchParams } from "next/navigation";
+import { upsertLead, getLeadById } from "@/api/client/leads";
 import { transformFormDataToAPI } from "@/utils/leadsTransformers";
 
 export default function AddLeadFormPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const leadId = searchParams.get('id');
+  const mode = searchParams.get('mode') || 'create'; // 'create', 'edit', 'view'
+  const isViewMode = mode === 'view';
+
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
+    enquiryID: 0, // Hidden field for updates
     leadNo: "",
-    leadDate: "",
+    leadDate: new Date().toISOString().split('T')[0],
     firstName: "",
     lastName: "",
     dateOfBirth: "",
@@ -50,7 +56,63 @@ export default function AddLeadFormPage() {
     leadFor: "",
   });
 
+  // Fetch lead data if in edit/view mode
+  React.useEffect(() => {
+    if (leadId) {
+      fetchLeadDetails(leadId);
+    }
+  }, [leadId]);
+
+  const fetchLeadDetails = async (id) => {
+    try {
+      setLoading(true);
+      const data = await getLeadById(id);
+      if (data) {
+        // Extract ID robustly
+        const extractedID = data.EnquiryID || data.enquiryID || data.LeadID || data.leadID || data.id || 0;
+        
+        // Map API data to form state
+        setFormData(prev => ({
+          ...prev,
+          enquiryID: extractedID,
+          leadNo: `E${extractedID}`,
+          leadDate: (data.leadDate || data.LeadDate) ? new Date(data.leadDate || data.LeadDate).toISOString().split('T')[0] : prev.leadDate,
+          firstName: data.firstName || data.FirstName || "",
+          lastName: data.lastName || data.LastName || "",
+          dateOfBirth: (data.dateBirth || data.DateBirth || data.dateOfBirth) ? new Date(data.dateBirth || data.DateBirth || data.dateOfBirth).toISOString().split('T')[0] : "",
+          age: data.age || data.Age || "",
+          gender: data.gender || data.Gender || "",
+          email: data.emailid || data.Emailid || data.email || "",
+          address: data.address || data.Address || "",
+          area: data.area || data.Area || "",
+          // Use defaults if missing or map correctly
+          country: "India", 
+          state: "Maharashtra",
+          city: "Mumbai",
+          leadSource: (data.sourceName || data.SourceName || "").toLowerCase() || "", 
+          mobileNo1: data.phoneNo1 || data.PhoneNo1 || data.mobile || "",
+          mobileNo2: data.telephone || data.Telephone || "",
+          contactType: "doctors", 
+          clinicName: data.clinicName || data.ClinicName || "Panvel",
+          assignTo: "", 
+          patientFollowup: (data.patientFollowup || data.PatientFollowup || "patient").toLowerCase(),
+          interestLevel: String(data.interestLevel || data.InterestLevel || "1"),
+          patientStatus: (data.pstatus || data.PatientStatus || "cooperative").toLowerCase(),
+          conversationDetails: data.conversation || data.Conversation || "",
+          leadFor: "", 
+        }));
+      }
+    } catch (error) {
+      console.error("Failed to fetch lead details:", error);
+      alert("Failed to load lead details.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleInputChange = (field, value) => {
+    if (isViewMode) return; // Prevent edits in view mode
+
     if (field === "mobileNo1" || field === "mobileNo2") {
       const numericValue = value.replace(/\D/g, "");
       if (numericValue.length > 10) return;
@@ -61,7 +123,6 @@ export default function AddLeadFormPage() {
       }));
       return;
     }
-
     setFormData((prev) => ({
       ...prev,
       [field]: value,
@@ -118,9 +179,10 @@ export default function AddLeadFormPage() {
 
       // Check if using mock data and show appropriate message
       const isMock = response.isMockData || false;
+      const actionText = mode === 'edit' ? "updated" : "added";
       const successMessage = isMock
-        ? "Lead added successfully!\n\n⚠️ Note: Using mock data - changes are NOT saved to the external database."
-        : `Lead added successfully!\n\n✅ Data has been saved to the backend API.\n\nServer Response: ${response.debugResponse}`;
+        ? `Lead ${actionText} successfully!\n\n⚠️ Note: Using mock data - changes are NOT saved to the external database.`
+        : `Lead ${actionText} successfully!\n\n✅ Data has been saved to the backend API.\n\nServer Response: ${response.debugResponse || "OK"}`;
 
       alert(successMessage);
 
@@ -128,7 +190,16 @@ export default function AddLeadFormPage() {
       router.push("/enquiry/new-enquiry");
     } catch (error) {
       console.error("Error submitting lead:", error);
-      alert(`Failed to add lead: ${error.message}\n\nPlease try again or contact support if the issue persists.`);
+      
+      let errorMessage = error.message;
+      if (error.response && error.response.data) {
+          // Try to extract a meaningful message from backend response
+          errorMessage = typeof error.response.data === 'object' 
+            ? (error.response.data.message || error.response.data.error || JSON.stringify(error.response.data))
+            : error.response.data;
+      }
+
+      alert(`Failed to ${mode === 'edit' ? 'update' : 'add'} lead: ${errorMessage}\n\nPlease check the console for more details.`);
     } finally {
       setLoading(false);
     }
@@ -146,7 +217,7 @@ export default function AddLeadFormPage() {
           <Settings className="w-4 h-4 text-red-600" />
         </div>
         <h1 className="text-xl font-bold text-red-600 dark:text-red-500">
-          LEAD
+          {mode === 'create' ? 'ADD LEAD' : mode === 'edit' ? 'EDIT LEAD' : 'VIEW LEAD'}
         </h1>
       </div>
 
@@ -586,13 +657,15 @@ export default function AddLeadFormPage() {
 
             {/* Action Buttons */}
             <div className="flex items-center justify-center gap-4 pt-6">
-              <Button
-                type="submit"
-                disabled={loading}
-                className="bg-green-600 hover:bg-green-700 text-white px-8 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? "Submitting..." : "Submit"}
-              </Button>
+              {!isViewMode && (
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="bg-green-600 hover:bg-green-700 text-white px-8 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loading ? "Submitting..." : mode === 'edit' ? "Update" : "Submit"}
+                </Button>
+              )}
               <Button
                 type="button"
                 onClick={handleCancel}

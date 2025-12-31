@@ -26,22 +26,32 @@ export async function GET(request) {
     }
     
     // Construct potential POST payload for search/pagination
+    // Construct potential POST payload for search/pagination
+    // Construct potential POST payload for search/pagination
+    // Minimal payload to match working CURL example
     const searchPayload = {
       PageSize: searchParams.get('PageSize') || 20,
       PageNumber: searchParams.get('PageNumber') || 1,
 
       // Map common filters
-      firstName: searchParams.get('firstName') || "",
-      mobile: searchParams.get('mobile') || "",
-      // Force wide date range if not provided
-      fromDate: searchParams.get('fromDate') || "1900-01-01T00:00:00",
-      toDate: searchParams.get('toDate') || "2100-01-01T00:00:00",
-      // Support legacy keys if needed
-      Name: searchParams.get('firstName') || "",
-      MobileNo: searchParams.get('mobile') || ""
+      // Client sends 'name' (New Enquiry), 'visitorName' (Followups), 'mobileNo', 'clinic'
+      firstName: searchParams.get('firstName') || searchParams.get('name') || searchParams.get('visitorName'),
+      mobile: searchParams.get('mobile') || searchParams.get('mobileNo'),
+      
+      // Dates - Always ensure a valid date range is sent to prevent backend 500s.
+      // If user provided dates, use them. If not, use "All Time" (1900-2100).
+      fromDate: searchParams.get('fromDate') || "1900-01-01",
+      toDate: searchParams.get('toDate') || "2100-01-01",
+      
+      // Support legacy keys and ALL potential filters
+      Name: searchParams.get('firstName') || searchParams.get('name') || searchParams.get('visitorName'),
+      MobileNo: searchParams.get('mobile') || searchParams.get('mobileNo'),
+      ClinicID: searchParams.get('clinic') !== "all" && searchParams.get('clinic') ? (searchParams.get('clinic') === "panvel" ? 1 : searchParams.get('clinic') === "pune" ? 2 : searchParams.get('clinic') === "mumbai" ? 3 : 0) : undefined,
+      EnquiryID: searchParams.get('EnquiryID') || searchParams.get('enquiryId') || undefined,
+      LeadID: searchParams.get('LeadID') || searchParams.get('leadID') || undefined,
     };
 
-    console.log('[DEBUG] Attempting POST search with payload:', JSON.stringify(searchPayload));
+    console.log('[DEBUG] Mapped payload:', JSON.stringify(searchPayload));
 
     // Extract auth header from incoming request to pass to backend
     const authHeader = request.headers.get('authorization');
@@ -59,39 +69,46 @@ export async function GET(request) {
         }
     };
 
-    // Strategy: Try POST first (common for advanced search), fall back to GET
+    // Strategy: GET only (as per working CURL)
     let response;
-    let methodUsed = "POST";
+    let methodUsed = "GET";
 
     try {
         console.log(`[PERF] Starting External API Call (${methodUsed})...`);
-        console.time("ExternalAPI_Duration");
-        response = await axiosClient.post('/api/Leads/GetAllLeads', searchPayload, requestConfig);
-        console.timeEnd("ExternalAPI_Duration");
-    } catch (postError) {
-        console.timeEnd("ExternalAPI_Duration");
-        // Log detailed error from the POST attempt
-        if (postError.response) {
-            console.log(`[DEBUG] POST Error Status: ${postError.response.status}`);
-            console.log(`[DEBUG] POST Error Data:`, postError.response.data);
-        } else {
-             console.log(`[DEBUG] POST Error: ${postError.message}`);
-        }
+        
+        // Construct query string using the MAPPED searchPayload
+        // Clean up parameters: Only send keys that the backend expects (PascalCase)
+        const getQueryParams = new URLSearchParams();
+        const validBackendKeys = ['PageSize', 'PageNumber', 'Name', 'MobileNo', 'ClinicID', 'EnquiryID', 'LeadID', 'fromDate', 'toDate'];
+        
+        Object.entries(searchPayload).forEach(([key, value]) => {
+            if (value !== undefined && value !== null && value !== "" && validBackendKeys.includes(key)) {
+                getQueryParams.append(key, value);
+            }
+        });
+        const getQueryString = getQueryParams.toString();
+        
+        // Log the full query for debugging
+        console.log(`[DEBUG] Final GET query: ${getQueryString}`);
 
-        // If POST fails with 404 or 405, fallback to GET
-        if (postError.response && (postError.response.status === 405 || postError.response.status === 404)) {
-             console.log(`[DEBUG] POST search failed (${postError.message}), falling back to GET`);
-             methodUsed = "GET";
+        console.time("ExternalAPI_Duration");
+        response = await axiosClient.get(`/api/Leads/GetAllLeads${getQueryString ? `?${getQueryString}` : ''}`, requestConfig);
+        console.timeEnd("ExternalAPI_Duration");
+    } catch (error) {
+        console.timeEnd("ExternalAPI_Duration");
+        console.error(`[DEBUG] GET Error: ${error.message}`);
+        
+        if (error.response) {
+             console.error(`[DEBUG] GET Error Status: ${error.response.status}`);
+             console.error(`[DEBUG] GET Error Data:`, JSON.stringify(error.response.data));
              
-             // Ensure date params are present for GET fallback
-             if (!searchParams.has('fromDate')) searchParams.append('fromDate', '1900-01-01');
-             if (!searchParams.has('toDate')) searchParams.append('toDate', '2100-01-01');
-             
-             const getQueryString = searchParams.toString();
-             response = await axiosClient.get(`/api/Leads/GetAllLeads${getQueryString ? `?${getQueryString}` : ''}`, requestConfig);
-        } else {
-            throw postError; // Re-throw other errors
+             // Return the ACTUAL upstream error code (e.g. 400) instead of 500
+             return NextResponse.json(
+                 { error: 'External API Error', details: error.response.data }, 
+                 { status: error.response.status }
+             );
         }
+        throw error; // Throw internal errors to be caught effectively by outer block
     }
 
     console.log(`[DEBUG] ${methodUsed} Response Status:`, response.status);
@@ -102,6 +119,13 @@ export async function GET(request) {
     if (Array.isArray(data) && data.length > 0) {
         // Log FULL first item to debug schema mismatch
         console.log('[DEBUG] Full First Item:', JSON.stringify(data[0], null, 2));
+
+        // Sort by Date (Newest First)
+        data.sort((a, b) => {
+            const dateA = new Date(a.leadDate || a.LeadDate || 0);
+            const dateB = new Date(b.leadDate || b.LeadDate || 0);
+            return dateB - dateA;
+        });
     }
 
     return NextResponse.json(data);

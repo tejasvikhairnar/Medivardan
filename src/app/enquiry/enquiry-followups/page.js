@@ -50,11 +50,11 @@ export default function EnquiryFollowupsPage() {
     fetchFollowups();
   }, []);
 
-  const fetchFollowups = async () => {
+  const fetchFollowups = async (pageNumber = 1) => {
     setIsLoading(true);
     setError(null);
     try {
-      const data = await getLeads({ PageSize: 1000 });
+      const data = await getLeads({ PageSize: 20, PageNumber: pageNumber, ...filters });
       console.log('Fetched leads data:', data);
 
       // Transform API data to followup format
@@ -154,14 +154,16 @@ export default function EnquiryFollowupsPage() {
     return true;
   });
 
-  // Pagination Logic
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredFollowups.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(filteredFollowups.length / itemsPerPage);
+  // Pagination Logic (Server-Side)
+  // const indexOfLastItem = currentPage * itemsPerPage;
+  // const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  // const currentItems = filteredFollowups.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredFollowups; // Already paged from server
+  const totalPages = 10000; // Increased to allow access to all DB records (was limiting to 2000)
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
+    fetchFollowups(pageNumber);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
