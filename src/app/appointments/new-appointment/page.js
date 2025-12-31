@@ -31,6 +31,18 @@ export default function NewAppointmentPage() {
   })
 
   const handleInputChange = (field, value) => {
+    // strictly 10 digits for mobileNo and telephoneNo
+    if (field === "mobileNo" || field === "telephoneNo") {
+       const numericValue = value.replace(/\D/g, "");
+       if (numericValue.length > 10) return;
+       
+       setFormData(prev => ({
+         ...prev,
+         [field]: numericValue
+       }));
+       return;
+    }
+
     setFormData(prev => ({
       ...prev,
       [field]: value
@@ -71,7 +83,7 @@ export default function NewAppointmentPage() {
     }
 
     // Validate mobile number format
-    if (formData.mobileNo.length < 10) {
+    if (formData.mobileNo.length !== 10) {
       alert('Please enter a valid 10-digit mobile number');
       return;
     }

@@ -8,11 +8,13 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
+import { patientService } from "@/api/client/patients";
 
 function PatientEditContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const patientId = searchParams.get("patientId");
+  const mode = searchParams.get("mode");
 
   const [activeTab, setActiveTab] = useState("personal");
   const [formData, setFormData] = useState({
@@ -21,8 +23,8 @@ function PatientEditContent() {
 
     // Personal Information
     casePaperNo: "",
-    patientNo: "",
-    date: "",
+    patientNo: mode === 'add' ? "NEW" : "", // Show NEW for new patients
+    date: new Date().toISOString().split('T')[0], // Default to today
     firstName: "",
     lastName: "",
     dateOfBirth: "",
@@ -149,155 +151,66 @@ function PatientEditContent() {
   const [consentImagePreview, setConsentImagePreview] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load patient data when component mounts
+  // Load patient data or pre-fill from query params
   useEffect(() => {
-    console.log("Patient ID from URL:", patientId);
-    if (patientId) {
+    if (mode === 'add') {
+      // Pre-fill from query params
+      setFormData(prev => ({
+        ...prev,
+        firstName: searchParams.get("firstName") || "",
+        lastName: searchParams.get("lastName") || "",
+        mobileNo: searchParams.get("mobileNo") || "",
+        enquirySource: searchParams.get("enquirySource") || "",
+      }));
+      setIsLoading(false);
+    } else if (patientId) {
       loadPatientData(patientId);
     } else {
       console.warn("No patient ID found in URL");
       setIsLoading(false);
     }
-  }, [patientId]);
+  }, [patientId, mode, searchParams]);
 
   const loadPatientData = async (id) => {
     console.log("Loading patient data for ID:", id);
     try {
-      // TODO: Replace with actual API call
-      // For now, using mock data from the search page
-      const mockPatients = {
-        P113286: {
-          id: "P113286",
-          casePaperNo: "76741",
-          patientNo: "P113286",
-          firstName: "Simran",
-          lastName: "Shaikh",
-          mobileNo: "9076002891",
-          date: "2025-12-10",
-          clinicName: "MALAD West",
-          age: "28",
-          gender: "Female",
-          dateOfBirth: "1997-03-15",
-          flatHouseNo: "C-51 vyomesh apartment, opp gokul hotel",
-          areaStreet: "Borivali West",
-          landmark: "",
-          country: "India",
-          state: "Maharashtra",
-          city: "Mumbai",
-          bloodGroup: "",
-          email: "",
-          enquirySource: "WALK-IN",
-          telephoneNo: "",
-        },
-        P113285: {
-          id: "P113285",
-          casePaperNo: "",
-          patientNo: "P113285",
-          firstName: "Jitendra",
-          lastName: "Patil",
-          mobileNo: "9820758454",
-          date: "2025-12-10",
-          clinicName: "Ghodbunder road",
-          age: "35",
-          gender: "Male",
-          dateOfBirth: "1989-07-20",
-          flatHouseNo: "",
-          areaStreet: "",
-          landmark: "",
-          country: "India",
-          state: "Maharashtra",
-          city: "Mumbai",
-          bloodGroup: "",
-          email: "",
-          enquirySource: "",
-          telephoneNo: "",
-        },
-        P113284: {
-          id: "P113284",
-          casePaperNo: "74110",
-          patientNo: "P113284",
-          firstName: "Bishwajit",
-          lastName: "chatia",
-          mobileNo: "6002869901",
-          date: "2025-12-10",
-          clinicName: "JayaNagar",
-          age: "42",
-          gender: "Male",
-          dateOfBirth: "1982-11-05",
-          flatHouseNo: "",
-          areaStreet: "",
-          landmark: "",
-          country: "India",
-          state: "Karnataka",
-          city: "Bangalore",
-          bloodGroup: "",
-          email: "",
-          enquirySource: "",
-          telephoneNo: "",
-        },
-        P113283: {
-          id: "P113283",
-          casePaperNo: "75780",
-          patientNo: "P113283",
-          firstName: "sheshank",
-          lastName: "P",
-          mobileNo: "8411810069",
-          date: "2025-12-10",
-          clinicName: "MADHAPUR",
-          age: "31",
-          gender: "Male",
-          dateOfBirth: "1993-08-12",
-          flatHouseNo: "",
-          areaStreet: "",
-          landmark: "",
-          country: "India",
-          state: "Telangana",
-          city: "Hyderabad",
-          bloodGroup: "",
-          email: "",
-          enquirySource: "",
-          telephoneNo: "",
-        },
-        P113282: {
-          id: "P113282",
-          casePaperNo: "75727",
-          patientNo: "P113282",
-          firstName: "sreya",
-          lastName: "B",
-          mobileNo: "9848568606",
-          date: "2025-12-10",
-          clinicName: "MADHAPUR",
-          age: "25",
-          gender: "Female",
-          dateOfBirth: "1999-04-18",
-          flatHouseNo: "",
-          areaStreet: "",
-          landmark: "",
-          country: "India",
-          state: "Telangana",
-          city: "Hyderabad",
-          bloodGroup: "",
-          email: "",
-          enquirySource: "",
-          telephoneNo: "",
-        },
-      };
-
-      const patientData = mockPatients[id];
+      const patientData = await patientService.getPatientById(id);
+      
       if (patientData) {
         console.log("Patient data loaded successfully:", patientData);
-        setFormData(patientData);
+        setFormData(prev => ({
+            ...prev,
+            ...patientData,
+            firstName: patientData.firstName || patientData.FirstName || patientData.fristName || prev.firstName,
+            lastName: patientData.lastName || patientData.LastName || prev.lastName,
+            mobileNo: patientData.mobile || patientData.Mobile || patientData.mobileNo || prev.mobileNo,
+            patientNo: patientData.patientCode || patientData.PatientCode || prev.patientNo,
+            clinicName: patientData.clinicName || patientData.ClinicName || prev.clinicName,
+        }));
       } else {
         console.error("Patient not found with ID:", id);
+        alert("Patient not found");
       }
       setIsLoading(false);
     } catch (error) {
       console.error("Error loading patient data:", error);
+      alert("Error loading patient details");
       setIsLoading(false);
     }
   };
 
   const handleInputChange = (field, value) => {
+    if (field === "mobileNo" || field === "telephoneNo") {
+      const numericValue = value.replace(/\D/g, "");
+      if (numericValue.length > 10) return;
+      
+      setFormData((prev) => ({
+        ...prev,
+        [field]: numericValue,
+      }));
+      return;
+    }
+
     setFormData((prev) => ({
       ...prev,
       [field]: value,
@@ -464,10 +377,10 @@ function PatientEditContent() {
           </Button>
           <div className="flex-1">
             <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">
-              Edit Patient Details
+              {mode === 'add' ? 'Add Patient' : 'Edit Patient Details'}
             </h1>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-              Patient ID: {patientId}
+              {mode === 'add' ? 'New Registration' : `Patient ID: ${patientId}`}
             </p>
           </div>
         </div>

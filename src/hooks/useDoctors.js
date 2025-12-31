@@ -4,7 +4,7 @@
  */
 
 import { useQuery } from "@tanstack/react-query";
-import { getAllDoctors } from "@/api/client/doctors";
+import { getAllDoctors, getDoctorById } from "@/api/client/doctors";
 import { transformAPIDoctorToDisplay } from "@/utils/doctorTransformers";
 
 /**
@@ -18,6 +18,8 @@ export const useDoctors = (filters = {}, options = {}) => {
     queryKey: ["doctors", filters],
     queryFn: async () => {
       const data = await getAllDoctors(filters);
+      console.log('Raw Doctor Data:', data?.[0]); // Debugging
+      console.log('First 3 Doctor IDs:', data?.slice(0, 3).map(d => d.DoctorID || d.doctorID)); // Debugging IDs
 
       // Transform data for display
       if (Array.isArray(data)) {
@@ -44,8 +46,8 @@ export const useDoctor = (doctorId, options = {}) => {
   return useQuery({
     queryKey: ["doctor", doctorId],
     queryFn: async () => {
-      const data = await getAllDoctors({ DoctorID: doctorId });
-      return Array.isArray(data) ? data[0] : data;
+      const data = await getDoctorById(doctorId);
+      return data;
     },
     enabled: !!doctorId, // Only run if doctorId exists
     staleTime: 5 * 60 * 1000, // 5 minutes

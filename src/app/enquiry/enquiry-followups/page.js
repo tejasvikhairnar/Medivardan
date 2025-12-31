@@ -24,7 +24,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Settings, Phone, MessageSquare, Eye, Loader2 } from "lucide-react";
+import { Settings, Phone, MessageSquare, Eye, Loader2, UserPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Virtuoso } from "react-virtuoso";
 
@@ -178,9 +178,15 @@ export default function EnquiryFollowupsPage() {
 
 
   const handleMessage = (followup) => {
-    if (followup.mobileNo) {
-      window.location.href = `sms:${followup.mobileNo}`;
-    }
+    // Redirect to patient edit page in 'add' mode with pre-filled data
+    const params = new URLSearchParams({
+      mode: 'add',
+      mobileNo: followup.mobileNo || '',
+      firstName: followup.visitorName ? followup.visitorName.split(' ')[0] : '',
+      lastName: followup.visitorName ? followup.visitorName.split(' ').slice(1).join(' ') : '',
+      enquirySource: followup.sourceType || ''
+    });
+    router.push(`/MIS/patient-edit?${params.toString()}`);
   };
 
   const handleView = (followup) => {
@@ -500,7 +506,7 @@ export default function EnquiryFollowupsPage() {
                           variant="outline"
                           className="border-blue-500 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20"
                           onClick={() => handleCall(followup)}
-                          title={`Call ${followup.mobileNo}`}
+                          title="Followup Changes"
                         >
                           <Phone className="w-4 h-4" />
                         </Button>
@@ -509,9 +515,9 @@ export default function EnquiryFollowupsPage() {
                           variant="outline"
                           className="border-gray-500 text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700"
                           onClick={() => handleMessage(followup)}
-                          title={`Message ${followup.mobileNo}`}
+                          title="Add Patient"
                         >
-                          <MessageSquare className="w-4 h-4" />
+                          <UserPlus className="w-4 h-4" />
                         </Button>
                         <Button
                           size="sm"

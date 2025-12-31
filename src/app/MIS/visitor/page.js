@@ -55,7 +55,7 @@ export default function VisitorPage() {
             <Input
               placeholder="Patient Name"
               value={filters.patientName}
-              onChange={(e) => setFilters({...filters, patientName: e.target.value})}
+              onChange={(e) => handleFilterChange('patientName', e.target.value)}
               className="bg-background border-input w-full"
             />
           </div>
@@ -64,7 +64,7 @@ export default function VisitorPage() {
             <Input
               placeholder="Patient No"
               value={filters.patientNo}
-              onChange={(e) => setFilters({...filters, patientNo: e.target.value})}
+              onChange={(e) => handleFilterChange('patientNo', e.target.value)}
               className="bg-background border-input w-full"
             />
           </div>
@@ -73,13 +73,13 @@ export default function VisitorPage() {
             <Input
               placeholder="Mobile No"
               value={filters.mobileNo}
-              onChange={(e) => setFilters({...filters, mobileNo: e.target.value})}
+              onChange={(e) => handleFilterChange('mobileNo', e.target.value)}
               className="bg-background border-input w-full"
             />
           </div>
           
           <div className="space-y-2">
-            <Select value={filters.clinic} onValueChange={(v) => setFilters({...filters, clinic: v})}>
+            <Select value={filters.clinic} onValueChange={(v) => handleFilterChange('clinic', v)}>
               <SelectTrigger className="bg-background border-input w-full">
                 <SelectValue placeholder="-- Select Clinic --" />
               </SelectTrigger>
@@ -98,7 +98,7 @@ export default function VisitorPage() {
               type="date"
               placeholder="From Date"
               value={filters.fromDate}
-              onChange={(e) => setFilters({...filters, fromDate: e.target.value})}
+              onChange={(e) => handleFilterChange('fromDate', e.target.value)}
               className="bg-background border-input w-full"
             />
           </div>
@@ -108,7 +108,7 @@ export default function VisitorPage() {
               type="date"
               placeholder="To Date"
               value={filters.toDate}
-              onChange={(e) => setFilters({...filters, toDate: e.target.value})}
+              onChange={(e) => handleFilterChange('toDate', e.target.value)}
               className="bg-background border-input w-full"
             />
           </div>

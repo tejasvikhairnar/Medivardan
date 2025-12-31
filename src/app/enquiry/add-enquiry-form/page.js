@@ -51,6 +51,17 @@ export default function AddLeadFormPage() {
   });
 
   const handleInputChange = (field, value) => {
+    if (field === "mobileNo1" || field === "mobileNo2") {
+      const numericValue = value.replace(/\D/g, "");
+      if (numericValue.length > 10) return;
+      
+      setFormData((prev) => ({
+        ...prev,
+        [field]: numericValue,
+      }));
+      return;
+    }
+
     setFormData((prev) => ({
       ...prev,
       [field]: value,

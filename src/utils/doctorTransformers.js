@@ -27,59 +27,79 @@ const DOCTOR_TYPE_MAP = {
  * @param {Object} formData - Form data from the UI
  * @returns {Object} Transformed data for API
  */
+const SPECIALITY_ID_MAP = {
+  generalDentist: 1,
+  orthodontics: 2,
+  periodontics: 3,
+  prosthodontics: 4,
+  endodontics: 5,
+  pedodontics: 6,
+  oralMaxillofacial: 7,
+  oralPathology: 8,
+  conservativeDentist: 9,
+  asthesticDentist: 10,
+};
+
+/**
+ * Transform form data to API format
+ * @param {Object} formData - Form data from the UI
+ * @returns {Object} Transformed data for API
+ */
 export const transformFormDataToAPI = (formData) => {
-  return {
+  const payload = {
     // Mode and IDs
-    mode: "1",
-    doctorID: null, // null for new doctors
-    clinicID: formData.clinicName ? CLINIC_ID_MAP[formData.clinicName] : null,
+    mode: 1,  // Reverting to integer to test
+    doctorID: 0, 
+    clinicID: formData.clinicName ? CLINIC_ID_MAP[formData.clinicName] : 1, // Default to 1 (Panvel) if missing
     doctorTypeID: DOCTOR_TYPE_MAP[formData.doctorType] || 1,
 
     // Personal Information
-    firstName: formData.firstName,
-    lastName: formData.lastName,
-    gender: formData.gender,
+    firstName: formData.firstName || "",
+    lastName: formData.lastName || "",
+    gender: formData.gender || "male",
     dob: formData.dateOfBirth || null,
-    bloodGroup: formData.bloodGroup || null,
+    bloodGroup: formData.bloodGroup || "",
 
     // Contact Information
-    phoneNo1: formData.mobileNo1,
-    phoneNo2: formData.mobileNo2 || null,
-    emailid: formData.email,
+    mobile1: formData.mobileNo1 || "",
+    mobile2: formData.mobileNo2 || "",
+    email: formData.email || "",
 
     // Address Information
-    addressLine1: formData.addressLine1 || null,
-    addressLine2: formData.addressLine2 || null,
-    areaPin: formData.areaPin || null,
-    cityID: null, // Would need actual city ID mapping
-    stateID: null, // Would need actual state ID mapping
-    countryID: null, // Would need actual country ID mapping
+    line1: formData.addressLine1 || "",
+    line2: formData.addressLine2 || "",
+    areaPin: formData.areaPin || "",
+    cityID: null, 
+    stateID: null,
+    countryID: null,
 
     // Medical Information
-    specialityID: Object.keys(formData.specialities)
-      .filter(key => formData.specialities[key])
-      .join(', '),
-    basicDegree: formData.currentEducation.degree || null,
-    registrationNo: formData.registrationNo || null,
-    registrationImageUrl: null, // File uploads would need separate handling
+    specialityID: (() => {
+      const selectedKey = Object.keys(formData.specialities).find(key => formData.specialities[key]);
+      const id = selectedKey ? (SPECIALITY_ID_MAP[selectedKey] || 1) : 1;
+      return String(id);
+    })(),
+    basicDegree: formData.currentEducation.degree || "BDS", // Default degree
+    registrationNo: formData.registrationNo || "",
+    registrationImageUrl: "", 
 
-    // Documents - image URLs
-    panCardNo: formData.panCardNo || null,
-    panCardImageUrl: null, // File uploads would need separate handling
-    adharCardNo: formData.adharCardNo || null,
-    adharCardImageUrl: null, // File uploads would need separate handling
-    identityPolicyNo: formData.indemnityPolicyNo || null,
-    identityPolicyImageUrl: null, // File uploads would need separate handling
-    degreeUpload1: null, // File uploads would need separate handling
-    degreeUpload2: null,
-    profileImageUrl: null, // File uploads would need separate handling
+    // Documents 
+    panCardNo: formData.panCardNo || "",
+    panCardImageUrl: "",
+    adharCardNo: formData.adharCardNo || "",
+    adharCardImageUrl: "", 
+    identityPolicyNo: formData.indemnityPolicyNo || "",
+    identityPolicyImageUrl: "",
+    degreeUpload1: "",
+    degreeUpload2: "",
+    profileImageUrl: "",
 
     // Work Information
-    intime: formData.inTime || null,
-    outtime: formData.outTime || null,
+    inTime: formData.inTime ? `${formData.inTime}:00` : "09:00:00", // Default time
+    outTime: formData.outTime ? `${formData.outTime}:00` : "18:00:00", // Default time
     regDate: formData.date || new Date().toISOString().split('T')[0],
 
-    // User credentials (optional for now)
+    // User credentials 
     userName: null,
     password: null,
     role: null,
@@ -87,6 +107,9 @@ export const transformFormDataToAPI = (formData) => {
     // Status
     isActive: true,
   };
+
+  console.log("Transformed API Payload (Fixed SpecialityID):", payload);
+  return payload;
 };
 
 /**
@@ -96,14 +119,22 @@ export const transformFormDataToAPI = (formData) => {
  */
 export const transformAPIDoctorToDisplay = (apiDoctor) => {
   return {
-    srNo: apiDoctor.doctorID || apiDoctor.DoctorID,
+    srNo: apiDoctor.srNo || apiDoctor.doctorID || apiDoctor.DoctorID,
+    doctorID: apiDoctor.doctorID || apiDoctor.DoctorID,
     photo: apiDoctor.profilePhoto || "/placeholder-doctor.png",
     name: `${apiDoctor.title || ''} ${apiDoctor.firstName || ''} ${apiDoctor.lastName || ''}`.trim(),
-    mobileNo: apiDoctor.mobileNo || apiDoctor.MobileNo || '',
-    emailId: apiDoctor.emailID || apiDoctor.EmailID || '',
-    regDate: apiDoctor.registrationDate || apiDoctor.RegistrationDate ||
-             new Date().toLocaleDateString('en-GB').replace(/\//g, '-'),
+    mobileNo: apiDoctor.mobile1 || apiDoctor.mobileNo || apiDoctor.MobileNo || apiDoctor.phoneNo1 || apiDoctor.PhoneNo1 || apiDoctor.phoneNo || '',
+    emailId: apiDoctor.email || apiDoctor.emailID || apiDoctor.EmailID || apiDoctor.emailid || apiDoctor.Emailid || '',
+    regDate: formatDate(apiDoctor.regDate || apiDoctor.createdDate || apiDoctor.registrationDate || apiDoctor.RegistrationDate),
   };
+};
+
+// Helper to format date as DD-MM-YYYY
+const formatDate = (dateString) => {
+  if (!dateString) return new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return dateString; // Return original if invalid date
+  return date.toLocaleDateString('en-GB').replace(/\//g, '-');
 };
 
 /**

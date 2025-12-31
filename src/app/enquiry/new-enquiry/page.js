@@ -92,6 +92,17 @@ export default function NewLeadPage() {
   };
 
   const handleFilterChange = (field, value) => {
+    if (field === "mobileNo") {
+      const numericValue = value.replace(/\D/g, "");
+      if (numericValue.length > 10) return;
+      
+      setFilters((prev) => ({
+        ...prev,
+        [field]: numericValue,
+      }));
+      return;
+    }
+
     setFilters((prev) => ({
       ...prev,
       [field]: value,

@@ -3,7 +3,7 @@ import { getMockLeads } from '@/api/mocks/leads.js';
 import axiosClient from '@/lib/axiosClient';
 
 // Flag to enable/disable mock data fallback
-const USE_MOCK_FALLBACK = false;
+const USE_MOCK_FALLBACK = true;
 
 // Fallback token for testing/dev when header is missing
 // Fallback token removed

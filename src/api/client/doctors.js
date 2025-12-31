@@ -15,13 +15,49 @@ import axiosClient from "@/lib/axiosClient";
  * @param {string} [params.Mode] - Mode parameter
  * @returns {Promise<Array>} List of doctors
  */
+/**
+ * Search doctors
+ * @param {Object} params - Query parameters
+ * @returns {Promise<Array>} List of doctors
+ */
+// Add new doctor
+export const addDoctor = async (doctorData) => {
+  try {
+    const response = await axiosClient.post("/api/doctors/add", doctorData);
+    return response.data;
+  } catch (error) {
+    console.error("Error adding doctor:", error);
+    throw error;
+  }
+};
+
+// Search doctors
+export const searchDoctors = async (params = {}) => {
+  try {
+    const response = await axiosClient.get("/api/doctors/search", {
+      params,
+      baseURL: '' // Force relative URL
+    });
+    return response.data;
+  } catch (error) {
+    console.error("[Doctor API] Error searching doctors:", error);
+    throw error;
+  }
+};
+
+/**
+ * Fetch all doctors
+ * @param {Object} params - Query parameters
+ * @param {number} [params.DoctorID] - Doctor ID filter
+ * @param {number} [params.ClinicID] - Clinic ID filter
+ * @param {string} [params.ClinicName] - Clinic name filter
+ * @param {string} [params.MobileNo] - Mobile number filter
+ * @param {string} [params.Mode] - Mode parameter
+ * @returns {Promise<Array>} List of doctors
+ */
 export const getAllDoctors = async (params = {}) => {
   try {
-    // const response = await axiosClient.get("/api/Doctor/GetAllDoctors", {
-    //   params,
-    // });
-    // return response.data;
-    return [];
+    return await searchDoctors(params);
   } catch (error) {
     console.error("[Doctor API] Error fetching doctors:", error);
     throw error;
@@ -35,21 +71,21 @@ export const getAllDoctors = async (params = {}) => {
  */
 export const upsertDoctor = async (doctorData) => {
   try {
-    // const response = await axiosClient.post(
-    //   "/api/Doctor/UpsertDoctor",
-    //   doctorData
-    // );
+    const response = await axiosClient.post(
+      "/api/doctors/add",
+      doctorData,
+      { baseURL: '' } // Force relative URL to hit Next.js API route
+    );
 
-    // // Handle different response formats
-    // // API might return just a number (doctorID) or an object
-    // const data = response.data;
+    // Handle different response formats
+    // API might return just a number (doctorID) or an object
+    const data = response.data;
 
-    // if (typeof data === 'number') {
-    //   return { doctorID: data, success: true };
-    // }
+    if (typeof data === 'number') {
+      return { doctorID: data, success: true };
+    }
 
-    // return { ...data, success: true };
-    return { doctorID: 9999, success: true };
+    return { ...data, success: true };
   } catch (error) {
     console.error("[Doctor API] Error upserting doctor:", error);
 
@@ -85,16 +121,15 @@ export const deleteDoctor = async (doctorId) => {
  */
 export const getDoctorById = async (doctorId) => {
   try {
-    // const response = await axiosClient.get(
-    //   `/api/Doctor/GetAllDoctors`,
-    //   {
-    //     params: { DoctorID: doctorId },
-    //   }
-    // );
+    const response = await axiosClient.get(
+      `/api/doctors/get-by-id`,
+      {
+        params: { DoctorID: doctorId },
+        baseURL: '' // Force relative URL
+      }
+    );
 
-    // // API returns an array, get first item
-    // return Array.isArray(response.data) ? response.data[0] : response.data;
-    return null;
+    return response.data;
   } catch (error) {
     console.error("[Doctor API] Error fetching doctor:", error);
     throw error;

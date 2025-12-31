@@ -29,6 +29,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { Settings, Eye, Edit, Calendar, X, Loader2, Trash2, Clock } from "lucide-react";
 import { useRouter } from "next/navigation";
+import CustomPagination from "@/components/ui/custom-pagination";
 
 export default function DoctorRegistrationPage() {
   const router = useRouter();
@@ -37,8 +38,13 @@ export default function DoctorRegistrationPage() {
   const [filters, setFilters] = useState({
     doctorName: "",
     mobileNo: "",
+    doctorID: "",
     panel: "all",
   });
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   // React Query hooks for data fetching and mutations
   const { data: doctors = [], isLoading, error, refetch } = useDoctors();
@@ -107,6 +113,20 @@ export default function DoctorRegistrationPage() {
   // No need for manual useEffect or fetchDoctors function
 
   const handleInputChange = (field, value) => {
+    // strict 10-digit restriction for mobile numbers
+    if (field === "mobileNo1" || field === "mobileNo2" || field === "mobileNo") {
+       // Allow only digits
+       const numericValue = value.replace(/\D/g, "");
+       // Limit to 10 digits
+       if (numericValue.length > 10) return;
+       
+       setFormData((prev) => ({
+         ...prev,
+         [field]: numericValue,
+       }));
+       return;
+    }
+
     setFormData((prev) => ({
       ...prev,
       [field]: value,
@@ -177,10 +197,7 @@ export default function DoctorRegistrationPage() {
       mobileNo1: "Mobile No 1",
       email: "Email",
       inTime: "In Time (HH:MM)",
-      outTime: "Out Time (HH:MM)",
-      panCardNo: "Pan Card No.",
-      registrationNo: "Registration No.",
-      indemnityPolicyNo: "Indemnity Policy No."
+      outTime: "Out Time (HH:MM)"
     };
 
     const missingFields = [];
@@ -212,6 +229,9 @@ export default function DoctorRegistrationPage() {
     upsertMutation.mutate(formData, {
       onSuccess: (data) => {
         alert(`Doctor added successfully! Doctor ID: ${data.doctorID}`);
+        
+        // Explicitly refetch the list
+        refetch();
 
         // Reset form data
         setFormData({
@@ -304,10 +324,23 @@ export default function DoctorRegistrationPage() {
     const matchesMobile = !filters.mobileNo ||
       doctor.mobileNo.includes(filters.mobileNo);
 
+    const matchesID = !filters.doctorID ||
+      (doctor.doctorID && doctor.doctorID.toString().includes(filters.doctorID));
+
     const matchesPanel = !filters.panel || filters.panel === "all";
 
-    return matchesName && matchesMobile && matchesPanel;
-  });
+    return matchesName && matchesMobile && matchesPanel && matchesID;
+  }).sort((a, b) => (b.doctorID || 0) - (a.doctorID || 0)); // Sort by Doctor ID descending
+
+  // DEBUG: Log the first doctor to see field names
+  if (doctors.length > 0) {
+    console.log('Doctor Data Structure:', doctors[0]);
+  }
+
+  // Pagination logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const paginatedDoctors = filteredDoctors.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
     <div className="w-full p-6 space-y-6">
@@ -1010,7 +1043,7 @@ export default function DoctorRegistrationPage() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
                   <div>
                     <Label htmlFor="panCardNo" className="text-sm font-medium">
-                      Pan Card No. <span className="text-red-500">*</span>
+                      Pan Card No.
                     </Label>
                   </div>
                   <div className="md:col-span-2">
@@ -1060,7 +1093,7 @@ export default function DoctorRegistrationPage() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
                   <div>
                     <Label htmlFor="registrationNo" className="text-sm font-medium">
-                      Registration No. <span className="text-red-500">*</span>
+                      Registration No.
                     </Label>
                   </div>
                   <div className="md:col-span-2">
@@ -1109,7 +1142,7 @@ export default function DoctorRegistrationPage() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
                   <div>
                     <Label htmlFor="indemnityPolicyNo" className="text-sm font-medium">
-                      Indemnity Policy No. <span className="text-red-500">*</span>
+                      Indemnity Policy No.
                     </Label>
                   </div>
                   <div className="md:col-span-2">
@@ -1189,7 +1222,7 @@ export default function DoctorRegistrationPage() {
       {!showAddForm && (
         <Card className="border-gray-200 dark:border-gray-800">
           <CardContent className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
               <Input
                 placeholder="Doctor Name"
                 value={filters.doctorName}
@@ -1200,6 +1233,12 @@ export default function DoctorRegistrationPage() {
                 placeholder="Mobile No."
                 value={filters.mobileNo}
                 onChange={(e) => handleFilterChange("mobileNo", e.target.value)}
+                className="border-gray-300 dark:border-gray-700"
+              />
+              <Input
+                placeholder="Doctor ID"
+                value={filters.doctorID}
+                onChange={(e) => handleFilterChange("doctorID", e.target.value)}
                 className="border-gray-300 dark:border-gray-700"
               />
               <Select
@@ -1237,6 +1276,14 @@ export default function DoctorRegistrationPage() {
           >
             Excel Upload
           </Button> */}
+          <Button
+             onClick={() => refetch()}
+             variant="outline"
+             className="bg-gray-100 hover:bg-gray-200 text-gray-800 border-gray-300"
+          >
+            <Loader2 className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+            Refresh
+          </Button>
           <Button
             onClick={handleAddNew}
             className="bg-blue-600 hover:bg-blue-700 text-white"
@@ -1282,105 +1329,121 @@ export default function DoctorRegistrationPage() {
                   </div>
                 </div>
               ) : (
-                <Table>
-              <TableHeader>
-                <TableRow className="bg-green-100 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/20">
-                  <TableHead className="font-semibold text-gray-900 dark:text-gray-100">
-                    Sr. No.
-                  </TableHead>
-                  <TableHead className="font-semibold text-gray-900 dark:text-gray-100">
-                    Photo
-                  </TableHead>
-                  <TableHead className="font-semibold text-gray-900 dark:text-gray-100">
-                    Name
-                  </TableHead>
-                  <TableHead className="font-semibold text-gray-900 dark:text-gray-100">
-                    Mobile No.
-                  </TableHead>
-                  <TableHead className="font-semibold text-gray-900 dark:text-gray-100">
-                    Email ID
-                  </TableHead>
-                  <TableHead className="font-semibold text-gray-900 dark:text-gray-100">
-                    Reg Date
-                  </TableHead>
-                  <TableHead className="font-semibold text-gray-900 dark:text-gray-100 text-center">
-                    Actions *
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredDoctors.length > 0 ? (
-                  filteredDoctors.map((doctor, index) => (
-                    <TableRow
-                    key={index}
-                    className="hover:bg-gray-50 dark:hover:bg-gray-800/50"
-                  >
-                    <TableCell className="text-gray-900 dark:text-gray-100">
-                      {doctor.srNo}
-                    </TableCell>
-                    <TableCell>
-                      <div className="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center overflow-hidden">
-                        {doctor.photo && doctor.photo !== "/placeholder-doctor.png" ? (
-                          <img
-                            src={doctor.photo}
-                            alt={doctor.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <span className="text-xs text-gray-500 dark:text-gray-400">
-                            No Image
-                          </span>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-gray-900 dark:text-gray-100">
-                      {doctor.name}
-                    </TableCell>
-                    <TableCell className="text-gray-900 dark:text-gray-100">
-                      {doctor.mobileNo}
-                    </TableCell>
-                    <TableCell className="text-gray-900 dark:text-gray-100">
-                      {doctor.emailId}
-                    </TableCell>
-                    <TableCell className="text-gray-900 dark:text-gray-100">
-                      {doctor.regDate}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center justify-center gap-2">
-                        <button
-                          className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
-                        >
-                          <Edit className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                        </button>
-                        <button
-                          className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
-                        >
-                          <Eye className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                        </button>
-                        <button
-                          className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
-                        >
-                          <Clock className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                        </button>
-                        <button
-                          className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
-                        >
-                          <Trash2 className="w-4 h-4 text-gray-600 dark:text-red-400" />
-                        </button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell colSpan={7} className="text-center py-8 text-gray-500">
-                      No doctors found matching your search criteria.
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-            )}
+                <>
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="bg-green-100 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/20">
+                        <TableHead className="font-semibold text-gray-900 dark:text-gray-100">
+                          Sr. No.
+                        </TableHead>
+                        <TableHead className="font-semibold text-gray-900 dark:text-gray-100">
+                          Doctor ID
+                        </TableHead>
+                        <TableHead className="font-semibold text-gray-900 dark:text-gray-100">
+                          Photo
+                        </TableHead>
+                        <TableHead className="font-semibold text-gray-900 dark:text-gray-100">
+                          Name
+                        </TableHead>
+                        <TableHead className="font-semibold text-gray-900 dark:text-gray-100">
+                          Mobile No.
+                        </TableHead>
+                        <TableHead className="font-semibold text-gray-900 dark:text-gray-100">
+                          Email ID
+                        </TableHead>
+                        <TableHead className="font-semibold text-gray-900 dark:text-gray-100">
+                          Reg Date
+                        </TableHead>
+                        <TableHead className="font-semibold text-gray-900 dark:text-gray-100 text-center">
+                          Actions *
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {paginatedDoctors.length > 0 ? (
+                        paginatedDoctors.map((doctor, index) => (
+                          <TableRow
+                            key={index}
+                            className="hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                          >
+                            <TableCell className="text-gray-900 dark:text-gray-100">
+                              {doctor.srNo}
+                            </TableCell>
+                            <TableCell className="text-gray-900 dark:text-gray-100">
+                              {doctor.doctorID}
+                            </TableCell>
+                            <TableCell>
+                              <div className="w-16 h-16 bg-gray-200 dark:bg-gray-700 rounded flex items-center justify-center overflow-hidden">
+                                {doctor.photo && doctor.photo !== "/placeholder-doctor.png" ? (
+                                  <img
+                                    src={doctor.photo}
+                                    alt={doctor.name}
+                                    className="w-full h-full object-cover"
+                                  />
+                                ) : (
+                                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                                    No Image
+                                  </span>
+                                )}
+                              </div>
+                            </TableCell>
+                            <TableCell className="text-gray-900 dark:text-gray-100">
+                              {doctor.name}
+                            </TableCell>
+                            <TableCell className="text-gray-900 dark:text-gray-100">
+                              {doctor.mobileNo}
+                            </TableCell>
+                            <TableCell className="text-gray-900 dark:text-gray-100">
+                              {doctor.emailId}
+                            </TableCell>
+                            <TableCell className="text-gray-900 dark:text-gray-100">
+                              {doctor.regDate}
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center justify-center gap-2">
+                                <button
+                                  className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+                                >
+                                  <Edit className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                                </button>
+                                <button
+                                  className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+                                >
+                                  <Eye className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                                </button>
+                                <button
+                                  className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+                                >
+                                  <Clock className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                                </button>
+                                <button
+                                  className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+                                >
+                                  <Trash2 className="w-4 h-4 text-gray-600 dark:text-red-400" />
+                                </button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      ) : (
+                        <TableRow>
+                          <TableCell colSpan={7} className="text-center py-8 text-gray-500">
+                            No doctors found matching your search criteria.
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                  <div className="px-4 border-t border-gray-200 dark:border-gray-800">
+                    <CustomPagination
+                      totalItems={filteredDoctors.length}
+                      itemsPerPage={itemsPerPage}
+                      currentPage={currentPage}
+                      onPageChange={setCurrentPage}
+                    />
+                  </div>
+                </>
+              )}
           </div>
         </CardContent>
       </Card>
