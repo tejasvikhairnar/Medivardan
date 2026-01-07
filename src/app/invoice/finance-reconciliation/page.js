@@ -79,7 +79,7 @@ export default function FinanceReconciliationPage() {
   return (
     <div className="w-full p-4 space-y-6 min-h-screen bg-white dark:bg-gray-950">
       {/* Header */}
-      <h1 className="text-xl font-bold text-red-500 uppercase tracking-wide">
+      <h1 className="text-xl font-bold text-[#0f7396] uppercase tracking-wide">
         FINANCE RECONCILIATIONS
       </h1>
 

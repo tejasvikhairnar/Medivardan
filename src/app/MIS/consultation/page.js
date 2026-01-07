@@ -347,7 +347,7 @@ export default function ConsultationPage() {
                       size="sm"
                       variant="ghost"
                       onClick={() => removeTreatment(i)}
-                      className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-950 print:hidden"
+                      className="text-[#0f7396] hover:text-[#0b5c7a] hover:bg-[#0f7396]/10 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-[#0f7396]/20 print:hidden"
                       data-no-print
                     >
                       <MinusSquare className="h-4 w-4"/>
@@ -536,7 +536,7 @@ export default function ConsultationPage() {
                             size="sm"
                             variant="ghost"
                             onClick={() => removeMedicine(i)}
-                            className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-red-950 h-7 w-7 p-0"
+                            className="text-[#0f7396] hover:text-[#0b5c7a] hover:bg-[#0f7396]/10 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-[#0f7396]/20 h-7 w-7 p-0"
                             data-no-print
                           >
                             <Trash2 className="h-4 w-4"/>
@@ -603,7 +603,7 @@ export default function ConsultationPage() {
                       size="sm"
                       variant="ghost"
                       onClick={() => removeLabTest(i)}
-                      className="text-red-600 hover:text-red-700 hover:bg-red-50 print:hidden"
+                      className="text-[#0f7396] hover:text-[#0b5c7a] hover:bg-[#0f7396]/10 print:hidden"
                       data-no-print
                     >
                       <MinusSquare className="h-4 w-4"/>

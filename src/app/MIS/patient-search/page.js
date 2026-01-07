@@ -119,9 +119,9 @@ export default function PatientSearchPage() {
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Search Patient Section */}
         <Card className="border border-gray-200 dark:border-gray-700 shadow-md bg-white dark:bg-gray-800">
-          <CardHeader className="p-4 bg-red-50 dark:bg-red-900/20 border-b border-red-200 dark:border-red-800">
-            <h2 className="text-lg font-semibold text-red-600 dark:text-red-400 flex items-center gap-2">
-              <span className="text-red-500">⚙</span> PATIENT
+          <CardHeader className="p-4 bg-[#0f7396]/10 dark:bg-[#0f7396]/20 border-b border-[#0f7396]/20 dark:border-[#0f7396]/30">
+            <h2 className="text-lg font-semibold text-[#0f7396] dark:text-[#0f7396] flex items-center gap-2">
+              <span className="text-[#0f7396]">⚙</span> PATIENT
             </h2>
           </CardHeader>
           <CardContent className="p-6">
@@ -139,7 +139,7 @@ export default function PatientSearchPage() {
                 <Input
                   name="lastName"
                   placeholder="Last Name"
-                  value={searchForm.lastName}
+                  value={SearchForm.lastName}
                   onChange={handleSearchChange}
                   className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600"
                 />
@@ -148,14 +148,14 @@ export default function PatientSearchPage() {
                 <Input
                   name="mobileNo"
                   placeholder="Mobile No"
-                  value={searchForm.mobileNo}
+                  value={SearchForm.mobileNo}
                   onChange={handleSearchChange}
                   className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600"
                 />
               </div>
               <div className="space-y-2">
                 <Select
-                  value={searchForm.clinic}
+                  value={SearchForm.clinic}
                   onValueChange={(value) => setSearchForm({ ...searchForm, clinic: value })}
                 >
                   <SelectTrigger className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600">
@@ -178,7 +178,7 @@ export default function PatientSearchPage() {
                   type="date"
                   name="fromDate"
                   placeholder="From Date"
-                  value={searchForm.fromDate}
+                  value={SearchForm.fromDate}
                   onChange={handleSearchChange}
                   className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600"
                 />
@@ -188,13 +188,13 @@ export default function PatientSearchPage() {
                   type="date"
                   name="toDate"
                   placeholder="To Date"
-                  value={searchForm.toDate}
+                  value={SearchForm.toDate}
                   onChange={handleSearchChange}
                   className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600"
                 />
               </div>
               <div className="flex gap-2">
-                <Button onClick={handleSearch} className="bg-red-600 hover:bg-red-700 text-white px-8">
+                <Button onClick={handleSearch} className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-8">
                   Search
                 </Button>
                 <Button
@@ -280,7 +280,7 @@ export default function PatientSearchPage() {
                     ) : (
                       <tr>
                         <td colSpan="7" className="p-8 text-center text-gray-500 dark:text-gray-400">
-                          No patients found. Try adjusting your search criteria.
+                          No patients found. Try adjusting your Search criteria.
                         </td>
                       </tr>
                     )}

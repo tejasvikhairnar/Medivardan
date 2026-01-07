@@ -29,8 +29,8 @@ export default function AppLayout({ children }) {
           sidebarOpen={sidebarOpen}
         />
 
-        {/* ✅ Main scroll fix */}
-        <main className="flex-1 mt-16 overflow-y-auto bg-gradient-to-br from-[#4DB8AC]/5 to-[#1E6B8C]/5 dark:from-gray-900 dark:to-gray-950 p-6 space-y-8 transition-colors duration-300">
+        {/* ✅ Main scroll fix - Reduced top spacing as requested */}
+        <main className="flex-1 mt-16 overflow-y-auto bg-gradient-to-br from-[#4DB8AC]/5 to-[#1E6B8C]/5 dark:from-gray-900 dark:to-gray-950 px-6 pb-6 pt-2 space-y-8 transition-colors duration-300">
           {children}
         </main>
       </div>

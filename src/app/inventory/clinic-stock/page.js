@@ -93,7 +93,7 @@ export default function ClinicStock() {
       {/* Header */}
       <div className="flex items-center gap-2 border-b border-gray-200 dark:border-gray-800 pb-4">
         <Package className="w-5 h-5 text-red-500" />
-        <h1 className="text-lg font-bold text-red-500 uppercase tracking-wide">
+        <h1 className="text-lg font-bold text-[#0f7396] uppercase tracking-wide">
           CLINIC STOCK
         </h1>
       </div>

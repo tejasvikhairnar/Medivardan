@@ -69,8 +69,8 @@ export default function AssignedCoupon() {
     <div className="p-6 bg-white dark:bg-gray-900 min-h-screen space-y-6">
       {/* Header */}
       <div className="flex items-center gap-2 border-b border-gray-200 dark:border-gray-800 pb-4">
-        <Settings className="w-5 h-5 text-red-500" />
-        <h1 className="text-lg font-bold text-red-500 uppercase tracking-wide">
+        <Settings className="w-5 h-5 text-[#0f7396]" />
+        <h1 className="text-lg font-bold text-[#0f7396] uppercase tracking-wide">
           COMPANY / ORGANISATION ASSIGNED COUPON
         </h1>
       </div>
@@ -78,7 +78,7 @@ export default function AssignedCoupon() {
       {/* Filters */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-4">
         <div className="flex-1 w-full flex gap-2 items-center">
-            <Select value={searchType} onValueChange={setSearchType}>
+            <Select value={SearchType} onValueChange={setSearchType}>
                 <SelectTrigger className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 max-w-xs">
                 <SelectValue placeholder="-- Select Company Type --" />
                 </SelectTrigger>

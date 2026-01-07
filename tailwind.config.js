@@ -42,7 +42,7 @@ module.exports = {
           foreground: 'hsl(var(--card-foreground))',
         },
         medivardaan: {
-          teal: '#4DB8AC',
+          teal: '#0f7396',
           'teal-dark': '#3A9A8F',
           blue: '#1E6B8C',
           'blue-dark': '#154E6B',

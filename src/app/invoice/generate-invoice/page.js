@@ -36,9 +36,9 @@ export default function GenerateInvoicePage() {
       {/* Header */}
       <div className="flex items-center gap-3 border-b border-gray-200 dark:border-gray-800 pb-4">
         <div className="p-2 bg-red-50 dark:bg-red-900/20 rounded-lg">
-             <Settings className="w-6 h-6 text-red-500 animate-spin-slow" />
+             <Settings className="w-6 h-6 text-[#0f7396] animate-spin-slow" />
         </div>
-        <h1 className="text-xl font-bold text-red-500 uppercase tracking-wide">
+        <h1 className="text-xl font-bold text-[#0f7396] uppercase tracking-wide">
           GENERATE INVOICE
         </h1>
       </div>

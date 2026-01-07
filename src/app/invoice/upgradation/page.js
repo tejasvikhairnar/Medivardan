@@ -42,9 +42,9 @@ export default function UpgradationPage() {
       {/* Header */}
       <div className="flex items-center gap-3 pb-2 border-b border-gray-200 dark:border-gray-800">
          <div className="p-2 bg-red-50 dark:bg-red-900/20 rounded-lg">
-             <Settings className="w-5 h-5 text-red-500 animate-spin-slow" />
+             <Settings className="w-5 h-5 text-[#0f7396] animate-spin-slow" />
          </div>
-        <h1 className="text-xl font-bold text-red-500 uppercase tracking-wide">
+        <h1 className="text-xl font-bold text-[#0f7396] uppercase tracking-wide">
           UPGRADATION
         </h1>
       </div>

@@ -61,6 +61,8 @@ const getMenuIcon = (menuName) => {
     'Help': CircleHelp,
     'Enquiry Settings': Settings,
     'User Settings': UserCog,
+    'Labs': Microscope,
+    'Reports': FileBarChart,
   };
 
   const IconComponent = iconMap[menuName] || Activity;
@@ -80,6 +82,30 @@ export default function Sidebar({ open }) {
       ...prev,
       [menuID]: !prev[menuID],
     }));
+  };
+
+   // Add Dashboard menu
+  const dashboardMenu = {
+    menuID: 'dashboard',
+    menuName: 'Dashboard',
+    menuPath: null,
+    menuChild: [
+      {
+        menuID: 'admin-dashboard',
+        menuName: 'Admin',
+        menuPath: '/dashboard/admin'
+      },
+      {
+        menuID: 'clinic-dashboard',
+        menuName: 'Clinic',
+        menuPath: '/dashboard/clinic'
+      },
+      {
+        menuID: 'doctor-dashboard',
+        menuName: 'Doctor',
+        menuPath: '/dashboard/doctor'
+      }
+    ]
   };
 
    // Add Doctor menu
@@ -280,7 +306,7 @@ export default function Sidebar({ open }) {
   // Add Report menu
   const reportMenu = {
     menuID: 'report-menu-local',
-    menuName: 'Report',
+    menuName: 'Reports',
     menuPath: null,
     menuChild: [
       {
@@ -582,7 +608,7 @@ export default function Sidebar({ open }) {
   // Add Lab Settings menu
   const labSettingsMenu = {
     menuID: 'lab-settings-menu',
-    menuName: 'Lab Settings',
+    menuName: 'Labs',
     menuPath: null,
     menuChild: [
       {
@@ -610,7 +636,7 @@ export default function Sidebar({ open }) {
 
   const clinicSettingsMenu = {
     menuID: 'clinic-settings-menu',
-    menuName: 'Clinic Settings',
+    menuName: 'Settings',
     menuPath: null,
     menuChild: [
       {
@@ -642,7 +668,10 @@ export default function Sidebar({ open }) {
         menuID: 'branch-handover',
         menuName: 'Branch Handover',
         menuPath: '/clinic-settings/branch-handover'
-      }
+      },
+      inventorySettingsMenu,
+      enquirySettingsMenu,
+      userSettingsMenu
     ]
   };
 
@@ -689,9 +718,98 @@ export default function Sidebar({ open }) {
 
   // Append Appointment, Invoice, Lead, Patient Details, Doctor, Accounts, and Report menus to the data
   // Append Appointment, Invoice, Lead, Patient Details, Doctor, Accounts, and Report menus to the data
-  const menuData = data ? [...data, doctorMenu, appointmentMenu, leadMenu, invoiceMenu, patientDetailsMenu, reportMenu, inventoryMenu, inventorySettingsMenu, labSettingsMenu, clinicSettingsMenu, offerMenu, couponMenu, accountsMenu, helpMenu, enquirySettingsMenu, userSettingsMenu] : [doctorMenu, appointmentMenu, leadMenu, invoiceMenu, patientDetailsMenu, reportMenu, inventoryMenu, inventorySettingsMenu, labSettingsMenu, clinicSettingsMenu, offerMenu, couponMenu, accountsMenu, helpMenu, enquirySettingsMenu, userSettingsMenu];
+  // Modified: removed nested settings items from top level
+  const menuData = data ? [...data, dashboardMenu, clinicSettingsMenu, leadMenu, patientDetailsMenu, appointmentMenu, invoiceMenu, labSettingsMenu, inventoryMenu, reportMenu, doctorMenu, offerMenu, couponMenu, accountsMenu, helpMenu] : [dashboardMenu, clinicSettingsMenu, leadMenu, patientDetailsMenu, appointmentMenu, invoiceMenu, labSettingsMenu, inventoryMenu, reportMenu, doctorMenu, offerMenu, couponMenu, accountsMenu, helpMenu];
 
   if (isLoading) return <div>Loading...</div>;
+
+  // Recursive function to render menu items
+  const renderMenuItem = (menu, depth = 0) => {
+    const hasChildren = menu.menuChild && menu.menuChild.length > 0;
+    const isExpanded = openMenus[menu.menuID];
+    
+    // Improved nesting logic:
+    // Level 0: px-2 (standard)
+    // Level 1: pl-10 (align with text of parent)
+    // Level 2: pl-14
+    const basePadding = "px-2";
+    const nestedPadding = depth > 0 ? `pl-${10 + (depth - 1) * 4}` : basePadding;
+
+    if (!hasChildren) {
+      return (
+        <Link
+          key={menu.menuID}
+          href={menu.menuPath || "#"}
+          className={cn(
+            "flex items-center gap-3 py-2.5 text-sm font-medium rounded-lg hover:bg-[#4DB8AC]/10 hover:text-[#1E6B8C] transition-all duration-200 group",
+            open ? "justify-start" : "justify-center",
+            depth > 0 ? nestedPadding : "px-2"
+          )}
+        >
+          {depth === 0 && (
+            <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-gradient-to-br from-[#4DB8AC] to-[#1E6B8C] text-white shadow-md flex-shrink-0 group-hover:shadow-lg transition-all">
+               {getMenuIcon(menu.menuName)}
+            </div>
+          )}
+
+          {open && (
+            <span className={cn(
+              "font-medium truncate transition-colors",
+              depth > 0 && "text-gray-600 dark:text-gray-400 group-hover:text-[#1E6B8C] dark:group-hover:text-[#4DB8AC]"
+            )}>
+              {menu.menuName}
+            </span>
+          )}
+        </Link>
+      );
+    }
+
+    // recursive case
+    return (
+      <Collapsible
+        key={menu.menuID}
+        open={isExpanded}
+        onOpenChange={() => toggleMenu(menu.menuID)}
+      >
+        <CollapsibleTrigger asChild>
+          <button
+            className={cn(
+              "w-full flex items-center gap-3 py-2.5 rounded-lg hover:bg-[#4DB8AC]/10 hover:text-[#1E6B8C] transition-all duration-200 text-left group",
+               depth > 0 ? nestedPadding : "px-2"
+            )}
+          >
+             {depth === 0 && (
+                <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-gradient-to-br from-[#4DB8AC] to-[#1E6B8C] text-white shadow-md flex-shrink-0 group-hover:shadow-lg transition-all">
+                  {getMenuIcon(menu.menuName)}
+                </div>
+              )}
+
+            {open && (
+              <>
+                <span className={cn(
+                  "flex-1 text-sm font-medium truncate",
+                   depth > 0 && "text-gray-600 dark:text-gray-400 group-hover:text-[#1E6B8C]"
+                )}>
+                  {menu.menuName}
+                </span>
+                {isExpanded ? (
+                  <ChevronDown size={16} className="text-gray-400 group-hover:text-[#1E6B8C]" />
+                ) : (
+                  <ChevronRight size={16} className="text-gray-400 group-hover:text-[#1E6B8C]" />
+                )}
+              </>
+            )}
+          </button>
+        </CollapsibleTrigger>
+
+        <CollapsibleContent>
+          <div className="mt-0.5 flex flex-col space-y-0.5">
+            {menu.menuChild.map((child) => renderMenuItem(child, depth + 1))}
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
+    );
+  };
 
   return (
     <aside
@@ -700,89 +818,54 @@ export default function Sidebar({ open }) {
         open ? "w-64" : "w-16"
       )}
     >
-      {/* Logo */}
-      <div className="flex items-center justify-center h-20 py-6 border-b border-[#4DB8AC]/30 flex-shrink-0">
+      <div className="flex items-center justify-center h-16 border-b border-[#4DB8AC]/30 flex-shrink-0">
         {open ? (
-          <Image src="/medivardaan-logo.png" width={60} height={25} alt="MediVardaan Logo" className="object-contain" />
+          <>
+            <Image 
+              src="/medivardaan-logo.png" 
+              width={0} 
+              height={0} 
+              sizes="100vw"
+              style={{ width: 'auto', height: '25px' }}
+              alt="MediVardaan Logo" 
+              className="object-contain dark:hidden" 
+            />
+            <Image 
+              src="/medivardaan-logo-transparent.png" 
+              width={0} 
+              height={0} 
+              sizes="100vw"
+              style={{ width: 'auto', height: '25px' }}
+              alt="MediVardaan Logo" 
+              className="object-contain hidden dark:block dark:brightness-0 dark:invert dark:opacity-80" 
+            />
+          </>
         ) : (
-          <Image src="/medivardaan-logo.png" width={40} height={40} alt="MediVardaan Logo" className="object-contain" />
+          <>
+            <Image 
+              src="/medivardaan-logo.png" 
+              width={0} 
+              height={0} 
+              sizes="100vw"
+              style={{ width: 'auto', height: '35px' }}
+              alt="MediVardaan Logo" 
+              className="object-contain dark:hidden" 
+            />
+            <Image 
+              src="/medivardaan-logo-transparent.png" 
+              width={0} 
+              height={0} 
+              sizes="100vw"
+              style={{ width: 'auto', height: '35px' }}
+              alt="MediVardaan Logo" 
+              className="object-contain hidden dark:block dark:brightness-0 dark:invert dark:opacity-80" 
+            />
+          </>
         )}
       </div>
 
       <nav className="flex-1 overflow-y-auto overflow-x-hidden mt-6 space-y-1 px-2 pb-6 scrollbar-thin scrollbar-thumb-[#4DB8AC]/20 scrollbar-track-transparent hover:scrollbar-thumb-[#4DB8AC]/40">
-        {menuData?.map((menu) => {
-          const hasChildren = menu.menuChild && menu.menuChild.length > 0;
-
-          if (!hasChildren) {
-            return (
-              <Link
-                key={menu.menuID}
-                href={menu.menuPath || "#"}
-                className={cn(
-                  "flex items-center gap-3 px-2 py-2.5 text-sm font-medium rounded-lg hover:bg-[#4DB8AC]/10 hover:text-[#1E6B8C] transition-all duration-200",
-                  open ? "justify-start" : "justify-center"
-                )}
-              >
-                <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-gradient-to-br from-[#4DB8AC] to-[#1E6B8C] text-white shadow-md">
-                  {getMenuIcon(menu.menuName)}
-                </div>
-
-                {open && <span className="font-medium">{menu.menuName}</span>}
-              </Link>
-            );
-          }
-
-          // ✔ Has Children → Show Collapsible
-          return (
-            <Collapsible
-              key={menu.menuID}
-              open={openMenus[menu.menuID]}
-              onOpenChange={() => toggleMenu(menu.menuID)}
-            >
-              <CollapsibleTrigger asChild>
-                <button
-                  className={cn(
-                    "w-full flex items-center gap-3 px-2 py-2.5 rounded-lg hover:bg-[#4DB8AC]/10 hover:text-[#1E6B8C] transition-all duration-200 text-left"
-                  )}
-                >
-                  <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-gradient-to-br from-[#4DB8AC] to-[#1E6B8C] text-white shadow-md">
-                    {getMenuIcon(menu.menuName)}
-                  </div>
-
-                  {open && (
-                    <>
-                      <span className="flex-1 text-sm font-medium">
-                        {menu.menuName}
-                      </span>
-                      {openMenus[menu.menuID] ? (
-                        <ChevronDown size={16} />
-                      ) : (
-                        <ChevronRight size={16} />
-                      )}
-                    </>
-                  )}
-                </button>
-              </CollapsibleTrigger>
-
-              <CollapsibleContent>
-                <div className="ml-12 mt-1 flex flex-col space-y-0.5">
-                  {menu.menuChild.map((child, i) => (
-                    <Link
-                      key={child.menuID}
-                      href={child.menuPath || "#"}
-                      className={cn(
-                        "text-sm rounded-md px-4 py-2 hover:bg-[#4DB8AC]/10 hover:text-[#1E6B8C] transition-all duration-200 border-l-2 border-transparent hover:border-[#4DB8AC]",
-                        !open && "hidden"
-                      )}
-                    >
-                      {child.menuName || `Child ${i + 1}`}
-                    </Link>
-                  ))}
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
-          );
-        })}
+        {menuData?.map((menu) => renderMenuItem(menu, 0))}
       </nav>
     </aside>
   );

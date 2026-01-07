@@ -8,6 +8,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  TableFooter,
 } from "@/components/ui/table"
 import {
   Select,
@@ -42,6 +43,7 @@ import {
 import { IndianRupee } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { setParameterType } from "@/store/slices/parameterType";
+import { setHeaderData } from "@/store/slices/headerSlice";
 import { useDispatch } from "react-redux";
 // import { dashboardCount } from "@/api/client/dashboardCount";
 import { useQuery } from "@tanstack/react-query";

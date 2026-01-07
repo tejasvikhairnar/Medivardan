@@ -47,19 +47,28 @@ class AuthService {
         throw new Error(`Login failed! status: ${response.status}`);
       }
 
+      console.log('Login Response Status:', response.status);
       const data = await response.json();
+      console.log('Login Response Data (First 100 chars):', JSON.stringify(data).substring(0, 100));
 
       // Extract token from response (try different possible property names)
       this.cachedToken = data.token || data.accessToken || data.jwt || data.data || data;
 
+      if (!this.cachedToken || typeof this.cachedToken !== 'string') {
+          console.error('[Auth] Failed to extract valid token from response:', data);
+          throw new Error('Invalid token received from auth server');
+      }
+
       // Set token expiry (default to 1 hour if not specified)
       this.tokenExpiry = Date.now() + API_CONFIG.TOKEN_CACHE_DURATION;
 
-      console.log('[Auth] Token acquired successfully');
+      console.log('[Auth] Token acquired successfully. Length:', this.cachedToken.length);
 
       return this.cachedToken;
     } catch (error) {
       console.error('[Auth] Authentication failed:', error.message);
+      // Clear cache on error
+      this.cachedToken = null;
       throw new Error(`Authentication failed: ${error.message}`);
     }
   }

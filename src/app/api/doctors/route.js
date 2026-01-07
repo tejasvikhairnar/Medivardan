@@ -4,6 +4,9 @@ import { authService } from '@/services/authService';
 
 const { BASE_URL, ENDPOINTS, FEATURES } = API_CONFIG;
 
+const USE_MOCK_FALLBACK = true; // Enabled since API is 500
+
+
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);

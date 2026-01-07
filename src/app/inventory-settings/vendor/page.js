@@ -184,8 +184,8 @@ export default function Vendor() {
     <div className="p-6 bg-white dark:bg-gray-900 min-h-screen space-y-6">
       {/* Header */}
       <div className="flex items-center gap-2 border-b border-gray-200 dark:border-gray-800 pb-4">
-        <Settings className="w-5 h-5 text-red-500" />
-        <h1 className="text-lg font-bold text-red-500 uppercase tracking-wide">
+        <Settings className="w-5 h-5 text-[#0f7396]" />
+        <h1 className="text-lg font-bold text-[#0f7396] uppercase tracking-wide">
           VENDOR
         </h1>
       </div>
@@ -365,7 +365,7 @@ export default function Vendor() {
             <Button onClick={handleSubmit} className="bg-green-700 hover:bg-green-800 text-white min-w-[100px]">
               Submit
             </Button>
-            <Button onClick={handleCancel} variant="destructive" className="bg-red-700 hover:bg-red-800 min-w-[100px]">
+            <Button onClick={handleCancel} variant="destructive" className="bg-[#0f7396] hover:bg-[#0b5c7a] min-w-[100px]">
               Cancel
             </Button>
           </div>

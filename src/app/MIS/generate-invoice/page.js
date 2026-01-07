@@ -163,7 +163,7 @@ export default function GenerateInvoicePage() {
                                     variant="ghost" 
                                     size="icon" 
                                     onClick={() => deleteRow(row.id)}
-                                    className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                                    className="text-[#0f7396] hover:text-[#0b5c7a] hover:bg-[#0f7396]/10"
                                     disabled={rows.length === 1}
                                 >
                                     <Trash2 className="w-5 h-5" />
@@ -209,7 +209,7 @@ export default function GenerateInvoicePage() {
             <Button className="bg-green-600 hover:bg-green-700 text-white px-10 shadow-lg">
                 Submit
             </Button>
-            <Button className="bg-red-600 hover:bg-red-700 text-white px-10 shadow-lg">
+            <Button className="bg-[#0f7396] hover:bg-[#0f7396] text-white px-10 shadow-lg">
                 Cancel
             </Button>
        </div>

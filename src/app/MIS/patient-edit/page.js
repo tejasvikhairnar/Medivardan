@@ -1886,7 +1886,7 @@ function PatientEditContent() {
                     <Button
                       type="button"
                       onClick={handleCancel}
-                      className="bg-red-600 hover:bg-red-700 text-white px-8"
+                      className="bg-[#0f7396] hover:bg-[#0f7396] text-white px-8"
                     >
                       Cancel
                     </Button>

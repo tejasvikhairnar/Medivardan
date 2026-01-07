@@ -77,9 +77,9 @@ export default function PaymentCollectionPage() {
        {/* Header */}
       <div className="flex items-center gap-3 border-b border-gray-200 dark:border-gray-800 pb-4">
         <div className="p-2 bg-red-50 dark:bg-red-900/20 rounded-lg">
-             <Settings className="w-6 h-6 text-red-500 animate-spin-slow" />
+             <Settings className="w-6 h-6 text-[#0f7396] animate-spin-slow" />
         </div>
-        <h1 className="text-xl font-bold text-red-500 uppercase tracking-wide">
+        <h1 className="text-xl font-bold text-[#0f7396] uppercase tracking-wide">
           PAYMENT COLLECTION
         </h1>
       </div>
@@ -382,7 +382,7 @@ export default function PaymentCollectionPage() {
           <Button
             type="button"
             variant="outline"
-            className="min-w-[150px] border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+            className="min-w-[150px] border-[#0f7396]/30 text-[#0f7396] hover:bg-[#0f7396]/10 hover:text-[#0b5c7a]"
             onClick={() => console.log("Cancelled")}
           >
             Cancel

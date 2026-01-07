@@ -124,8 +124,8 @@ export default function BranchProfile() {
       return (
         <div className="p-6 bg-white dark:bg-gray-900 min-h-screen space-y-6">
              <div className="flex items-center gap-2 border-b border-gray-200 dark:border-gray-800 pb-4">
-                <Settings className="w-5 h-5 text-red-500" />
-                <h1 className="text-lg font-bold text-red-500 uppercase tracking-wide">CLINIC</h1>
+                <Settings className="w-5 h-5 text-[#0f7396]" />
+                <h1 className="text-lg font-bold text-[#0f7396] uppercase tracking-wide">CLINIC</h1>
             </div>
             
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -244,7 +244,7 @@ export default function BranchProfile() {
 
                 <div className="flex justify-center pt-8 gap-4">
                     <Button type="submit" className="bg-green-600 hover:bg-green-700 text-white px-8">Submit</Button>
-                    <Button type="button" className="bg-red-600 hover:bg-red-700 text-white px-8" onClick={() => setViewMode("list")}>Cancel</Button>
+                    <Button type="button" className="bg-[#0f7396] hover:bg-[#0f7396] text-white px-8" onClick={() => setViewMode("list")}>Cancel</Button>
                 </div>
             </form>
         </div>
@@ -255,8 +255,8 @@ export default function BranchProfile() {
     <div className="p-6 bg-white dark:bg-gray-900 min-h-screen space-y-6">
       {/* Header */}
       <div className="flex items-center gap-2 border-b border-gray-200 dark:border-gray-800 pb-4">
-        <Settings className="w-5 h-5 text-red-500" />
-        <h1 className="text-lg font-bold text-red-500 uppercase tracking-wide">
+        <Settings className="w-5 h-5 text-[#0f7396]" />
+        <h1 className="text-lg font-bold text-[#0f7396] uppercase tracking-wide">
           CLINIC
         </h1>
       </div>

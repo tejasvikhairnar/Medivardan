@@ -214,9 +214,9 @@ export default function AddLeadFormPage() {
       {/* Header */}
       <div className="flex items-center gap-3">
         <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
-          <Settings className="w-4 h-4 text-red-600" />
+          <Settings className="w-4 h-4 text-[#0f7396]" />
         </div>
-        <h1 className="text-xl font-bold text-red-600 dark:text-red-500">
+        <h1 className="text-xl font-bold text-[#0f7396] dark:text-[#0f7396]">
           {mode === 'create' ? 'ADD LEAD' : mode === 'edit' ? 'EDIT LEAD' : 'VIEW LEAD'}
         </h1>
       </div>
@@ -669,7 +669,7 @@ export default function AddLeadFormPage() {
               <Button
                 type="button"
                 onClick={handleCancel}
-                className="bg-red-600 hover:bg-red-700 text-white px-8"
+                className="bg-[#0f7396] hover:bg-[#0f7396] text-white px-8"
               >
                 Cancel
               </Button>

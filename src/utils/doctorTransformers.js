@@ -48,67 +48,77 @@ const SPECIALITY_ID_MAP = {
 export const transformFormDataToAPI = (formData) => {
   const payload = {
     // Mode and IDs
-    mode: 1,  // Reverting to integer to test
+    mode: 1,  // 1 for Add
     doctorID: 0, 
     clinicID: formData.clinicName ? CLINIC_ID_MAP[formData.clinicName] : 1, // Default to 1 (Panvel) if missing
     doctorTypeID: DOCTOR_TYPE_MAP[formData.doctorType] || 1,
 
     // Personal Information
-    firstName: formData.firstName || "",
-    lastName: formData.lastName || "",
+    firstName: formData.firstName || "string",
+    lastName: formData.lastName || "string",
+    middleName: "string", // Added default
     gender: formData.gender || "male",
-    dob: formData.dateOfBirth || null,
-    bloodGroup: formData.bloodGroup || "",
+    dob: formData.dateOfBirth ? new Date(formData.dateOfBirth).toISOString() : new Date().toISOString(), // Ensure ISO string
+    bloodGroup: formData.bloodGroup || "string",
 
     // Contact Information
-    mobile1: formData.mobileNo1 || "",
-    mobile2: formData.mobileNo2 || "",
-    email: formData.email || "",
+    mobile1: formData.mobileNo1 || "string",
+    mobile2: formData.mobile2 || "string",
+    email: formData.email || "string",
 
     // Address Information
-    line1: formData.addressLine1 || "",
-    line2: formData.addressLine2 || "",
-    areaPin: formData.areaPin || "",
-    cityID: null, 
-    stateID: null,
-    countryID: null,
+    residential_Address: "string", // Added default
+    line1: formData.addressLine1 || "string",
+    line2: formData.addressLine2 || "string",
+    areaPin: formData.areaPin || "string",
+    cityID: 0, 
+    stateID: 0,
+    countryID: 0,
+    locationID: 0, // Added default
 
     // Medical Information
     specialityID: (() => {
-      const selectedKey = Object.keys(formData.specialities).find(key => formData.specialities[key]);
+      const selectedKey = Object.keys(formData.specialities || {}).find(key => formData.specialities[key]);
       const id = selectedKey ? (SPECIALITY_ID_MAP[selectedKey] || 1) : 1;
       return String(id);
     })(),
-    basicDegree: formData.currentEducation.degree || "BDS", // Default degree
-    registrationNo: formData.registrationNo || "",
-    registrationImageUrl: "", 
-
-    // Documents 
-    panCardNo: formData.panCardNo || "",
-    panCardImageUrl: "",
-    adharCardNo: formData.adharCardNo || "",
-    adharCardImageUrl: "", 
-    identityPolicyNo: formData.indemnityPolicyNo || "",
-    identityPolicyImageUrl: "",
-    degreeUpload1: "",
-    degreeUpload2: "",
-    profileImageUrl: "",
+    basicDegree: formData.currentEducation?.degree || "BDS", // Default degree
+    degreeUpload1: "string",
+    degreeUpload2: "string",
+    
+    // Registration & Documents
+    registrationNo: formData.registrationNo || "string",
+    registrationImageUrl: "string", 
+    panCardNo: formData.panCardNo || "string",
+    panCardImageUrl: "string",
+    adharCardNo: formData.adharCardNo || "string",
+    adharCardImageUrl: "string", 
+    identityPolicyNo: formData.indemnityPolicyNo || "string",
+    identityPolicyImageUrl: "string",
+    profileImageUrl: "string",
 
     // Work Information
-    inTime: formData.inTime ? `${formData.inTime}:00` : "09:00:00", // Default time
-    outTime: formData.outTime ? `${formData.outTime}:00` : "18:00:00", // Default time
-    regDate: formData.date || new Date().toISOString().split('T')[0],
+    inTime: formData.inTime ? `${formData.inTime}:00` : "09:00:00", 
+    outTime: formData.outTime ? `${formData.outTime}:00` : "18:00:00", 
+    regDate: new Date().toISOString(), // Use current time in ISO format
+    
+    // User credentials (defaults as per curl)
+    userName: "string",
+    password: "string",
+    roleID: 0, // Added default
 
-    // User credentials 
-    userName: null,
-    password: null,
-    role: null,
-
-    // Status
+    // Status & System 
     isActive: true,
+    isDeleted: false, // Should be false for new records
+    isExistUser: true, // As per curl
+    isTermAccept: true, // As per curl
+    modifiedDate: "2026-01-02T09:10:39.619Z", // Dummy default
+    modifiedBy: 0,
+    createdDate: "2026-01-02T09:10:39.619Z", // Dummy default
+    otp: "string",
   };
 
-  console.log("Transformed API Payload (Fixed SpecialityID):", payload);
+  console.log("Transformed API Payload (Full Schema):", payload);
   return payload;
 };
 

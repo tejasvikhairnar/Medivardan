@@ -305,9 +305,9 @@ export default function DoctorRegistrationPage() {
       {/* Header */}
       <div className="flex items-center gap-3">
         <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
-          <Settings className="w-4 h-4 text-red-600" />
+          <Settings className="w-4 h-4 text-[#0f7396]" />
         </div>
-        <h1 className="text-xl font-bold text-red-600 dark:text-red-500">
+        <h1 className="text-xl font-bold text-[#0f7396] dark:text-[#0f7396]">
           DOCTOR REGISTRATION (Axios + React Query)
         </h1>
       </div>
@@ -629,7 +629,7 @@ export default function DoctorRegistrationPage() {
                     onClick={() => setShowAddForm(false)}
                     disabled={upsertMutation.isPending}
                     variant="outline"
-                    className="bg-red-600 hover:bg-red-700 text-white border-red-600 px-8 disabled:opacity-50"
+                    className="bg-[#0f7396] hover:bg-[#0f7396] text-white border-[#0f7396] px-8 disabled:opacity-50"
                   >
                     Cancel
                   </Button>
@@ -696,13 +696,13 @@ export default function DoctorRegistrationPage() {
           <CardContent className="p-6 flex items-start gap-3">
             <AlertCircle className="w-5 h-5 text-red-600 mt-0.5" />
             <div className="flex-1">
-              <h3 className="text-lg font-semibold text-red-800 dark:text-red-400 mb-1">
+              <h3 className="text-lg font-semibold text-red-800 dark:text-[#0f7396] mb-1">
                 Error Loading Doctors
               </h3>
               <p className="text-red-700 dark:text-red-300">{error.message}</p>
               <Button
                 onClick={() => refetch()}
-                className="mt-3 bg-red-600 hover:bg-red-700 text-white"
+                className="mt-3 bg-[#0f7396] hover:bg-[#0f7396] text-white"
                 size="sm"
               >
                 Retry
@@ -797,7 +797,7 @@ export default function DoctorRegistrationPage() {
                   ) : (
                     <TableRow>
                       <TableCell colSpan={7} className="text-center py-8 text-gray-500">
-                        No doctors found matching your search criteria.
+                        No doctors found matching your Search criteria.
                       </TableCell>
                     </TableRow>
                   )}

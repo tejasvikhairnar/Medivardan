@@ -141,7 +141,7 @@ export default function AreaManagerLeadsPage() {
                     <Button 
                         variant="ghost" 
                         size="icon" 
-                        className="h-8 w-8 text-gray-500 hover:text-red-500 hover:bg-red-50 dark:text-gray-400 dark:hover:bg-red-900/20"
+                        className="h-8 w-8 text-gray-500 hover:text-[#0f7396] hover:bg-[#0f7396]/10 dark:text-gray-400 dark:hover:bg-red-900/20"
                         onClick={() => handleDelete(item.srNo)}
                     >
                         <Trash2 className="w-4 h-4" />

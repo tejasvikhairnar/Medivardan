@@ -151,9 +151,9 @@ export default function AccountantExpensePage() {
       {/* Header */}
       <div className="flex items-center gap-3">
         <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
-          <Settings className="w-4 h-4 text-red-600" />
+          <Settings className="w-4 h-4 text-[#0f7396]" />
         </div>
-        <h1 className="text-xl font-bold text-red-600 dark:text-red-500 uppercase">
+        <h1 className="text-xl font-bold text-[#0f7396] dark:text-[#0f7396] uppercase">
           ACCOUNTANT EXPENSE
         </h1>
       </div>

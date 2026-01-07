@@ -19,8 +19,9 @@ export const API_CONFIG = {
       LOGIN: "/Auth/Login",
     },
     DOCTOR: {
-      GET_ALL: "/DoctorRegistration/GetAllDoctors",
+      GET_ALL: "/Doctor/search",
       UPSERT: "/DoctorRegistration/UpsertDoctor",
+      ADD: "/Doctor/AddDoctor",
     },
   },
 

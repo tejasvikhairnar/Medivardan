@@ -2,16 +2,21 @@ import axiosClient from "@/lib/axiosClient";
 
 export const getCommonData = {
     getDoctors: async (ClinicId)=>{
-        const response = await axiosClient.get(`/api/Doctor/GetClinicByDoctor`,{
+        const response = await axiosClient.get(`/api/Doctor/search`,{
             params:{
-                ClinicId
+                ClinicID: ClinicId
             }
         })
     return response.data;
     },
     getClinics: async ()=>{
-        const response = await axiosClient.get(`/api/Clinic/GetClinic`)
-    return response.data;
+        // Mock data since endpoint /api/Clinic/GetClinic is missing
+        return [
+            { clinicId: "1", clinicName: "Main Clinic" },
+            { clinicId: "2", clinicName: "East Wing" }
+        ];
+        // const response = await axiosClient.get(`/api/Clinic/GetClinic`)
+        // return response.data;
     },
 
 }

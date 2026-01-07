@@ -102,8 +102,8 @@ export default function LoginDetailsPage() {
     <div className="p-6 bg-white dark:bg-gray-900 min-h-screen space-y-6">
       {/* Header */}
       <div className="flex items-center gap-2 border-b border-gray-200 dark:border-gray-800 pb-4">
-        <Settings className="w-5 h-5 text-red-500 animate-spin-slow" />
-        <h1 className="text-lg font-bold text-red-500 uppercase tracking-wide">
+        <Settings className="w-5 h-5 text-[#0f7396] animate-spin-slow" />
+        <h1 className="text-lg font-bold text-[#0f7396] uppercase tracking-wide">
           LOGIN
         </h1>
       </div>
@@ -213,7 +213,7 @@ export default function LoginDetailsPage() {
     ) : (
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm space-y-6 max-w-2xl mx-auto">
              <div className="space-y-4">
-                 <h3 className="font-bold text-lg text-red-500 border-b pb-2">EDIT LOGIN DETAILS</h3>
+                 <h3 className="font-bold text-lg text-[#0f7396] border-b pb-2">EDIT LOGIN DETAILS</h3>
                  
                  <div className="space-y-2">
                     <Label>Name</Label>

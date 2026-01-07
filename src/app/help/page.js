@@ -46,7 +46,7 @@ const HelpPage = () => {
   return (
     <div className="p-6 bg-background min-h-screen text-foreground">
       {/* Header */}
-      <h1 className="text-xl font-bold text-red-500 flex items-center gap-2 mb-8">
+      <h1 className="text-xl font-bold text-[#0f7396] flex items-center gap-2 mb-8">
         <span className="text-2xl">⚙</span> HELP
       </h1>
 
