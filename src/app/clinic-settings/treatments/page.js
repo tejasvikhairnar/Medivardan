@@ -126,8 +126,8 @@ export default function Treatments() {
                 </div>
 
                 <div className="flex gap-4">
-                     <Button type="submit" className="bg-green-600 hover:bg-green-700 text-white px-6">Submit</Button>
-                     <Button type="button" className="bg-[#0f7396] hover:bg-[#0f7396] text-white px-6" onClick={() => setViewMode("list")}>Cancel</Button>
+                     <Button type="submit" className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6">Submit</Button>
+                     <Button type="button" className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6" onClick={() => setViewMode("list")}>Cancel</Button>
                 </div>
             </form>
         </div>
@@ -153,12 +153,12 @@ export default function Treatments() {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 flex-1"
             />
-             <Button className="bg-[#D35400] hover:bg-[#A04000] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap">
+             <Button className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap">
                 Search
             </Button>
             <Button 
                 onClick={handleAddNew}
-                className="bg-[#1E6B8C] hover:bg-[#15526d] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap"
+                className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap"
             >
                 Add New
             </Button>
@@ -172,8 +172,8 @@ export default function Treatments() {
       {/* Table */}
        <div className="border border-gray-200 dark:border-gray-700 rounded-t-lg overflow-hidden overflow-x-auto">
         <Table>
-          <TableHeader className="bg-[#E8F8F5] dark:bg-gray-800">
-            <TableRow className="hover:bg-[#E8F8F5] dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
+          <TableHeader className="bg-[#0f7396]/10 dark:bg-gray-800">
+            <TableRow className="hover:bg-[#0f7396]/10 dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
               <TableHead className="font-bold text-gray-700 dark:text-gray-300 w-[60px]">Sr. No.</TableHead>
               <TableHead className="font-bold text-gray-700 dark:text-gray-300">Treatment Name</TableHead>
               <TableHead className="font-bold text-gray-700 dark:text-gray-300">Cost</TableHead>

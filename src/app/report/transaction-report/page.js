@@ -217,10 +217,10 @@ const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
                 />
             </div>
             <div className="flex gap-2">
-                 <Button className="bg-[#D35400] hover:bg-[#A04000] text-white px-6 font-medium shadow-sm transition-all" onClick={() => setCurrentPage(1)}>
+                 <Button className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 font-medium shadow-sm transition-all" onClick={() => setCurrentPage(1)}>
                     Search
                 </Button>
-                 <Button className="bg-[#D35400] hover:bg-[#A04000] text-white px-6 font-medium shadow-sm transition-all" onClick={handleClear}>
+                 <Button className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 font-medium shadow-sm transition-all" onClick={handleClear}>
                     Clear
                 </Button>
             </div>
@@ -235,8 +235,8 @@ const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
       {/* Table */}
        <div className="border border-gray-200 dark:border-gray-700 rounded-t-lg overflow-hidden overflow-x-auto">
         <Table>
-          <TableHeader className="bg-[#E8F8F5] dark:bg-gray-800">
-            <TableRow className="hover:bg-[#E8F8F5] dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
+          <TableHeader className="bg-[#0f7396]/10 dark:bg-gray-800">
+            <TableRow className="hover:bg-[#0f7396]/10 dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
               <TableHead className="font-bold text-gray-700 dark:text-gray-300 w-[60px]">Sr. No.</TableHead>
               <TableHead className="font-bold text-gray-700 dark:text-gray-300">Invoice No.</TableHead>
               <TableHead className="font-bold text-gray-700 dark:text-gray-300">Clinic Name</TableHead>

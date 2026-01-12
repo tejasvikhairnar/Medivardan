@@ -222,7 +222,7 @@ const EmployeePage = () => {
             </div>
             <div>
               <Button 
-                className="bg-[#D35400] hover:bg-[#A04000] text-white dark:bg-orange-700 dark:hover:bg-orange-800 px-8"
+                className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white dark:bg-[#0f7396] dark:hover:bg-[#0b5c7a] px-8"
                 onClick={handleSearch}
               >
                 Search
@@ -234,7 +234,7 @@ const EmployeePage = () => {
           <div className="flex justify-end">
             <Button 
                 onClick={openAddDialog}
-                className="bg-[#1F618D] hover:bg-[#154360] text-white dark:bg-blue-700 dark:hover:bg-blue-800"
+                className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white dark:bg-[#0f7396] dark:hover:bg-[#0b5c7a]"
             >
               <Plus className="w-4 h-4 mr-2" />
               Add New
@@ -244,7 +244,7 @@ const EmployeePage = () => {
           {/* Table */}
           <div className="rounded-md border border-gray-200 dark:border-gray-700 overflow-hidden">
             <Table>
-              <TableHeader className="bg-[#E8F8F5] dark:bg-green-900/20">
+              <TableHeader className="bg-[#0f7396]/10 dark:bg-[#0f7396]/20">
                 <TableRow className="border-b border-gray-200 dark:border-gray-700 hover:bg-transparent">
                   <TableHead className="w-16 text-gray-700 dark:text-gray-200 font-semibold">Sr. No.</TableHead>
                   <TableHead className="w-32 text-gray-700 dark:text-gray-200 font-semibold">Photo</TableHead>
@@ -390,7 +390,7 @@ const EmployeePage = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit" onClick={handleSave} className="bg-blue-600 hover:bg-blue-700 text-white">
+            <Button type="submit" onClick={handleSave} className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white">
                 {isEditing ? "Update" : "Save"}
             </Button>
           </DialogFooter>

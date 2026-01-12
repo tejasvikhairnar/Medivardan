@@ -157,13 +157,13 @@ export default function LabOrderPending() {
        <div className="flex gap-2">
             <Button 
                 onClick={handleSearch}
-                className="bg-[#D35400] hover:bg-[#A04000] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap"
+                className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap"
             >
                 Search
             </Button>
             <Button 
                 onClick={handleClear}
-                className="bg-[#D35400] hover:bg-[#A04000] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap"
+                className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap"
             >
                 Clear
             </Button>
@@ -173,8 +173,8 @@ export default function LabOrderPending() {
       {/* Table */}
        <div className="border border-gray-200 dark:border-gray-700 rounded-t-lg overflow-hidden overflow-x-auto">
         <Table>
-          <TableHeader className="bg-[#E8F8F5] dark:bg-gray-800">
-            <TableRow className="hover:bg-[#E8F8F5] dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
+          <TableHeader className="bg-[#0f7396]/10 dark:bg-gray-800">
+            <TableRow className="hover:bg-[#0f7396]/10 dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
               <TableHead className="font-bold text-gray-700 dark:text-gray-300 w-[60px]">Sr. No.</TableHead>
               <TableHead className="font-bold text-gray-700 dark:text-gray-300">Clinic Name</TableHead>
               <TableHead className="font-bold text-gray-700 dark:text-gray-300">Patient Name</TableHead>
@@ -233,7 +233,7 @@ export default function LabOrderPending() {
                         variant={currentPage === page ? "default" : "outline"}
                         size="sm"
                         onClick={() => handlePageChange(page)}
-                        className={currentPage === page ? "bg-[#1E6B8C] hover:bg-[#15526d] text-white" : ""}
+                        className={currentPage === page ? "bg-[#0f7396] hover:bg-[#0b5c7a] text-white" : ""}
                     >
                         {page}
                     </Button>

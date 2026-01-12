@@ -70,7 +70,7 @@ export default function BranchHandover() {
 
         {/* Submit Button */}
         <div className="flex justify-center pt-4">
-            <Button className="bg-[#419456] hover:bg-[#347845] text-white px-8 font-medium shadow-sm transition-all whitespace-nowrap">
+            <Button className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-8 font-medium shadow-sm transition-all whitespace-nowrap">
                 Submit
             </Button>
         </div>

@@ -183,7 +183,7 @@ export default function UpgradationPage() {
           
            {/* Submit Button */}
            <div className="flex justify-center pt-4">
-            <Button className="bg-[#D35400] hover:bg-[#A04000] text-white px-8 h-10 font-bold shadow-md">
+            <Button className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-8 h-10 font-bold shadow-md">
                 Submit Upgradation
             </Button>
            </div>

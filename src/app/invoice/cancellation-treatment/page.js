@@ -216,7 +216,7 @@ export default function CancellationTreatmentPage() {
        <div className="flex justify-center">
             <Button 
                 onClick={handleSubmit} 
-                className="bg-[#D35400] hover:bg-[#A04000] text-white font-bold py-2 px-8 shadow-md"
+                className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white font-bold py-2 px-8 shadow-md"
             >
                 Submit Cancellation
             </Button>

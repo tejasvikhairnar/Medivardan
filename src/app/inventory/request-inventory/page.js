@@ -111,10 +111,10 @@ export default function RequestInventory() {
       </div>
 
       {/* Dynamic Table */}
-      <div className="border border-gray-200 dark:border-gray-700 rounded-t-lg overflow-hidden overflow-x-auto bg-[#F2FDF3] dark:bg-gray-800/20 p-2">
+      <div className="border border-gray-200 dark:border-gray-700 rounded-t-lg overflow-hidden overflow-x-auto bg-[#0f7396]/5 dark:bg-gray-800/20 p-2">
         <Table>
-          <TableHeader>
-            <TableRow className="border-b-0 hover:bg-transparent">
+          <TableHeader className="bg-[#0f7396]/10">
+            <TableRow className="border-b-0 hover:bg-[#0f7396]/10">
               <TableHead className="font-bold text-gray-800 dark:text-gray-200 min-w-[200px]">Inventory Type</TableHead>
               <TableHead className="font-bold text-gray-800 dark:text-gray-200 min-w-[200px]">Item Name</TableHead>
               <TableHead className="font-bold text-gray-800 dark:text-gray-200 min-w-[150px]">Packaging</TableHead>
@@ -213,7 +213,7 @@ export default function RequestInventory() {
         <div className="flex justify-end p-2">
             <Button
                 onClick={handleAddRow}
-                className="bg-[#D35400] hover:bg-[#A04000] text-white font-medium shadow-sm transition-all"
+                className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white font-medium shadow-sm transition-all"
             >
                 Add New
             </Button>
@@ -222,7 +222,7 @@ export default function RequestInventory() {
 
        {/* Submit Button */}
        <div className="flex justify-center pt-6">
-        <Button onClick={handleSubmit} className="bg-[#4DB6AC] hover:bg-[#00897B] text-white px-8 font-medium shadow-sm transition-all h-10">
+        <Button onClick={handleSubmit} className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-8 font-medium shadow-sm transition-all h-10">
           Submit
         </Button>
       </div>

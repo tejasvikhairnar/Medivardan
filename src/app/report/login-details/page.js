@@ -143,7 +143,7 @@ export default function LoginDetailsPage() {
                     />
                 </div>
 
-                <Button className="bg-[#D35400] hover:bg-[#A04000] text-white px-8 font-medium shadow-sm transition-all w-full md:w-auto">
+                <Button className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-8 font-medium shadow-sm transition-all w-full md:w-auto">
                     Search
                 </Button>
                 </div>
@@ -157,8 +157,8 @@ export default function LoginDetailsPage() {
             {/* Table */}
             <div className="border border-gray-200 dark:border-gray-700 rounded-t-lg overflow-hidden">
                 <Table>
-                <TableHeader className="bg-[#E8F8F5] dark:bg-gray-800">
-                    <TableRow className="hover:bg-[#E8F8F5] dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
+                <TableHeader className="bg-[#0f7396]/10 dark:bg-gray-800">
+                    <TableRow className="hover:bg-[#0f7396]/10 dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
                     <TableHead className="font-bold text-gray-700 dark:text-gray-300 w-[60px]">Sr. No.</TableHead>
                     <TableHead className="font-bold text-gray-700 dark:text-gray-300">Name</TableHead>
                     <TableHead className="font-bold text-gray-700 dark:text-gray-300">User Name</TableHead>
@@ -242,7 +242,7 @@ export default function LoginDetailsPage() {
 
              <div className="flex justify-end gap-4 pt-4">
                 <Button onClick={handleCancel} variant="outline" className="min-w-[100px]">Cancel</Button>
-                <Button onClick={handleSubmit} className="bg-[#1E6B8C] hover:bg-[#15526d] text-white min-w-[100px]">
+                <Button onClick={handleSubmit} className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white min-w-[100px]">
                     Update
                 </Button>
              </div>

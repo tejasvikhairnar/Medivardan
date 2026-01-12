@@ -39,7 +39,7 @@ export default function NewLeadPage() {
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(20);
+  const [pageSize, setPageSize] = useState(10);
 
   // Fetch leads on component mount and when page changes
   // Fetch leads on component mount and when filters change (not on page change)
@@ -59,28 +59,29 @@ export default function NewLeadPage() {
       const queryParams = {
         ...cleanFilters,
         PageNumber: searchFilters.pageNumber || 1, // Use passed page or default to 1
-        PageSize: pageSize, // Use state pageSize (20)
+        PageSize: pageSize, // Use state pageSize (10)
       };
 
       const data = await getLeads(queryParams);
       
       console.log('[DEBUG] Raw API Data (First Item):', data && data[0] ? data[0] : 'No data');
+      console.log('[DEBUG] Item Keys:', data && data[0] ? Object.keys(data[0]) : 'No keys');
       
       // Transform API data to match table structure
       const transformedLeads = Array.isArray(data) ? data.map((lead, index) => ({
         srNo: index + 1, // Absolute index for client-side list
         leadNo: (lead.EnquiryID || lead.enquiryId || lead.enquiryID || lead.id) ? `E${lead.EnquiryID || lead.enquiryId || lead.enquiryID || lead.id}` : (lead.enquiryNo || "-"),
-        name: `${lead.firstName || ""} ${lead.lastName || ""}`.trim() || "-",
-        mobileNo: lead.mobile || "-",
-        clinicName: lead.clinicName || "-",
-        sourceName: lead.sourceName || "-",
-        status: lead.status || "-",
-        date: lead.enquiryDate ? new Date(lead.enquiryDate).toLocaleDateString("en-GB", {
+        name: `${lead.firstName || lead.FirstName || ""} ${lead.lastName || lead.LastName || ""}`.trim() || "-",
+        mobileNo: lead.MobileNo || lead.mobileNo || lead.Mobile || lead.mobile || lead.PhoneNo1 || lead.phoneNo1 || "-",
+        clinicName: lead.clinicName || lead.ClinicName || "-",
+        sourceName: lead.sourceName || lead.SourceName || "-",
+        status: lead.Status || lead.status || lead.PatientStatus || lead.patientStatus || lead.PStatus || lead.pstatus || lead.PatientFollowup || lead.patientFollowup || lead.patientFollowUp || lead.PatientFollowUp || lead.LeadStatus || lead.EnquiryStatus || "-",
+        date: (lead.enquiryDate || lead.EnquiryDate || lead.LeadDate || lead.leadDate) ? new Date(lead.enquiryDate || lead.EnquiryDate || lead.LeadDate || lead.leadDate).toLocaleDateString("en-GB", {
           day: "2-digit",
           month: "short",
           year: "numeric"
         }) : "-",
-        rawDate: lead.enquiryDate
+        rawDate: lead.enquiryDate || lead.EnquiryDate || lead.LeadDate || lead.leadDate
       })) : [];
 
       setLeads(transformedLeads);
@@ -144,7 +145,7 @@ export default function NewLeadPage() {
     <div className="w-full p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full bg-[#0f7396]/10 dark:bg-teal-900/20 flex items-center justify-center">
           <Settings className="w-4 h-4 text-[#0f7396]" />
         </div>
         <h1 className="text-xl font-bold text-[#0f7396] dark:text-[#0f7396]">
@@ -215,7 +216,7 @@ export default function NewLeadPage() {
         <div className="flex items-center gap-3">
           <Button
             onClick={handleAddNewLead}
-            className="bg-blue-600 hover:bg-blue-700 text-white"
+            className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white"
           >
             Add New Lead
           </Button>
@@ -229,7 +230,7 @@ export default function NewLeadPage() {
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow className="bg-green-100 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/20">
+                <TableRow className="bg-[#0f7396]/10 dark:bg-teal-900/20 hover:bg-[#0f7396]/20 dark:hover:bg-teal-900/40">
                   <TableHead className="font-semibold text-gray-900 dark:text-gray-100">Sr. No.</TableHead>
                   <TableHead className="font-semibold text-gray-900 dark:text-gray-100">Lead No</TableHead>
                   <TableHead className="font-semibold text-gray-900 dark:text-gray-100">Name</TableHead>
@@ -315,6 +316,7 @@ export default function NewLeadPage() {
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={handlePageChangeWrapper}
+          showTotalPages={false}
         />
       )}
     </div>

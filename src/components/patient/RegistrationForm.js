@@ -169,7 +169,7 @@ export default function RegistrationForm() {
                     onClick={() => setActiveTab(tab.id)}
                     className={`px-6 py-3 text-sm font-medium transition-colors ${
                       activeTab === tab.id
-                        ? 'bg-teal-600 text-white'
+                        ? 'bg-[#0f7396] text-white'
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     }`}
                   >
@@ -491,7 +491,7 @@ export default function RegistrationForm() {
                       </span>
                       <Button
                         type="button"
-                        className="bg-teal-600 hover:bg-teal-700 ml-auto"
+                        className="bg-[#0f7396] hover:bg-[#0b5c7a] ml-auto"
                         onClick={() => {
                           if (formData.patientProfile) {
                             // TODO: Implement actual image upload to server
@@ -537,7 +537,7 @@ export default function RegistrationForm() {
 
             {/* Submit Button */}
             <div className="flex justify-end mt-8">
-              <Button type="submit" className="bg-blue-600 hover:bg-blue-700 px-8">
+              <Button type="submit" className="bg-[#0f7396] hover:bg-[#0b5c7a] px-8">
                 Next
               </Button>
             </div>

@@ -297,13 +297,13 @@ export default function PaymentModeClinicReportPage() {
         <div className="flex gap-2">
           <Button
              onClick={handleSearch}
-            className="bg-[#D35400] hover:bg-[#ba4a00] text-white flex-1 h-10 transition-colors"
+            className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white flex-1 h-10 transition-colors"
           >
             Search
           </Button>
            <Button
              onClick={handleClear}
-             className="bg-[#A01A1A] hover:bg-[#8a1616] text-white flex-1 h-10 transition-colors"
+              className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white flex-1 h-10 transition-colors"
           >
             Clear
           </Button>
@@ -318,7 +318,7 @@ export default function PaymentModeClinicReportPage() {
       {/* Table */}
       <div className="border border-gray-200 dark:border-gray-700 rounded-t-lg overflow-hidden">
         <Table>
-          <TableHeader className="bg-[#e6ffcc] dark:bg-[#e6ffcc]/20">
+          <TableHeader className="bg-[#0f7396]/10 dark:bg-[#e6ffcc]/20">
             <TableRow className="hover:bg-transparent">
               <TableHead className="w-[60px] font-bold text-gray-800 dark:text-gray-200 border-r border-white dark:border-gray-600">
                 Sr. No.

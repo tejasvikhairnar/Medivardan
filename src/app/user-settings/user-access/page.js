@@ -110,7 +110,7 @@ const UserAccessPage = () => {
             {selectedRole && (
                 <div className="rounded-md border border-gray-200 dark:border-gray-700 overflow-hidden">
                     <Table>
-                        <TableHeader className="bg-[#E8F8F5] dark:bg-green-900/20">
+                        <TableHeader className="bg-[#0f7396]/10 dark:bg-[#0f7396]/20">
                             <TableRow className="border-b border-gray-200 dark:border-gray-700 hover:bg-transparent">
                             <TableHead className="w-[300px] text-gray-700 dark:text-gray-200 font-bold">Module Name</TableHead>
                             <TableHead className="text-center text-gray-700 dark:text-gray-200 font-bold">View</TableHead>
@@ -170,7 +170,7 @@ const UserAccessPage = () => {
                 <div className="flex justify-end pt-4">
                     <Button 
                         onClick={handleSave}
-                        className="bg-[#1F618D] hover:bg-[#154360] text-white dark:bg-blue-700 dark:hover:bg-blue-800 w-40"
+                        className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white dark:bg-[#0f7396] dark:hover:bg-[#0b5c7a] w-40"
                     >
                         <Save className="w-4 h-4 mr-2" />
                         Save Changes

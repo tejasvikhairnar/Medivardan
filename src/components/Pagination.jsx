@@ -9,14 +9,14 @@ export function Pagination({
   className = "",
 }) {
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
-  
+
   // Logic to show limited page numbers if there are too many pages
   const getVisiblePages = () => {
     if (totalPages <= 7) return pages;
-    
+
     if (currentPage <= 4) return [...pages.slice(0, 5), '...', totalPages];
     if (currentPage >= totalPages - 3) return [1, '...', ...pages.slice(totalPages - 5)];
-    
+
     return [1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages];
   };
 
@@ -29,7 +29,7 @@ export function Pagination({
         size="icon"
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="w-8 h-8"
+        className="w-9 h-9 rounded-lg border-gray-300"
       >
         <ChevronLeft className="h-4 w-4" />
       </Button>
@@ -43,7 +43,10 @@ export function Pagination({
               variant={currentPage === page ? "default" : "outline"}
               size="sm"
               onClick={() => onPageChange(page)}
-              className={`w-8 h-8 p-0 ${currentPage === page ? 'bg-orange-600 hover:bg-orange-700' : ''}`}
+              className={`w-9 h-9 p-0 rounded-lg text-sm font-medium transition-all ${currentPage === page
+                  ? 'bg-orange-600 hover:bg-orange-700 text-white border-orange-600'
+                  : 'bg-white hover:bg-gray-100 text-gray-700 border-gray-300'
+                }`}
             >
               {page}
             </Button>
@@ -56,7 +59,7 @@ export function Pagination({
         size="icon"
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="w-8 h-8"
+        className="w-9 h-9 rounded-lg border-gray-300"
       >
         <ChevronRight className="h-4 w-4" />
       </Button>

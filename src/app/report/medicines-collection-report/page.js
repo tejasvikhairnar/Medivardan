@@ -136,7 +136,7 @@ export default function MedicinesCollectionReportPage() {
                 className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700"
                 />
             </div>
-             <Button className="bg-[#D35400] hover:bg-[#A04000] text-white px-8 font-medium shadow-sm transition-all w-full md:w-auto h-10 mt-5">
+             <Button className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-8 font-medium shadow-sm transition-all w-full md:w-auto h-10 mt-5">
               Search
             </Button>
         </div>
@@ -152,8 +152,8 @@ export default function MedicinesCollectionReportPage() {
       {/* Table */}
       <div className="border border-gray-200 dark:border-gray-700 rounded-t-lg overflow-hidden">
         <Table>
-          <TableHeader className="bg-[#E8F8F5] dark:bg-gray-800">
-            <TableRow className="hover:bg-[#E8F8F5] dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
+          <TableHeader className="bg-[#0f7396]/10 dark:bg-gray-800">
+            <TableRow className="hover:bg-[#0f7396]/10 dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
               <TableHead className="font-bold text-gray-700 dark:text-gray-300 w-[60px]">Sr No.</TableHead>
               <TableHead className="font-bold text-gray-700 dark:text-gray-300">Clinic Name</TableHead>
               <TableHead className="font-bold text-gray-700 dark:text-gray-300">Doctor Name</TableHead>

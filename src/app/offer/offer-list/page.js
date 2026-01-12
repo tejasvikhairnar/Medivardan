@@ -270,7 +270,7 @@ export default function OfferList() {
                     <div>
                          <Button 
                             type="button" 
-                            className="bg-[#1E6B8C] hover:bg-[#15526d] text-white"
+                            className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white"
                             onClick={() => document.getElementById('file-upload').click()}
                          >
                             Upload Image
@@ -279,7 +279,7 @@ export default function OfferList() {
                 </div>
 
                 <div className="flex justify-center pt-8 gap-4">
-                    <Button type="submit" className="bg-[#5DADE2] hover:bg-[#3498DB] text-white px-12 py-2 text-lg">SUBMIT</Button>
+                    <Button type="submit" className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-12 py-2 text-lg">SUBMIT</Button>
                     <Button 
                         type="button" 
                         variant="secondary"
@@ -323,12 +323,12 @@ export default function OfferList() {
                 <SelectItem value="Default Offer">Default Offer</SelectItem>
                 </SelectContent>
             </Select>
-             <Button className="bg-[#D35400] hover:bg-[#A04000] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap">
+             <Button className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap">
                 Search
             </Button>
               <Button 
                 onClick={handleAddNew}
-                className="bg-[#1E6B8C] hover:bg-[#15526d] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap"
+                className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap"
             >
                 Add New
             </Button>
@@ -338,8 +338,8 @@ export default function OfferList() {
       {/* Table */}
        <div className="border border-gray-200 dark:border-gray-700 rounded-t-lg overflow-hidden overflow-x-auto">
         <Table>
-          <TableHeader className="bg-[#E8F8F5] dark:bg-gray-800">
-            <TableRow className="hover:bg-[#E8F8F5] dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
+          <TableHeader className="bg-[#0f7396]/10 dark:bg-gray-800">
+            <TableRow className="hover:bg-[#0f7396]/10 dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
               <TableHead className="font-bold text-gray-700 dark:text-gray-300 w-[60px]">Sr. No.</TableHead>
               <TableHead className="font-bold text-gray-700 dark:text-gray-300">Offer Title</TableHead>
               <TableHead className="font-bold text-gray-700 dark:text-gray-300">Offer Type Name</TableHead>

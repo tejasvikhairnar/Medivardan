@@ -375,7 +375,7 @@ export default function PaymentCollectionPage() {
         <div className="flex justify-center gap-4 pt-6">
           <Button
             type="submit"
-            className="bg-[#D35400] hover:bg-[#A04000] text-white min-w-[150px] font-bold shadow-md"
+            className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white min-w-[150px] font-bold shadow-md"
           >
             Submit Payment
           </Button>

@@ -144,14 +144,14 @@ export default function FinanceReconciliationPage() {
         <div className="md:col-span-3 flex gap-2">
             <Button
                 size="sm"
-                className="bg-[#D35400] hover:bg-[#A04000] text-white px-6 h-9 rounded-md"
+                className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 h-9 rounded-md"
             >
                 Search
             </Button>
             <Button
                 size="sm"
                 onClick={handleClear}
-                className="bg-[#D35400] hover:bg-[#A04000] text-white px-6 h-9 rounded-md"
+                className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 h-9 rounded-md"
             >
                 Clear
             </Button>
@@ -167,8 +167,8 @@ export default function FinanceReconciliationPage() {
       <div className="border border-gray-200 dark:border-gray-700 rounded-sm overflow-hidden bg-white dark:bg-gray-900 shadow-sm">
         <div className="overflow-x-auto">
             <Table>
-              <TableHeader className="bg-[#E8F8F5] dark:bg-gray-800">
-                <TableRow className="border-b border-gray-100 dark:border-gray-700 hover:bg-[#E8F8F5] dark:hover:bg-gray-800">
+              <TableHeader className="bg-[#0f7396]/10 dark:bg-gray-800">
+                <TableRow className="border-b border-gray-100 dark:border-gray-700 hover:bg-[#0f7396]/10 dark:hover:bg-gray-800">
                   <TableHead className="text-xs font-bold text-gray-700 dark:text-gray-300 h-10 w-12">Sr. No.</TableHead>
                   <TableHead className="text-xs font-bold text-gray-700 dark:text-gray-300 h-10 w-32"></TableHead> 
                   <TableHead className="text-xs font-bold text-gray-700 dark:text-gray-300 h-10">Clinic Name</TableHead>
@@ -190,7 +190,7 @@ export default function FinanceReconciliationPage() {
                       <TableCell className="py-2">
                         <Button
                             size="sm"
-                            className="bg-[#1E6B8C] hover:bg-[#155a75] text-white text-[10px] h-7 px-2 w-full rounded-sm"
+                            className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white text-[10px] h-7 px-2 w-full rounded-sm"
                         >
                             Add Reconciliations
                         </Button>

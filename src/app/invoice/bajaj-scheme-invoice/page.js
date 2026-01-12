@@ -237,14 +237,14 @@ export default function BajajSchemeInvoicePage() {
         <div className="md:col-span-3 flex gap-2">
           <Button
             size="sm"
-            className="bg-[#D35400] hover:bg-[#A04000] text-white px-6 h-9 rounded-md"
+            className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 h-9 rounded-md"
           >
             Search
           </Button>
           <Button
             size="sm"
             onClick={clearFilters}
-            className="bg-[#D35400] hover:bg-[#A04000] text-white px-6 h-9 rounded-md"
+            className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 h-9 rounded-md"
           >
             Clear
           </Button>
@@ -260,8 +260,8 @@ export default function BajajSchemeInvoicePage() {
       <div className="border border-gray-200 dark:border-gray-700 rounded-sm overflow-hidden bg-white dark:bg-gray-900 shadow-sm">
         <div className="overflow-x-auto">
           <Table>
-            <TableHeader className="bg-[#E8F8F5] dark:bg-gray-800">
-              <TableRow className="border-b border-gray-100 dark:border-gray-700 hover:bg-[#E8F8F5] dark:hover:bg-gray-800">
+            <TableHeader className="bg-[#0f7396]/10 dark:bg-gray-800">
+              <TableRow className="border-b border-gray-100 dark:border-gray-700 hover:bg-[#0f7396]/10 dark:hover:bg-gray-800">
                 <TableHead className="text-xs font-bold text-gray-700 dark:text-gray-300 h-10">Sr. No.</TableHead>
                 <TableHead className="text-xs font-bold text-gray-700 dark:text-gray-300 h-10">Clinic Name</TableHead>
                 <TableHead className="text-xs font-bold text-gray-700 dark:text-gray-300 h-10">Patient Code</TableHead>

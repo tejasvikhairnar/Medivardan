@@ -826,7 +826,7 @@ export default function Sidebar({ open }) {
               width={0} 
               height={0} 
               sizes="100vw"
-              style={{ width: 'auto', height: '25px' }}
+              style={{ width: 'auto', height: '45px' }}
               alt="MediVardaan Logo" 
               className="object-contain dark:hidden" 
             />
@@ -835,7 +835,7 @@ export default function Sidebar({ open }) {
               width={0} 
               height={0} 
               sizes="100vw"
-              style={{ width: 'auto', height: '25px' }}
+              style={{ width: 'auto', height: '45px' }}
               alt="MediVardaan Logo" 
               className="object-contain hidden dark:block dark:brightness-0 dark:invert dark:opacity-80" 
             />
@@ -847,7 +847,7 @@ export default function Sidebar({ open }) {
               width={0} 
               height={0} 
               sizes="100vw"
-              style={{ width: 'auto', height: '35px' }}
+              style={{ width: 'auto', height: '45px' }}
               alt="MediVardaan Logo" 
               className="object-contain dark:hidden" 
             />
@@ -856,7 +856,7 @@ export default function Sidebar({ open }) {
               width={0} 
               height={0} 
               sizes="100vw"
-              style={{ width: 'auto', height: '35px' }}
+              style={{ width: 'auto', height: '45px' }}
               alt="MediVardaan Logo" 
               className="object-contain hidden dark:block dark:brightness-0 dark:invert dark:opacity-80" 
             />

@@ -106,7 +106,7 @@ export default function TicketDetails() {
 
                        <div className="pt-4">
                          <Button 
-                            className="bg-green-600 hover:bg-green-700 text-white px-8"
+                            className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-8"
                             onClick={handleUpdateStatus}
                          >
                             Submit
@@ -166,7 +166,7 @@ export default function TicketDetails() {
             />
         </div>
         {/* Search button logic is implicit in filters currently but a button can trigger a re-fetch if this was real API */}
-         <Button className="bg-[#D35400] hover:bg-[#A04000] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap">
+         <Button className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap">
                 Search
         </Button>
       </div>
@@ -178,8 +178,8 @@ export default function TicketDetails() {
       {/* Table */}
        <div className="border border-gray-200 dark:border-gray-700 rounded-t-lg overflow-hidden overflow-x-auto">
         <Table>
-          <TableHeader className="bg-[#E8F8F5] dark:bg-gray-800">
-            <TableRow className="hover:bg-[#E8F8F5] dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
+          <TableHeader className="bg-[#0f7396]/10 dark:bg-gray-800">
+            <TableRow className="hover:bg-[#0f7396]/10 dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
               <TableHead className="font-bold text-gray-700 dark:text-gray-300 w-[60px]">Sr. No.</TableHead>
               <TableHead className="font-bold text-gray-700 dark:text-gray-300 w-[100px]">Date</TableHead>
               <TableHead className="font-bold text-gray-700 dark:text-gray-300">User Name</TableHead>
@@ -208,7 +208,7 @@ export default function TicketDetails() {
                 <TableCell className="dark:text-gray-300">
                     <Button 
                         onClick={() => handleSelect(row)}
-                        className="bg-green-700 hover:bg-green-800 text-white h-8 text-xs px-4"
+                        className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white h-8 text-xs px-4"
                     >
                         Select
                     </Button>

@@ -364,7 +364,7 @@ header: key.includes("W2") || key.includes("M2") || key.includes("Q2") || key.in
                 setPeriod(p.id);
                 dispatch(setHeaderData({ region: null, period: p.id }));
               }}
-              className="rounded-full px-4"
+              className={`rounded-full px-4 ${period === p.id ? 'bg-[#0f7396] hover:bg-[#0b5c7a]' : 'text-[#0f7396] border-[#0f7396] hover:bg-[#0f7396]/10'}`}
             >
               {p.label}
             </Button>
@@ -532,7 +532,7 @@ header: key.includes("W2") || key.includes("M2") || key.includes("Q2") || key.in
            <Table className="overflow-x-auto">
       {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
       <TableHeader>
-        <TableRow>
+        <TableRow className="bg-[#0f7396]/10 hover:bg-[#0f7396]/20">
           <TableHead className="w-[100px]">Branch</TableHead>
           <TableHead className="text-right">Patients</TableHead>
           <TableHead className="text-right">Procedures</TableHead>

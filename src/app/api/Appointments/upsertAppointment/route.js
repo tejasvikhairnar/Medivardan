@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
-import axiosClient from '@/lib/axiosClient';
-
-// Fallback token from User's CURL
-const FALLBACK_TOKEN = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiMSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6IkFkbWluIiwiSXNDdXN0b21lciI6ImZhbHNlIiwiZXhwIjoxNzY3MTAwODE3LCJpc3MiOiJodHRwczovL215d2ViYXBpLmNvbSIsImF1ZCI6Imh0dHBzOi8vbXl3ZWJhcGkuY29tIn0.ed2joGgBAt2S4M4NZs0dl24N-rFbyCr9czX8GtnwGTo";
+import { API_CONFIG } from '@/config/api.config';
+import { authService } from '@/services/authService';
 
 export async function POST(request) {
   try {
@@ -10,22 +8,56 @@ export async function POST(request) {
 
     console.log('Upserting appointment with data:', JSON.stringify(body, null, 2));
 
-    // Force Auth Token as per previous success
-    let authHeader = `Bearer ${FALLBACK_TOKEN}`;
+    // Get Auth Token
+    let token;
+    try {
+        token = await authService.getToken();
+    } catch (authError) {
+        console.error('Failed to get auth token:', authError);
+        return NextResponse.json(
+            { error: 'Authentication failed', details: authError.message },
+            { status: 401 }
+        );
+    }
 
-    const payload = body;
-
-    const apiUrl = 'https://bmetrics.in/APIDemo/api/Appointment/UpsertAppointment';
+    const { BASE_URL } = API_CONFIG;
+    // Assuming the endpoint for upserting appointments is /Appointment/UpsertAppointment based on previous code
+    const endpoint = '/Appointment/UpsertAppointment';
+    const apiUrl = `${BASE_URL}${endpoint}`;
     
-    const response = await fetch(apiUrl, {
+    let response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
-            'Authorization': authHeader,
+            'Authorization': `Bearer ${token}`,
             'accept': 'text/plain',
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(body)
     });
+
+    // Handle 401 - Refresh Token and Retry
+    if (response.status === 401) {
+        console.log('Received 401, clearing token cache and retrying...');
+        authService.clearToken();
+        try {
+            token = await authService.getToken();
+            response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'accept': 'text/plain',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            });
+        } catch (retryError) {
+             console.error('Retry failed:', retryError);
+             return NextResponse.json(
+                { error: 'Authentication retry failed', details: retryError.message },
+                { status: 401 }
+            );
+        }
+    }
 
     console.log('Upsert response status:', response.status);
     

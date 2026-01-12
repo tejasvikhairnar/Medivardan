@@ -200,7 +200,7 @@ export default function PatientSearchPage() {
                 <Button
                   onClick={handleExcelUpload}
                   variant="outline"
-                  className="bg-blue-600 hover:bg-blue-700 text-white border-blue-600 px-6"
+                  className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white border-[#0f7396] px-6"
                 >
                   Excel upload
                 </Button>
@@ -217,7 +217,7 @@ export default function PatientSearchPage() {
               <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-green-100 dark:bg-green-900/20">
+                    <tr className="bg-[#0f7396]/10 dark:bg-[#0f7396]/20">
                       <th className="p-3 text-left font-medium text-gray-700 dark:text-gray-300">Sr. No.</th>
                       <th className="p-3 text-left font-medium text-gray-700 dark:text-gray-300">Case Paper No.</th>
                       <th className="p-3 text-left font-medium text-gray-700 dark:text-gray-300">Name</th>

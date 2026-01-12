@@ -8,10 +8,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, MinusSquare, Trash2 } from "lucide-react";
+import { Plus, MinusSquare, Trash2, Save, Loader2 } from "lucide-react";
+import { upsertConsultation } from "@/api/client/consultation";
+import { toast } from "sonner";
 
 export default function ConsultationPage() {
   const printRef = useRef(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [form, setForm] = useState({
     height: "",
@@ -28,6 +31,7 @@ export default function ConsultationPage() {
   const patientInfo = {
     name: "Aman Sharma",
     id: "PT-2025-00123",
+    patientId: 101, // Mock ID
     age: 29,
     gender: "Male",
     contact: "+91 98765 43210",
@@ -39,6 +43,7 @@ export default function ConsultationPage() {
 
   const clinicInfo = {
     name: "MEDIVARDAAN",
+    id: 1, // Mock ID
     regNo: "REG-456789",
     address: "12, Harmony Street, Pune, Maharashtra",
     phone: "+91 20 1234 5678",
@@ -46,14 +51,15 @@ export default function ConsultationPage() {
 
   const doctorInfo = {
     name: "Dr. Kavita Rao",
+    id: 32, // Mock ID
     qualification: "BDS, MDS (Prosthodontics)",
     regDate: "2020-03-15",
     signature: "Dr. Kavita Rao",
   };
 
   const [ongoingTreatments, setOngoingTreatments] = useState([
-    { name: "Scaling" },
-    { name: "Cavity Filling" },
+    { name: "Scaling", id: 1 },
+    { name: "Cavity Filling", id: 2 },
   ]);
 
   const [ongoingMedicines, setOngoingMedicines] = useState([
@@ -118,7 +124,7 @@ export default function ConsultationPage() {
 
   const addTreatment = () => {
     if (newTreatment.trim()) {
-      setOngoingTreatments([...ongoingTreatments, { name: newTreatment }]);
+      setOngoingTreatments([...ongoingTreatments, { name: newTreatment, id: 0 }]); // ID 0 for new
       setNewTreatment("");
     }
   };
@@ -223,13 +229,82 @@ export default function ConsultationPage() {
   setTimeout(() => win.print(), 300);
 };
 
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    try {
+        // Prepare Payload based on schema provided
+        const payload = {
+            consultationID: 0, // 0 for new
+            clinicId: clinicInfo.id,
+            patientId: patientInfo.patientId,
+            doctorId: doctorInfo.id,
+            consultationDate: new Date().toISOString(),
+            height: form.height,
+            weight: form.weight,
+            bloodPressure: form.bloodPressure,
+            pulseRate: form.pulseRate,
+            diagnosisDetails: form.diagnosis,
+            notes: form.notes,
+            createBy: 1, // Start with assumed user ID 1
+            
+            // Treatments
+            ongoingTreatments: ongoingTreatments.map(t => ({
+                consultationTreatmentID: 0,
+                treatmentID: t.id || 0, // Map to ID if existing, else 0
+                consultationId: 0
+            })),
+
+            // Medicines
+            medicines: ongoingMedicines.map(m => ({
+                consultationID: 0,
+                medicinesTypeId: 0, // Needs mapping from string type to ID if backend requires it. Sending 0 for now.
+                medicinesName: m.name,
+                dose: parseFloat(m.dose) || 0, // Ensure number
+                noOfDays: parseInt(m.noOfDays) || 0, // Ensure number
+                morning: m.morning ? 1 : 0,
+                afternoon: m.afternoon ? 1 : 0,
+                evening: m.evening ? 1 : 0,
+                strip: parseFloat(m.strip) || 0,
+                remarks: m.remarks
+            })),
+
+            // Lab Tests
+            labTests: form.labTests.map(testName => ({
+                consultationLabTestID: 0,
+                labID: 0, // If we had a lab ID we'd use it, else 0
+                consultationId: 0,
+                reportName: testName,
+                remarks: "",
+                reportStatus: "Pending"
+            }))
+        };
+
+        console.log("Submitting Consultation Payload:", payload);
+
+        const result = await upsertConsultation(payload);
+        
+        if (result && (result.success !== false)) {
+             toast.success("Consultation saved successfully!");
+             // Optional: Reset form or redirect
+        } else {
+             toast.error("Failed to save consultation.");
+        }
+
+    } catch (error) {
+        console.error("Submission error:", error);
+        toast.error("An error occurred while saving.");
+    } finally {
+        setIsSubmitting(false);
+    }
+  };
+
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-6 px-4">
       <div className="max-w-6xl mx-auto space-y-6" ref={printRef}>
         {/* Clinic & Doctor Details */}
         <Card className="border border-gray-200 dark:border-gray-700 shadow-md bg-white dark:bg-gray-800">
-          <CardHeader className="p-6 bg-[#1E6B8C] border-b border-[#1E6B8C]">
+          <CardHeader className="p-6 bg-[#0f7396] border-b border-[#0f7396]">
             <div className="flex items-start justify-between">
               <div>
                 <h1 className="text-2xl font-bold text-white">{clinicInfo.name}</h1>
@@ -266,7 +341,7 @@ export default function ConsultationPage() {
                 <p><span className="font-medium">Last Diagnosis:</span> {patientInfo.lastDiagnosis}</p>
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button variant="outline" data-no-print size="sm" className="print:hidden border-[#4DB8AC] text-[#4DB8AC] hover:bg-[#4DB8AC] hover:text-white">
+                    <Button variant="outline" data-no-print size="sm" className="print:hidden border-[#0f7396] text-[#0f7396] hover:bg-[#0f7396] hover:text-white">
                       View Details
                     </Button>
                   </DialogTrigger>
@@ -289,7 +364,7 @@ export default function ConsultationPage() {
         {/* Consultation Section */}
         <Card className="border border-gray-200 dark:border-gray-700 shadow-md bg-white dark:bg-gray-800">
           <CardHeader className="p-5 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-            <p className="text-xl font-semibold text-[#1E6B8C] dark:text-[#4DB8AC]">
+            <p className="text-xl font-semibold text-[#0f7396] dark:text-[#0f7396]">
               Consultation Details
             </p>
           </CardHeader>
@@ -336,7 +411,7 @@ export default function ConsultationPage() {
                     className="w-48 bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:ring-2 focus:ring-[#4DB8AC] focus:border-[#4DB8AC]"
                     data-no-print
                   />
-                  <Button onClick={addTreatment} data-no-print className="bg-[#4DB8AC] hover:bg-[#3a9d92] text-white"><Plus className="h-4 w-4"/></Button>
+                  <Button onClick={addTreatment} data-no-print className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white"><Plus className="h-4 w-4"/></Button>
                 </div>
               </div>
               <ul className="mt-2 space-y-2">
@@ -359,12 +434,12 @@ export default function ConsultationPage() {
 
             {/* Medicines */}
             <div className="space-y-3">
-              <Label className="text-lg font-semibold text-[#1E6B8C] dark:text-[#4DB8AC]">Medicines</Label>
+              <Label className="text-lg font-semibold text-[#0f7396] dark:text-[#0f7396]">Medicines</Label>
 
               <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-green-100 dark:bg-green-900/20">
+                    <tr className="bg-[#0f7396]/10 dark:bg-[#0f7396]/20">
                       <th className="p-2 text-left font-medium text-gray-700 dark:text-gray-300 min-w-[140px]">Type</th>
                       <th className="p-2 text-center font-medium text-gray-700 dark:text-gray-300 min-w-[80px]">In House</th>
                       <th className="p-2 text-left font-medium text-gray-700 dark:text-gray-300 min-w-[200px]">Medicines</th>
@@ -553,7 +628,7 @@ export default function ConsultationPage() {
                 <Button
                   type="button"
                   onClick={addMedicine}
-                  className="bg-orange-600 hover:bg-orange-700 text-white"
+                  className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white"
                   data-no-print
                 >
                   Add New
@@ -591,7 +666,7 @@ export default function ConsultationPage() {
                       className="w-64 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-[#4DB8AC] focus:border-[#4DB8AC]"
                       data-no-print
                     />
-                    <Button onClick={addLabTest} data-no-print className="bg-[#4DB8AC] hover:bg-[#3a9d92] text-white"><Plus className="h-4 w-4"/></Button>
+                    <Button onClick={addLabTest} data-no-print className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white"><Plus className="h-4 w-4"/></Button>
                   </div>
                 </div>
               </div>
@@ -668,7 +743,7 @@ export default function ConsultationPage() {
                     className="bg-white dark:bg-gray-900/50 border-gray-300 dark:border-teal-800/50 text-gray-900 dark:text-teal-50 focus:ring-2 focus:ring-[#4DB8AC] focus:border-[#4DB8AC] dark:focus:border-teal-500"
                   />
                 </div>
-                <Button className="w-full mt-4 print:hidden bg-[#4DB8AC] hover:bg-[#3a9d92] text-white dark:bg-teal-600 dark:hover:bg-teal-700 dark:shadow-lg dark:shadow-teal-900/30" data-no-print>Book Appointment</Button>
+                <Button className="w-full mt-4 print:hidden bg-[#0f7396] hover:bg-[#0b5c7a] text-white dark:bg-[#0f7396] dark:hover:bg-[#0b5c7a] dark:shadow-lg dark:shadow-teal-900/30" data-no-print>Book Appointment</Button>
               </div>
             </div>
 
@@ -677,7 +752,24 @@ export default function ConsultationPage() {
               <Button variant="outline" data-no-print onClick={handlePrint} className="px-6 border-gray-300 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700">
                 Print
               </Button>
-              <Button data-no-print className="px-8 bg-[#4DB8AC] hover:bg-[#3a9d92] text-white">Submit</Button>
+              <Button 
+                onClick={handleSubmit} 
+                disabled={isSubmitting}
+                data-no-print 
+                className="px-8 bg-[#0f7396] hover:bg-[#0b5c7a] text-white"
+              >
+                {isSubmitting ? (
+                    <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Saving...
+                    </>
+                ) : (
+                    <>
+                    <Save className="w-4 h-4 mr-2" />
+                    Submit
+                    </>
+                )}
+              </Button>
             </div>
           </CardContent>
         </Card>

@@ -2,18 +2,11 @@ import { NextResponse } from 'next/server';
 import { API_CONFIG } from '@/config/api.config';
 import { authService } from '@/services/authService';
 
-export async function GET(request) {
+export async function POST(request) {
   try {
-    const { searchParams } = new URL(request.url);
-    
-    // Extract query parameters
-    const mode = searchParams.get('Mode') || searchParams.get('mode');
-    const doctorID = searchParams.get('DoctorID') || searchParams.get('doctorID');
+    const body = await request.json();
 
-    // Construct query string for backend
-    const backendParams = new URLSearchParams();
-    if (mode) backendParams.append('Mode', mode);
-    if (doctorID && doctorID !== 'all' && doctorID !== '0') backendParams.append('DoctorID', doctorID);
+    console.log('Upserting consultation with data:', JSON.stringify(body, null, 2));
 
     // Get Auth Token
     let token;
@@ -28,19 +21,18 @@ export async function GET(request) {
     }
 
     const { BASE_URL } = API_CONFIG;
-    // Assuming the endpoint for getting appointments is /Appointment/GetAppointments based on previous code
-    // Ideally this should be in API_CONFIG.ENDPOINTS
-    const endpoint = '/Appointment/GetAppointments'; 
-    const apiUrl = `${BASE_URL}${endpoint}?${backendParams.toString()}`;
+    // Endpoint provided by user: /Consultation/UpsertConsultation
+    const endpoint = '/Consultation/UpsertConsultation';
+    const apiUrl = `${BASE_URL}${endpoint}`;
     
-    console.log('[DEBUG] Fetching appointments from:', apiUrl);
-
     let response = await fetch(apiUrl, {
-        method: 'GET',
+        method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
-            'accept': '*/*',
-        }
+            'accept': 'text/plain',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
     });
 
     // Handle 401 - Refresh Token and Retry
@@ -50,11 +42,13 @@ export async function GET(request) {
         try {
             token = await authService.getToken();
             response = await fetch(apiUrl, {
-                method: 'GET',
+                method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
-                    'accept': '*/*',
-                }
+                    'accept': 'text/plain',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
             });
         } catch (retryError) {
              console.error('Retry failed:', retryError);
@@ -65,14 +59,16 @@ export async function GET(request) {
         }
     }
 
-    console.log(`[DEBUG] Appointments API response status: ${response.status}`);
+    console.log('Upsert response status:', response.status);
     
     // Attempt to parse response
     const text = await response.text();
+
     let data;
     try {
         data = text ? JSON.parse(text) : {};
     } catch (e) {
+        // If not JSON, it might be a plain text ID or success message
         data = { message: text, success: response.ok };
     }
 
@@ -83,13 +79,18 @@ export async function GET(request) {
             { status: response.status }
         );
     }
+    
+    console.log('Consultation upsert successful, data:', data);
 
     return NextResponse.json(data);
-
   } catch (error) {
-    console.error('Error fetching appointments:', error.message);
+    console.error('Error upserting consultation:', error.message);
     return NextResponse.json(
-      { error: 'Failed to fetch appointments', details: error.message },
+      {
+        error: 'Failed to upsert consultation',
+        details: error.message,
+        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      },
       { status: 500 }
     );
   }

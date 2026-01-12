@@ -206,10 +206,10 @@ export default function PurchaseOrderPage() {
 
                 {/* Buttons */}
                 <div className="flex gap-2 w-full md:w-auto">
-                <Button className="bg-[#D35400] hover:bg-[#ba4a00] text-white px-6 h-10 shadow-sm transition-all">
+                <Button className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 h-10 shadow-sm transition-all">
                     Search
                 </Button>
-                <Button onClick={handleAddNew} className="bg-[#0056b3] hover:bg-[#004494] text-white px-4 h-10 shadow-sm transition-all">
+                <Button onClick={handleAddNew} className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-4 h-10 shadow-sm transition-all">
                     Add New Order
                 </Button>
                 </div>
@@ -223,8 +223,8 @@ export default function PurchaseOrderPage() {
             {/* Table */}
             <div className="border border-gray-200 dark:border-gray-700 rounded-t-lg overflow-hidden overflow-x-auto">
                 <Table>
-                <TableHeader className="bg-[#e6ffcc] dark:bg-[#e6ffcc]/20">
-                    <TableRow className="hover:bg-transparent border-gray-200 dark:border-gray-700">
+                <TableHeader className="bg-[#0f7396]/10 dark:bg-[#0f7396]/20">
+                    <TableRow className="hover:bg-[#0f7396]/10 border-gray-200 dark:border-gray-700">
                     <TableHead className="w-[60px] font-bold text-gray-800 dark:text-gray-200 border-r border-white dark:border-gray-600">
                         Sr. No.
                     </TableHead>
@@ -281,7 +281,7 @@ export default function PurchaseOrderPage() {
             <div className="flex justify-between items-center mt-4">
                 {/* Excel Export Icon */}
                 <div className="cursor-pointer" onClick={handleExport} title="Download Excel">
-                <div className="w-8 h-8 flex items-center justify-center bg-green-700 hover:bg-green-800 text-white rounded shadow transition-colors">
+                <div className="w-8 h-8 flex items-center justify-center bg-[#0f7396] hover:bg-[#0b5c7a] text-white rounded shadow transition-colors">
                     <FileSpreadsheet className="w-5 h-5" />
                 </div>
                 </div>
@@ -313,7 +313,7 @@ export default function PurchaseOrderPage() {
             </div>
             
             <div className="flex justify-center gap-4 pt-4">
-                <Button onClick={handleSubmit} className="bg-green-700 hover:bg-green-800 text-white min-w-[100px]">Submit</Button>
+                <Button onClick={handleSubmit} className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white min-w-[100px]">Submit</Button>
                 <Button onClick={handleCancel} variant="destructive" className="bg-[#0f7396] hover:bg-[#0b5c7a] min-w-[100px]">Cancel</Button>
             </div>
         </div>

@@ -221,7 +221,7 @@ export default function PaymentModeReportPage() {
             <div className="w-full md:w-auto flex gap-2">
                 <Button
                     onClick={handleSearch}
-                    className="bg-[#D35400] hover:bg-[#ba4a00] text-white px-8 h-10 w-full md:w-auto transition-colors"
+                    className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-8 h-10 w-full md:w-auto transition-colors"
                 >
                     Search
                 </Button>
@@ -243,7 +243,7 @@ export default function PaymentModeReportPage() {
       {/* Table */}
       <div className="border border-gray-200 dark:border-gray-700 rounded-t-lg overflow-x-auto">
         <Table className="w-full">
-          <TableHeader className="bg-[#e6ffcc] dark:bg-[#e6ffcc]/20">
+          <TableHeader className="bg-[#0f7396]/10 dark:bg-[#e6ffcc]/20">
             <TableRow className="hover:bg-transparent">
               <TableHead className="min-w-[100px] font-bold text-gray-800 dark:text-gray-200 border-r border-white dark:border-gray-600">Month</TableHead>
               <TableHead className="min-w-[100px] font-bold text-gray-800 dark:text-gray-200 border-r border-white dark:border-gray-600">Cash</TableHead>

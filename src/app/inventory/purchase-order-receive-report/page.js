@@ -187,7 +187,7 @@ export default function PurchaseOrderReceiveReportPage() {
         {/* Search Button */}
         <div className="w-full md:w-auto">
           <Button
-            className="bg-[#D35400] hover:bg-[#ba4a00] text-white px-8 h-10 w-full md:w-auto transition-colors"
+            className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-8 h-10 w-full md:w-auto transition-colors"
           >
             Search
           </Button>
@@ -202,8 +202,8 @@ export default function PurchaseOrderReceiveReportPage() {
       {/* Table */}
       <div className="border border-gray-200 dark:border-gray-700 rounded-t-lg overflow-hidden">
         <Table>
-          <TableHeader className="bg-[#e6ffcc] dark:bg-[#e6ffcc]/20">
-            <TableRow className="hover:bg-transparent">
+          <TableHeader className="bg-[#0f7396]/10 dark:bg-[#0f7396]/20">
+            <TableRow className="hover:bg-[#0f7396]/10">
               <TableHead className="w-[60px] font-bold text-gray-800 dark:text-gray-200 border-r border-white dark:border-gray-600">
                 Sr. No.
               </TableHead>
@@ -270,7 +270,7 @@ export default function PurchaseOrderReceiveReportPage() {
       <div className="flex justify-between items-center mt-4">
         {/* Excel Export */}
         <div className="cursor-pointer" onClick={handleExport} title="Download Excel">
-           <div className="w-8 h-8 flex items-center justify-center bg-green-700 hover:bg-green-800 text-white rounded shadow transition-colors">
+           <div className="w-8 h-8 flex items-center justify-center bg-[#0f7396] hover:bg-[#0b5c7a] text-white rounded shadow transition-colors">
             <FileSpreadsheet className="w-5 h-5" />
            </div>
         </div>

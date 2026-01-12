@@ -182,7 +182,7 @@ export default function ViewInvoicePage() {
                 <div className="flex gap-3 w-full md:w-auto">
                     <Button
                     onClick={handleSearch}
-                    className="flex-1 md:flex-none bg-[#D35400] hover:bg-[#A04000] text-white h-10 px-6 shadow-sm"
+                    className="flex-1 md:flex-none bg-[#0f7396] hover:bg-[#0b5c7a] text-white h-10 px-6 shadow-sm"
                     >
                     <Search className="w-4 h-4 mr-2" />
                     Search
@@ -216,8 +216,8 @@ export default function ViewInvoicePage() {
                </div>
             ) : (
             <Table>
-              <TableHeader className="bg-[#E8F8F5] dark:bg-gray-800">
-                <TableRow className="border-b border-gray-100 dark:border-gray-700 hover:bg-[#E8F8F5] dark:hover:bg-gray-800">
+              <TableHeader className="bg-[#0f7396]/10 dark:bg-gray-800">
+                <TableRow className="border-b border-gray-100 dark:border-gray-700 hover:bg-[#0f7396]/10 dark:hover:bg-gray-800">
                   <TableHead className="font-bold text-gray-700 dark:text-gray-300 h-10">Sr. No.</TableHead>
                   <TableHead className="font-bold text-gray-700 dark:text-gray-300 h-10">Invoice No.</TableHead>
                   <TableHead className="font-bold text-gray-700 dark:text-gray-300 h-10">Clinic</TableHead>
@@ -235,7 +235,7 @@ export default function ViewInvoicePage() {
                   currentItems.map((inv, index) => (
                     <TableRow key={inv.invoiceID || index} className="border-b border-gray-50 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 text-xs">
                       <TableCell className="py-2 text-gray-600 dark:text-gray-300">{indexOfFirstItem + index + 1}</TableCell>
-                      <TableCell className="py-2 font-medium text-[#D35400] cursor-pointer hover:underline">{inv.invoiceNo}</TableCell>
+                      <TableCell className="py-2 font-medium text-[#0f7396] cursor-pointer hover:underline">{inv.invoiceNo}</TableCell>
                       <TableCell className="py-2 text-gray-600 dark:text-gray-300">{inv.clinicName}</TableCell>
                       <TableCell className="py-2 text-xs font-mono text-gray-500">{inv.patientCode}</TableCell>
                       <TableCell className="py-2 font-medium text-gray-700 dark:text-gray-200 uppercase">{inv.patientName}</TableCell>
@@ -247,7 +247,7 @@ export default function ViewInvoicePage() {
                         <Button
                           size="sm"
                           variant="outline"
-                          className="h-7 text-xs hover:bg-[#D35400] hover:text-white border-[#D35400]/20 text-[#D35400]"
+                          className="h-7 text-xs hover:bg-[#0f7396] hover:text-white border-[#0f7396]/20 text-[#0f7396]"
                         >
                           Print
                         </Button>

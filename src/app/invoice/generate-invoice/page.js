@@ -172,8 +172,9 @@ export default function GenerateInvoicePage() {
                         </div>
                    </div>
 
+
                    <Button 
-                        className="w-full bg-[#D35400] hover:bg-[#A04000] text-white font-bold py-3 mt-6 shadow-md transition-all active:scale-95"
+                        className="w-full bg-[#0f7396] hover:bg-[#0b5c7a] text-white font-bold py-3 mt-6 shadow-md transition-all active:scale-95"
                     >
                         GENERATE INVOICE
                     </Button>

@@ -65,7 +65,7 @@ export default function GenericTable({ columns, data,showSorting=true,showPagina
         return (
           <TableHead
             key={header.id}
-            className={`${isRplColumn ? "text-left" : "text-right"} border border-gray-300 dark:border-gray-700`}
+            className={`${isRplColumn ? "text-left" : "text-right"} border border-gray-300 dark:border-gray-700 bg-[#0f7396]/10 dark:bg-[#0f7396]/20`}
           >
             {header.isPlaceholder ? null : column.getCanSort() && showSorting ? (
               <Button

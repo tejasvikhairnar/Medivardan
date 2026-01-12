@@ -102,7 +102,7 @@ export default function ConsentPage() {
              </div>
 
              <div className="space-y-2">
-                 <Button className="bg-[#D35400] hover:bg-[#A04000] text-white px-6 w-full">
+                 <Button className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 w-full">
                     Search
                  </Button>
              </div>
@@ -111,7 +111,7 @@ export default function ConsentPage() {
 
       {/* Total Count & Add Button */}
       <div className="flex justify-between items-center">
-         <Button className="bg-[#1F618D] hover:bg-[#154360] text-white px-6">
+         <Button className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6">
             Add New Consent
          </Button>
          <div className="font-semibold text-foreground">

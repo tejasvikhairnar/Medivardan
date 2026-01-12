@@ -168,7 +168,8 @@ export default function AddLeadFormPage() {
 
       // Debug: Log the transformed data
       console.log('Form data before transformation:', formData);
-      console.log('Transformed API data:', JSON.stringify(apiData, null, 2));
+      console.log('Transformed API data (Browser):', apiData); // Log object directly for inspection
+      console.log('Transformed API data (JSON):', JSON.stringify(apiData, null, 2));
 
       // Call API to add/update lead
       const response = await upsertLead(apiData);

@@ -1,18 +1,10 @@
 import { NextResponse } from 'next/server';
 import axiosClient from '@/lib/axiosClient';
+import authService from '@/services/authService'; // Use authService
 
 // Flag to enable/disable mock data fallback for UpsertLeads endpoint
 // Set to false to always try real API first
 const USE_MOCK_FALLBACK = false;
-
-// Fallback token from User's CURL
-const FALLBACK_TOKEN = "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiMSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6IkFkbWluIiwiSXNDdXN0b21lciI6ImZhbHNlIiwiZXhwIjoxNzY3MTAwODE3LCJpc3MiOiJodHRwczovL215d2ViYXBpLmNvbSIsImF1ZCI6Imh0dHBzOi8vbXl3ZWJhcGkuY29tIn0.ed2joGgBAt2S4M4NZs0dl24N-rFbyCr9czX8GtnwGTo";
-
-// Function to get authentication token
-async function getAuthToken() {
-  // Return the provided JWT token directly
-  return FALLBACK_TOKEN;
-}
 
 export async function POST(request) {
   try {
@@ -20,22 +12,39 @@ export async function POST(request) {
 
     console.log('Upserting lead with data:', JSON.stringify(body, null, 2));
 
-    // Extract auth header from incoming request to pass to backend
-    // DEBUG: FORCE THE FALLBACK TOKEN from CURL to avoid stale local storage tokens causing 500s
-    let authHeader = `Bearer ${FALLBACK_TOKEN}`;
-    console.log('[DEBUG] Forcing Auth Token from CURL:', authHeader.substring(0, 20) + '...');
-
-    /* 
-    let authHeader = request.headers.get('authorization');
-
-    if (!authHeader) {
-        console.log('[DEBUG] No Authorization header found, using fallback token');
-        authHeader = `Bearer ${FALLBACK_TOKEN}`;
-    }
-    */
+    // Get dynamic token using authService
+    // This will handle login if needed
+    const token = await authService.getToken();
+    let authHeader = `Bearer ${token}`; 
+    console.log('[DEBUG] Using AuthService token');
 
     // Revert to Single Object (User said "nope" to Array)
     const payload = body;
+
+    console.log('[DEBUG] Outgoing Payload Status Fields:', {
+        Status: payload.Status,
+        status: payload.status,
+        PStatus: payload.PStatus,
+        PatientStatus: payload.PatientStatus,
+        PatientFollowup: payload.PatientFollowup,
+        LeadStatus: payload.LeadStatus
+    });
+    
+    console.log('[DEBUG] Outgoing Payload Status Fields:', {
+        Status: payload.Status,
+        status: payload.status,
+        PStatus: payload.PStatus,
+        PatientStatus: payload.PatientStatus,
+        PatientFollowup: payload.PatientFollowup
+    });
+    
+    console.log('[DEBUG] Outgoing Payload Status Fields:', {
+        Status: payload.Status,
+        status: payload.status,
+        PStatus: payload.PStatus,
+        PatientStatus: payload.PatientStatus,
+        PatientFollowup: payload.PatientFollowup
+    });
 
     const apiUrl = 'https://bmetrics.in/APIDemo/api/Leads/UpsertLeads';
     
