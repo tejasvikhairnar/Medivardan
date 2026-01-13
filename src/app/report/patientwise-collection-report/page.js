@@ -31,42 +31,127 @@ export default function PatientwiseCollectionReportPage() {
   const itemsPerPage = 10;
 
   // Mock data matching the screenshot
+  // Mock data matching the screenshot
   const [reportData, setReportData] = useState([
     {
       id: 1,
-      clinic: "Vashi",
-      date: "2019-03-01",
-      receiptNo: "RNO/VSH/18-19/669",
-      patientName: "mr. vijay",
-      mobile: "9988998899",
-      treatment: "CONSULTAION",
-      doctor: "Dr.R.T.PATIL",
-      paidAmount: "500",
+      clinic: "Vile Parle",
+      doctor: "Dr.Riddhi Rathi",
+      patientCode: "P115356",
+      patientName: "Sikander Chohan",
+      mobile: "9619676685",
+      grandAmount: "9000.00",
+      paidAmount: "3000.00",
+      pendingAmount: "6000.00",
       mode: "Cash",
     },
     {
       id: 2,
-      clinic: "Vashi",
-      date: "2019-03-02",
-      receiptNo: "RNO/VSH/18-19/670",
-      patientName: "Mrs. smita",
-      mobile: "7766554433",
-      treatment: "FOLLOW UP",
-      doctor: "Dr.R.T.PATIL",
-      paidAmount: "300",
-      mode: "Card",
+      clinic: "Vasai West",
+      doctor: "Dr.Zoya A",
+      patientCode: "P50914",
+      patientName: "sakina khan",
+      mobile: "9503238769",
+      grandAmount: "2000.00",
+      paidAmount: "2000.00",
+      pendingAmount: "0.00",
+      mode: "Cash",
     },
     {
         id: 3,
-        clinic: "Andheri",
-        date: "2019-03-03",
-        receiptNo: "RNO/AND/18-19/671",
-        patientName: "mr. rahul",
-        mobile: "9988776655",
-        treatment: "CONSULTAION",
-        doctor: "Dr.A.K.Sharma",
-        paidAmount: "800",
+        clinic: "Kalyan",
+        doctor: "Dr.MADHU PAWAR",
+        patientCode: "P114782",
+        patientName: "Ruby Pathak",
+        mobile: "8369398705",
+        grandAmount: "3000.00",
+        paidAmount: "2000.00",
+        pendingAmount: "1000.00",
         mode: "Cash",
+    },
+    {
+        id: 4,
+        clinic: "Mayur Vihar",
+        doctor: "Dr.Apurva Vaidya",
+        patientCode: "P115355",
+        patientName: "kavita goyal",
+        mobile: "9811944408",
+        grandAmount: "70000.00",
+        paidAmount: "5000.00",
+        pendingAmount: "65000.00",
+        mode: "UPI",
+    },
+    {
+        id: 5,
+        clinic: "Vile Parle",
+        doctor: "Dr.Riddhi Rathi",
+        patientCode: "P115354",
+        patientName: "Sabrina Mitha",
+        mobile: "8291441547",
+        grandAmount: "5000.00",
+        paidAmount: "5000.00",
+        pendingAmount: "0.00",
+        mode: "Cash",
+    },
+     {
+        id: 6,
+        clinic: "Vile Parle",
+        doctor: "Dr.Riddhi Rathi",
+        patientCode: "P115354",
+        patientName: "Sabrina Mitha",
+        mobile: "8291441547",
+        grandAmount: "500.00",
+        paidAmount: "500.00",
+        pendingAmount: "0.00",
+        mode: "Cash",
+    },
+     {
+        id: 7,
+        clinic: "Vile Parle",
+        doctor: "Dr.Riddhi Rathi",
+        patientCode: "P21937",
+        patientName: "RAKSHIT K S",
+        mobile: "9820651623",
+        grandAmount: "2500.00",
+        paidAmount: "2500.00",
+        pendingAmount: "0.00",
+        mode: "Cash",
+    },
+     {
+        id: 8,
+        clinic: "Rohini",
+        doctor: "Dr.Apurva Vaidya",
+        patientCode: "P96019",
+        patientName: "Gaurav bhatt",
+        mobile: "9716319856",
+        grandAmount: "2000.00",
+        paidAmount: "2000.00",
+        pendingAmount: "0.00",
+        mode: "UPI",
+    },
+     {
+        id: 9,
+        clinic: "Goregaon East",
+        doctor: "Dr.Prajakta Durgawale",
+        patientCode: "P115352",
+        patientName: "pream singh",
+        mobile: "8369394987",
+        grandAmount: "3000.00",
+        paidAmount: "3000.00",
+        pendingAmount: "0.00",
+        mode: "UPI",
+    },
+     {
+        id: 10,
+        clinic: "Wadgaon Sheri",
+        doctor: "Dr.Dhanashree Shinde",
+        patientCode: "P113777",
+        patientName: "veena more",
+        mobile: "7039931983",
+        grandAmount: "1138.00",
+        paidAmount: "1138.00",
+        pendingAmount: "0.00",
+        mode: "UPI",
     },
   ]);
 
@@ -220,28 +305,28 @@ export default function PatientwiseCollectionReportPage() {
                 Clinic Name
               </TableHead>
               <TableHead className="font-bold text-gray-800 dark:text-gray-200 border-r border-white dark:border-gray-600">
-                Date
+                Doctor Name
               </TableHead>
-              <TableHead className="font-bold text-gray-800 dark:text-gray-200 border-r border-white dark:border-gray-600">
-                Receipt No
+               <TableHead className="font-bold text-gray-800 dark:text-gray-200 border-r border-white dark:border-gray-600">
+                Patient Code
               </TableHead>
               <TableHead className="font-bold text-gray-800 dark:text-gray-200 border-r border-white dark:border-gray-600">
                 Patient Name
               </TableHead>
               <TableHead className="font-bold text-gray-800 dark:text-gray-200 border-r border-white dark:border-gray-600">
-                Mobile No
+                Mobile No.
               </TableHead>
               <TableHead className="font-bold text-gray-800 dark:text-gray-200 border-r border-white dark:border-gray-600">
-                Treatment
+                Grand Amount
               </TableHead>
-               <TableHead className="font-bold text-gray-800 dark:text-gray-200 border-r border-white dark:border-gray-600">
-                Doctor Name
-              </TableHead>
-              <TableHead className="font-bold text-gray-800 dark:text-gray-200 border-r border-white dark:border-gray-600 text-right">
+              <TableHead className="font-bold text-gray-800 dark:text-gray-200 border-r border-white dark:border-gray-600">
                 Paid Amount
               </TableHead>
+              <TableHead className="font-bold text-gray-800 dark:text-gray-200 border-r border-white dark:border-gray-600">
+                Pending Amount
+              </TableHead>
               <TableHead className="font-bold text-gray-800 dark:text-gray-200">
-                Mode
+                Payment Mode
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -259,10 +344,10 @@ export default function PatientwiseCollectionReportPage() {
                     {row.clinic}
                     </TableCell>
                     <TableCell className="text-gray-600 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 py-3">
-                    {row.date}
+                    {row.doctor}
                     </TableCell>
                     <TableCell className="text-gray-600 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 py-3">
-                    {row.receiptNo}
+                    {row.patientCode}
                     </TableCell>
                     <TableCell className="text-gray-600 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 py-3">
                     {row.patientName}
@@ -270,14 +355,14 @@ export default function PatientwiseCollectionReportPage() {
                     <TableCell className="text-gray-600 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 py-3">
                     {row.mobile}
                     </TableCell>
-                    <TableCell className="text-gray-600 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 py-3">
-                    {row.treatment}
+                   <TableCell className="text-gray-600 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 py-3">
+                    {row.grandAmount}
                     </TableCell>
                     <TableCell className="text-gray-600 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 py-3">
-                    {row.doctor}
-                    </TableCell>
-                    <TableCell className="text-gray-600 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 py-3 text-right">
                     {row.paidAmount}
+                    </TableCell>
+                     <TableCell className="text-gray-600 dark:text-gray-300 border-r border-gray-200 dark:border-gray-700 py-3">
+                    {row.pendingAmount}
                     </TableCell>
                     <TableCell className="text-gray-600 dark:text-gray-300 py-3">
                     {row.mode}
@@ -291,13 +376,13 @@ export default function PatientwiseCollectionReportPage() {
             )}
              {currentItems.length > 0 && (
                 <TableRow className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/30">
-                    <TableCell colSpan={8} className="border-r border-gray-200 dark:border-gray-700 py-3 text-right pr-4 font-bold text-gray-700 dark:text-gray-300">
+                    <TableCell colSpan={7} className="border-r border-gray-200 dark:border-gray-700 py-3 text-right pr-4 font-bold text-gray-700 dark:text-gray-300">
                         Total
                     </TableCell>
-                    <TableCell className="font-bold text-gray-700 dark:text-gray-300 py-3 text-right">
+                    <TableCell className="font-bold text-gray-700 dark:text-gray-300 py-3 border-r border-gray-200 dark:border-gray-700">
                         {totalAmount.toFixed(2)}
                     </TableCell>
-                    <TableCell></TableCell>
+                    <TableCell colSpan={2}></TableCell>
                 </TableRow>
              )}
           </TableBody>
