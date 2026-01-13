@@ -139,7 +139,7 @@ export default function PatientSearchPage() {
                 <Input
                   name="lastName"
                   placeholder="Last Name"
-                  value={SearchForm.lastName}
+                  value={searchForm.lastName}
                   onChange={handleSearchChange}
                   className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600"
                 />
@@ -148,14 +148,14 @@ export default function PatientSearchPage() {
                 <Input
                   name="mobileNo"
                   placeholder="Mobile No"
-                  value={SearchForm.mobileNo}
+                  value={searchForm.mobileNo}
                   onChange={handleSearchChange}
                   className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600"
                 />
               </div>
               <div className="space-y-2">
                 <Select
-                  value={SearchForm.clinic}
+                  value={searchForm.clinic}
                   onValueChange={(value) => setSearchForm({ ...searchForm, clinic: value })}
                 >
                   <SelectTrigger className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600">
@@ -178,7 +178,7 @@ export default function PatientSearchPage() {
                   type="date"
                   name="fromDate"
                   placeholder="From Date"
-                  value={SearchForm.fromDate}
+                  value={searchForm.fromDate}
                   onChange={handleSearchChange}
                   className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600"
                 />
@@ -188,7 +188,7 @@ export default function PatientSearchPage() {
                   type="date"
                   name="toDate"
                   placeholder="To Date"
-                  value={SearchForm.toDate}
+                  value={searchForm.toDate}
                   onChange={handleSearchChange}
                   className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600"
                 />

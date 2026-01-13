@@ -78,7 +78,7 @@ export default function AssignedCoupon() {
       {/* Filters */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-4">
         <div className="flex-1 w-full flex gap-2 items-center">
-            <Select value={SearchType} onValueChange={setSearchType}>
+            <Select value={searchType} onValueChange={setSearchType}>
                 <SelectTrigger className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 max-w-xs">
                 <SelectValue placeholder="-- Select Company Type --" />
                 </SelectTrigger>

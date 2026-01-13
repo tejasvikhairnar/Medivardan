@@ -79,7 +79,7 @@ export default function OfferType() {
         <div className="flex-1 w-full md:max-w-xl flex gap-2 items-center">
             <Input
                 placeholder="Offer Type"
-                value={SearchQuery}
+                value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 flex-1"
             />
