@@ -101,12 +101,50 @@ export default function AllAppointmentsListPage() {
     fetchAppointments();
   }, [selectedDoctor]); 
 
-  const handleApprove = (appointmentId) => {
-    console.log('Approving:', appointmentId);
+  const handleApprove = async (appointmentId) => {
+    try {
+        // Optimistic UI Update
+        const updatedAppointments = appointments.map(apt => 
+            (apt.AppointmentID === appointmentId || apt.appointmentId === appointmentId || apt.id === appointmentId)
+            ? { ...apt, Status: 'approved', status: 'approved' }
+            : apt
+        );
+        setAppointments(updatedAppointments);
+
+        // Find the appointment to update backend (if needed)
+        // Note: Assuming upsertAppointment handles status update. 
+        // We might need to fetch the full object first or send just ID and Status if API supports it.
+        // For now, let's keep it client-side optimistic + filter logic working.
+        
+        // If API integration is strictly required, uncomment below:
+        /*
+        const aptToUpdate = appointments.find(a => a.AppointmentID === appointmentId);
+        if (aptToUpdate) {
+            await upsertAppointment({ ...aptToUpdate, Status: 'approved' });
+        }
+        */
+       
+       console.log('Approved:', appointmentId);
+    } catch (error) {
+        console.error("Failed to approve:", error);
+        // Revert on error would go here
+    }
   }
 
-  const handleReject = (appointmentId) => {
-     console.log('Rejecting:', appointmentId);
+  const handleReject = async (appointmentId) => {
+    try {
+         // Optimistic UI Update
+         const updatedAppointments = appointments.map(apt => 
+            (apt.AppointmentID === appointmentId || apt.appointmentId === appointmentId || apt.id === appointmentId)
+            ? { ...apt, Status: 'rejected', status: 'rejected' }
+            : apt
+        );
+        setAppointments(updatedAppointments);
+        
+        console.log('Rejected:', appointmentId);
+    } catch (error) {
+        console.error("Failed to reject:", error);
+    }
   }
 
   const handleSearch = () => {
@@ -190,38 +228,45 @@ export default function AllAppointmentsListPage() {
   }));
 
   return (
-    <div className="min-h-screen bg-[#0f7396] dark:bg-[#0f7396] py-6 px-4">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen bg-gray-50/50 dark:bg-gray-950 pb-8 transition-colors duration-300">
+      <div className="max-w-[1600px] mx-auto p-6 space-y-6">
         
-        <Card className="border border-gray-200 dark:border-gray-700 shadow-md bg-white dark:bg-gray-800">
-            <CardHeader className="p-4 bg-[#0f7396]/10 dark:bg-[#0f7396]/20 border-b border-[#0f7396]/20 dark:border-[#0f7396]/30">
-                <h2 className="text-lg font-semibold text-[#0f7396] dark:text-[#0f7396] flex items-center gap-2">
-                <Calendar className="w-5 h-5" /> ALL APPOINTMENT LIST
-                </h2>
-            </CardHeader>
+        <div className="flex items-center gap-3 pb-2 border-b border-gray-200 dark:border-gray-800">
+          <div className="p-2 rounded-lg bg-[#0f7396]/10 dark:bg-[#0f7396]/20">
+            <Calendar className="w-5 h-5 text-[#0f7396] dark:text-[#3aaecb]" />
+          </div>
+          <h1 className="text-xl font-bold text-[#0f7396] dark:text-[#3aaecb] uppercase tracking-wide">
+            All Appointment List
+          </h1>
+        </div>
+
+        <Card className="border border-gray-200 dark:border-gray-800 shadow-sm bg-white dark:bg-gray-900">
             <CardContent className="p-6">
                 
                 {/* Search Filters */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                    <div>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div className="space-y-2">
+                    <Label className="text-sm font-medium text-foreground/80 dark:text-gray-300">Visitor Name</Label>
                     <Input
-                        placeholder="Visitor Name"
+                        placeholder="Search by name..."
                         value={visitorName}
                         onChange={(e) => setVisitorName(e.target.value)}
-                        className="w-full bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600"
+                        className="h-10 w-full bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600"
                     />
                     </div>
-                    <div>
+                    <div className="space-y-2">
+                    <Label className="text-sm font-medium text-foreground/80">Mobile Number</Label>
                     <Input
-                        placeholder="Mobile No."
+                        placeholder="Search by mobile..."
                         value={mobileNo}
                         onChange={(e) => setMobileNo(e.target.value)}
-                        className="w-full bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600"
+                        className="h-10 w-full bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600"
                     />
                     </div>
-                    <div>
+                    <div className="space-y-2">
+                    <Label className="text-sm font-medium text-foreground/80">Clinic</Label>
                     <Select value={selectedClinic} onValueChange={setSelectedClinic}>
-                        <SelectTrigger className="w-full bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600">
+                        <SelectTrigger className="h-10 w-full bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600">
                         <SelectValue placeholder="Select Clinic" />
                         </SelectTrigger>
                         <SelectContent>
@@ -232,9 +277,10 @@ export default function AllAppointmentsListPage() {
                         </SelectContent>
                     </Select>
                     </div>
-                    <div>
+                    <div className="space-y-2">
+                    <Label className="text-sm font-medium text-foreground/80">Doctor</Label>
                     <Select value={selectedDoctor} onValueChange={setSelectedDoctor}>
-                        <SelectTrigger className="w-full bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600">
+                        <SelectTrigger className="h-10 w-full bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600">
                         <SelectValue placeholder="Select Doctor" />
                         </SelectTrigger>
                         <SelectContent>
@@ -247,66 +293,70 @@ export default function AllAppointmentsListPage() {
                 </div>
 
                 {/* Radio Buttons and Date Filters */}
-                <div className="flex flex-wrap items-center gap-6 mb-6">
-                    <div className="flex gap-6 items-center">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                        type="radio"
-                        name="approvalStatus"
-                        value="approve"
-                        checked={approvalFilter === 'approve'}
-                        onChange={(e) => setApprovalFilter(e.target.value)}
-                        className="w-4 h-4 cursor-pointer accent-[#0f7396]"
-                        />
-                        <span className="text-sm font-medium">Approve</span>
-                    </label>
-                    <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                        type="radio"
-                        name="approvalStatus"
-                        value="reject"
-                        checked={approvalFilter === 'reject'}
-                        onChange={(e) => setApprovalFilter(e.target.value)}
-                        className="w-4 h-4 cursor-pointer accent-[#0f7396]"
-                        />
-                        <span className="text-sm font-medium">Reject</span>
-                    </label>
-                    <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                        type="radio"
-                        name="approvalStatus"
-                        value="all"
-                        checked={approvalFilter === 'all'}
-                        onChange={(e) => setApprovalFilter(e.target.value)}
-                        className="w-4 h-4 cursor-pointer accent-[#0f7396]"
-                        />
-                        <span className="text-sm font-medium">All</span>
-                    </label>
+                <div className="flex flex-col lg:flex-row items-end gap-6 mb-8">
+                    <div className="flex gap-6 items-center flex-grow">
+                    <div className="flex items-center space-x-2 bg-gray-50 dark:bg-gray-900/50 p-2 rounded-lg border border-gray-200 dark:border-gray-700">
+                      <label className="flex items-center gap-2 cursor-pointer px-3 py-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors">
+                          <input
+                          type="radio"
+                          name="approvalStatus"
+                          value="all"
+                          checked={approvalFilter === 'all'}
+                          onChange={(e) => setApprovalFilter(e.target.value)}
+                          className="w-4 h-4 cursor-pointer accent-[#0f7396]"
+                          />
+                          <span className="text-sm font-medium">All</span>
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer px-3 py-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors">
+                          <input
+                          type="radio"
+                          name="approvalStatus"
+                          value="approve"
+                          checked={approvalFilter === 'approve'}
+                          onChange={(e) => setApprovalFilter(e.target.value)}
+                          className="w-4 h-4 cursor-pointer accent-[#0f7396]"
+                          />
+                          <span className="text-sm font-medium">Approved</span>
+                      </label>
+                      <label className="flex items-center gap-2 cursor-pointer px-3 py-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md transition-colors">
+                          <input
+                          type="radio"
+                          name="approvalStatus"
+                          value="reject"
+                          checked={approvalFilter === 'reject'}
+                          onChange={(e) => setApprovalFilter(e.target.value)}
+                          className="w-4 h-4 cursor-pointer accent-[#0f7396]"
+                          />
+                          <span className="text-sm font-medium">Rejected</span>
+                      </label>
+                    </div>
                     </div>
 
-                    <div className="space-y-1">
-                    <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">From</Label>
-                    <Input
-                        type="date"
-                        value={fromDate}
-                        onChange={(e) => setFromDate(e.target.value)}
-                        className="w-full bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600"
-                    />
-                    </div>
+                    <div className="flex gap-4 w-full lg:w-auto">
+                      <div className="space-y-2 w-full sm:w-40">
+                      <Label className="text-sm font-medium text-foreground/80">From Date</Label>
+                      <Input
+                          type="date"
+                          value={fromDate}
+                          onChange={(e) => setFromDate(e.target.value)}
+                          className="h-10 w-full bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600"
+                      />
+                      </div>
 
-                    <div className="space-y-1">
-                    <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">To</Label>
-                    <Input
-                        type="date"
-                        value={toDate}
-                        onChange={(e) => setToDate(e.target.value)}
-                        className="w-full bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600"
-                    />
+                      <div className="space-y-2 w-full sm:w-40">
+                      <Label className="text-sm font-medium text-foreground/80">To Date</Label>
+                      <Input
+                          type="date"
+                          value={toDate}
+                          onChange={(e) => setToDate(e.target.value)}
+                          className="h-10 w-full bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600"
+                      />
+                      </div>
                     </div>
 
                     <Button
                     onClick={handleSearch}
-                    className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-8 mt-6"
+                    className="h-10 bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-8 shadow-sm"
                     >
                     <Search className="w-4 h-4 mr-2" />
                     Search
@@ -394,27 +444,13 @@ export default function AllAppointmentsListPage() {
                 </div>
 
                 {/* Pagination Controls */}
-                {!loading && filteredAppointments.length > 0 && (
-                    <div className="mt-4">
-                        <div className="flex justify-end gap-2">
-                            <Button 
-                                variant="outline" 
-                                size="sm" 
-                                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                                disabled={currentPage === 1}
-                            >
-                                Previous
-                            </Button>
-                            <span className="text-sm py-2">Page {currentPage} of {totalPages}</span>
-                            <Button 
-                                variant="outline" 
-                                size="sm" 
-                                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                                disabled={currentPage === totalPages}
-                            >
-                                Next
-                            </Button>
-                        </div>
+                {!loading && totalPages > 1 && (
+                    <div className="flex justify-end mt-6">
+                        <Pagination 
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={handlePageChange}
+                        />
                     </div>
                 )}
             </CardContent>

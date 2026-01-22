@@ -152,7 +152,7 @@ const EnquirySettingsPage = () => {
                  />
                </div>
               <Button 
-                className="bg-[#D35400] hover:bg-[#A04000] text-white dark:bg-orange-700 dark:hover:bg-orange-800"
+                className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white dark:bg-[#0f7396] dark:hover:bg-[#0b5c7a]"
                 onClick={handleSearch}
               >
                 Search

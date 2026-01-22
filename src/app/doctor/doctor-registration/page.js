@@ -1427,7 +1427,7 @@ export default function DoctorRegistrationPage() {
               </Select>
               <Button
                 onClick={handleSearch}
-                className="bg-orange-600 hover:bg-orange-700 text-white"
+                className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white"
               >
                 Search
               </Button>
