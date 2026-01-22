@@ -4,8 +4,8 @@
  */
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { upsertDoctor, deleteDoctor } from "@/api/client/doctors";
-import { transformFormDataToAPI } from "@/utils/doctorTransformers";
+import { upsertDoctor, deleteDoctor } from "@/api/doctor";
+import { transformFormDataToAPI } from "@/api/doctor/transformers";
 
 /**
  * Hook for adding/updating doctors
@@ -16,13 +16,11 @@ export const useUpsertDoctor = () => {
 
   return useMutation({
     mutationFn: async (formData) => {
-      // Transform form data to API format
-      const apiData = transformFormDataToAPI(formData);
-
-      console.log("[useUpsertDoctor] Submitting data:", apiData);
+      // Pass formData directly to upsertDoctor, which handles the transformation internally
+      console.log("[useUpsertDoctor] Submitting data:", formData);
 
       // Call API
-      const result = await upsertDoctor(apiData);
+      const result = await upsertDoctor(formData);
 
       return result;
     },

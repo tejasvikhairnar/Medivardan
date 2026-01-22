@@ -1,7 +1,8 @@
 import axios from "axios";
+import { API_CONFIG } from "@/config/api.config";
 
 const axiosClient = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL || "https://bmetrics.in/APIDemo",
+    baseURL: process.env.NEXT_PUBLIC_API_URL || API_CONFIG.BASE_URL,
 });
 
 axiosClient.interceptors.request.use(

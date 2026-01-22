@@ -8,7 +8,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 // Using Axios + React Query instead of old service
 import { useDoctors } from "@/hooks/useDoctors";
-import { useUpsertDoctor } from "@/hooks/useDoctorMutations";
+import { useUpsertDoctor, useDeleteDoctor } from "@/hooks/useDoctorMutations";
+import { getDoctorById } from "@/api/doctor";
+import { transformAPItoForm } from "@/api/doctor/transformers";
 import {
   Select,
   SelectContent,
@@ -29,6 +31,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { Settings, Eye, Edit, Calendar, X, Loader2, Trash2, Clock } from "lucide-react";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 import CustomPagination from "@/components/ui/custom-pagination";
 
 export default function DoctorRegistrationPage() {
@@ -49,6 +52,7 @@ export default function DoctorRegistrationPage() {
   // React Query hooks for data fetching and mutations
   const { data: doctors = [], isLoading, error, refetch } = useDoctors();
   const upsertMutation = useUpsertDoctor();
+  const deleteMutation = useDeleteDoctor();
 
   const [formData, setFormData] = useState({
     // Clinic & Doctor Type
@@ -188,6 +192,22 @@ export default function DoctorRegistrationPage() {
     }
   };
 
+  /* File Upload Helper using direct Axios to avoid interceptor issues */
+  const uploadFile = async (file) => {
+    if (!file) return null;
+    const uploadData = new FormData();
+    uploadData.append("file", file);
+    try {
+        const res = await axios.post("/api/upload", uploadData, {
+            headers: { "Content-Type": "multipart/form-data" }
+        });
+        return res.data.url; 
+    } catch (e) {
+        console.error("Upload failed", e);
+        return null;
+    }
+  };
+
   const handleFormSubmit = async () => {
     // Validate mandatory fields
     const mandatoryFields = {
@@ -225,8 +245,55 @@ export default function DoctorRegistrationPage() {
       return;
     }
 
+    // 1. Upload Files
+    const profileUrl = await uploadFile(formData.profilePhoto);
+    const adharUrl = await uploadFile(formData.adharCardImage);
+    const panUrl = await uploadFile(formData.panCardImage);
+    const regUrl = await uploadFile(formData.certificateImage); 
+    const indemnityUrl = await uploadFile(formData.indemnityPolicyImage);
+    
+    // Education Uploads processing
+    let deg1Url = null;
+    let deg2Url = null;
+    let basicDegree = formData.currentEducation.degree;
+    
+    // Prioritize education list
+    if (formData.educationList.length > 0) {
+          const edu1 = formData.educationList[0];
+          deg1Url = await uploadFile(edu1.upload);
+          basicDegree = edu1.degree;
+          
+          if (formData.educationList.length > 1) {
+              const edu2 = formData.educationList[1];
+              deg2Url = await uploadFile(edu2.upload);
+          }
+    } else if (formData.currentEducation.degree) {
+          // Fallback if not added to list but typed in
+          deg1Url = await uploadFile(formData.currentEducation.upload);
+    }
+
+    // 2. Prepare Data for Transformer
+    // We pass formData + validation URLs to the mutation.
+    // The mutation calls upsertDoctor -> checks transformFormDataToAPI
+    const dataForTransformer = {
+        ...formData,
+        profileImageUrl: profileUrl,
+        adharCardImageUrl: adharUrl,
+        panCardImageUrl: panUrl,
+        registrationImageUrl: regUrl,
+        identityPolicyImageUrl: indemnityUrl,
+        degreeUpload1: deg1Url,
+        degreeUpload2: deg2Url,
+        currentEducation: {
+            ...formData.currentEducation,
+            degree: basicDegree 
+        }
+    };
+    
+    console.log("Submitting with Files:", dataForTransformer);
+
     // Submit using React Query mutation
-    upsertMutation.mutate(formData, {
+    upsertMutation.mutate(dataForTransformer, {
       onSuccess: (data) => {
         alert(`Doctor added successfully! Doctor ID: ${data.doctorID}`);
         
@@ -260,9 +327,11 @@ export default function DoctorRegistrationPage() {
             degree: "",
             board: "",
             upload: null,
+            degreeUpload1: null // Reset these too
           },
           specialities: {
             asthesticDentist: false,
+            // ... reset all ... (simplified)
             generalDentist: false,
             orthodontics: false,
             periodontics: false,
@@ -312,8 +381,109 @@ export default function DoctorRegistrationPage() {
   };
 
   const handleAddNew = () => {
+    // Reset form data to default state (simplified for brevity, ensure full reset in production)
+    setFormData({
+        clinicName: "",
+        doctorType: "full-time",
+        date: new Date().toISOString().split('T')[0],
+        title: "Dr.",
+        firstName: "",
+        lastName: "",
+        dateOfBirth: "",
+        gender: "male",
+        addressLine1: "",
+        addressLine2: "",
+        country: "India",
+        state: "Maharashtra",
+        city: "Mumbai",
+        areaPin: "",
+        mobileNo1: "",
+        mobileNo2: "",
+        email: "",
+        bloodGroup: "",
+        inTime: "",
+        outTime: "",
+        educationList: [],
+        currentEducation: {
+          degree: "",
+          board: "",
+          upload: null,
+        },
+        specialities: {
+          asthesticDentist: false,
+          generalDentist: false,
+          orthodontics: false,
+          periodontics: false,
+          conservativeDentist: false,
+          oralMaxillofacial: false,
+          pedodontics: false,
+          prosthodontics: false,
+          endodontics: false,
+          oralPathology: false,
+        },
+        profilePhoto: null,
+        adharCardNo: "",
+        adharCardImage: null,
+        panCardNo: "",
+        panCardImage: null,
+        registrationNo: "",
+        certificateImage: null,
+        indemnityPolicyNo: "",
+        indemnityPolicyImage: null,
+      });
     setShowAddForm(true);
     setActiveTab("personal");
+  };
+
+  const handleEdit = async (doctor) => {
+      try {
+          console.log("[handleEdit] Doctor Object:", doctor);
+          const doctorID = doctor.doctorID;
+          console.log("[handleEdit] Extracted ID:", doctorID);
+
+          if (!doctorID) {
+              alert("Error: Doctor ID is missing");
+              return;
+          }
+
+          // Fetch full details
+          const apiData = await getDoctorById(doctorID);
+
+          if (apiData) {
+              const formDataFromApi = transformAPItoForm(apiData);
+              if (formDataFromApi) {
+                  setFormData(formDataFromApi);
+                  setShowAddForm(true);
+                  setActiveTab("personal");
+              }
+          }
+      } catch (error) {
+          console.error("Failed to fetch doctor details", error);
+          alert("Failed to load doctor details for editing.");
+      }
+  };
+
+  const handleDelete = (doctor) => {
+      const doctorID = doctor.doctorID;
+      const doctorName = doctor.name || "this doctor";
+
+      if (!doctorID) {
+          alert("Error: Doctor ID is missing");
+          return;
+      }
+
+      // Confirmation dialog
+      if (window.confirm(`Are you sure you want to delete ${doctorName} (ID: ${doctorID})? This action cannot be undone.`)) {
+          deleteMutation.mutate(doctorID, {
+              onSuccess: () => {
+                  alert(`Doctor "${doctorName}" deleted successfully!`);
+                  refetch();
+              },
+              onError: (error) => {
+                  alert(`Failed to delete doctor: ${error.message}`);
+              },
+          });
+      }
   };
 
   // Filter doctors based on search criteria
@@ -1367,7 +1537,7 @@ export default function DoctorRegistrationPage() {
                             className="hover:bg-gray-50 dark:hover:bg-gray-800/50"
                           >
                             <TableCell className="text-gray-900 dark:text-gray-100">
-                              {doctor.srNo}
+                              {(currentPage - 1) * itemsPerPage + index + 1}
                             </TableCell>
                             <TableCell className="text-gray-900 dark:text-gray-100">
                               {doctor.doctorID}
@@ -1403,6 +1573,7 @@ export default function DoctorRegistrationPage() {
                               <div className="flex items-center justify-center gap-2">
                                 <button
                                   className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+                                  onClick={() => handleEdit(doctor)}
                                 >
                                   <Edit className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                                 </button>
@@ -1418,8 +1589,15 @@ export default function DoctorRegistrationPage() {
                                 </button>
                                 <button
                                   className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+                                  onClick={() => handleDelete(doctor)}
+                                  disabled={deleteMutation.isPending}
+                                  title="Delete Doctor"
                                 >
-                                  <Trash2 className="w-4 h-4 text-gray-600 dark:text-red-400" />
+                                  {deleteMutation.isPending ? (
+                                    <Loader2 className="w-4 h-4 text-red-400 animate-spin" />
+                                  ) : (
+                                    <Trash2 className="w-4 h-4 text-gray-600 dark:text-red-400 hover:text-red-600" />
+                                  )}
                                 </button>
                               </div>
                             </TableCell>
