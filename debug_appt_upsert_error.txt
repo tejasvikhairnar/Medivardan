@@ -1,6 +1,0 @@
-{
-  "Key": 500,
-  "Message": "Oops something went wrong",
-  "IsSuccess": false,
-  "Data": null
-}
