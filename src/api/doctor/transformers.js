@@ -48,9 +48,12 @@ const SPECIALITY_ID_MAP = {
 export const transformFormDataToAPI = (formData) => {
   console.log("Transformer received keys:", Object.keys(formData));
   console.log("Transformer check mobile:", formData.mobileNo1, "indemnity:", formData.indemnityPolicyNo);
+  
+  const isUpdate = formData.doctorID && formData.doctorID > 0;
+  
   const payload = {
     // Mode and IDs
-    mode: 1,
+    mode: isUpdate ? 2 : 1, // 1 for Add, 2 for Update
     doctorID: formData.doctorID || 0, 
     clinicID: formData.clinicName ? (CLINIC_ID_MAP[formData.clinicName] || 1) : 1, 
     doctorTypeID: (formData.doctorType && DOCTOR_TYPE_MAP[formData.doctorType]) ? DOCTOR_TYPE_MAP[formData.doctorType] : 1,

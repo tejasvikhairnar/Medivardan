@@ -83,22 +83,18 @@ export const upsertDoctor = async (doctorData) => {
     const isUpdate = cleanPayload.doctorID && cleanPayload.doctorID > 0;
 
     if (isUpdate) {
-      // UPDATE: Use PUT /Doctor/UpdateDoctorProfile
+      // UPDATE: Use efficient upsert endpoint
       console.log("Updating existing doctor (ID:", cleanPayload.doctorID, ")...");
-      console.log("Update Payload:", JSON.stringify(cleanPayload, null, 2));
-
-      response = await axiosClient.put(
-        API_CONFIG.ENDPOINTS.DOCTOR.UPDATE,
+      // Use efficient upsert endpoint (same as add but handles updates internally)
+      response = await axiosClient.post(
+        "/api/doctors/upsert",
         cleanPayload
       );
     } else {
-      // CREATE: Use POST /Doctor/AddDoctor
-      // NOTE: This endpoint is currently broken on the backend (returns 500)
+      // CREATE: Use efficient upsert endpoint
       console.log("Creating new doctor...");
-      console.log("Add Payload:", JSON.stringify(cleanPayload, null, 2));
-
       response = await axiosClient.post(
-        API_CONFIG.ENDPOINTS.DOCTOR.ADD,
+        "/api/doctors/upsert", // Use upsert for add as well
         cleanPayload
       );
     }
