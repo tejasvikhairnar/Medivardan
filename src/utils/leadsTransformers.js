@@ -96,8 +96,8 @@ export const transformFormDataToAPI = (formData) => {
  */
 export const transformAPILeadToDisplay = (apiLead) => {
   return {
-    srNo: apiLead.leadID || apiLead.LeadID,
-    leadNo: apiLead.leadNo || apiLead.LeadNo || `E${apiLead.leadID}`,
+    srNo: apiLead.leadID || apiLead.LeadID || apiLead.EnquiryID || apiLead.enquiryID,
+    leadNo: apiLead.leadNo || apiLead.LeadNo || apiLead.EnquiryNo || apiLead.enquiryNo || `E${apiLead.leadID || apiLead.LeadID || apiLead.EnquiryID || apiLead.enquiryID}`,
     name: `${apiLead.firstName || ''} ${apiLead.lastName || ''}`.trim(),
     mobileNo: apiLead.phoneNo1 || apiLead.PhoneNo1 || '',
     clinicName: apiLead.clinicName || apiLead.ClinicName || getClinicNameFromID(apiLead.clinicID || apiLead.ClinicID),
