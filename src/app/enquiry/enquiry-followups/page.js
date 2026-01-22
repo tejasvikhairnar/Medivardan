@@ -351,7 +351,7 @@ export default function EnquiryFollowupsPage() {
               <div className="md:col-span-3">
                 <Button
                   onClick={handleSearch}
-                  className="w-full bg-orange-600 hover:bg-orange-700 text-white"
+                  className="w-full bg-[#0f7396] hover:bg-[#0b5c7a] text-white"
                 >
                   Search
                 </Button>
@@ -366,7 +366,7 @@ export default function EnquiryFollowupsPage() {
         <Card className="border-gray-200 dark:border-gray-800">
           <CardContent className="p-8">
             <div className="flex items-center justify-center gap-3">
-              <Loader2 className="w-6 h-6 animate-spin text-orange-600" />
+              <Loader2 className="w-6 h-6 animate-spin text-[#0f7396]" />
               <p className="text-gray-600 dark:text-gray-400">Loading followups...</p>
             </div>
           </CardContent>
@@ -382,7 +382,7 @@ export default function EnquiryFollowupsPage() {
               <p className="text-gray-600 dark:text-gray-400">{error}</p>
               <Button
                 onClick={fetchFollowups}
-                className="mt-4 bg-orange-600 hover:bg-orange-700 text-white"
+                className="mt-4 bg-[#0f7396] hover:bg-[#0b5c7a] text-white"
               >
                 Try Again
               </Button>
