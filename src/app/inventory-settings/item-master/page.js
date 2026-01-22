@@ -200,7 +200,6 @@ export default function ItemMaster() {
                          <Button onClick={handleAdd} className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap">
                             + Add New
                          </Button>
-                         </Button>
                     </div>
                 </div>
                  <div className="text-sm text-gray-500">Total : {filteredData.length}</div>
