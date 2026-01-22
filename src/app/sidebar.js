@@ -31,7 +31,8 @@ import {
   Activity,
   Package,
   CircleHelp,
-  UserCog
+  UserCog,
+  Headset
 } from "lucide-react";
 
 import { useMenuData } from "@/hooks/useMenuData";
@@ -63,6 +64,7 @@ const getMenuIcon = (menuName) => {
     'User Settings': UserCog,
     'Labs': Microscope,
     'Reports': FileBarChart,
+    'Support': Headset,
   };
 
   const IconComponent = iconMap[menuName] || Activity;
@@ -641,7 +643,7 @@ export default function Sidebar({ open }) {
     menuChild: [
       {
         menuID: 'branch-profile',
-        menuName: 'Add Branch Profile',
+        menuName: 'Add Clinic Profile',
         menuPath: '/clinic-settings/branch-profile'
       },
       {
@@ -654,11 +656,7 @@ export default function Sidebar({ open }) {
         menuName: 'Medical Problem',
         menuPath: '/clinic-settings/medical-problem'
       },
-      {
-        menuID: 'ticket-details',
-        menuName: 'Ticket Details',
-        menuPath: '/clinic-settings/ticket-details'
-      },
+
       {
         menuID: 'medicines',
         menuName: 'Medicines',
@@ -669,8 +667,10 @@ export default function Sidebar({ open }) {
         menuName: 'Branch Handover',
         menuPath: '/clinic-settings/branch-handover'
       },
-      inventorySettingsMenu,
       enquirySettingsMenu,
+      inventorySettingsMenu,
+      labSettingsMenu,
+      inventoryMenu,
       userSettingsMenu
     ]
   };
@@ -718,8 +718,26 @@ export default function Sidebar({ open }) {
 
   // Append Appointment, Invoice, Lead, Patient Details, Doctor, Accounts, and Report menus to the data
   // Append Appointment, Invoice, Lead, Patient Details, Doctor, Accounts, and Report menus to the data
+  const supportMenu = {
+    menuID: 'support-menu',
+    menuName: 'Support',
+    menuPath: null,
+    menuChild: [
+      {
+        menuID: 'add-ticket',
+        menuName: 'Add Ticket',
+        menuPath: '/clinic-settings/add-ticket'
+      },
+      {
+        menuID: 'ticket-details',
+        menuName: 'View Ticket',
+        menuPath: '/clinic-settings/ticket-details'
+      }
+    ]
+  };
+
   // Modified: removed nested settings items from top level
-  const menuData = data ? [...data, dashboardMenu, clinicSettingsMenu, leadMenu, patientDetailsMenu, appointmentMenu, invoiceMenu, labSettingsMenu, inventoryMenu, reportMenu, doctorMenu, offerMenu, couponMenu, accountsMenu, helpMenu] : [dashboardMenu, clinicSettingsMenu, leadMenu, patientDetailsMenu, appointmentMenu, invoiceMenu, labSettingsMenu, inventoryMenu, reportMenu, doctorMenu, offerMenu, couponMenu, accountsMenu, helpMenu];
+  const menuData = data ? [...data, dashboardMenu, clinicSettingsMenu, doctorMenu, leadMenu, patientDetailsMenu, appointmentMenu, invoiceMenu, reportMenu, supportMenu] : [dashboardMenu, clinicSettingsMenu, doctorMenu, leadMenu, patientDetailsMenu, appointmentMenu, invoiceMenu, reportMenu, supportMenu];
 
   if (isLoading) return <div>Loading...</div>;
 
@@ -730,10 +748,31 @@ export default function Sidebar({ open }) {
     
     // Improved nesting logic:
     // Level 0: px-2 (standard)
-    // Level 1: pl-10 (align with text of parent)
-    // Level 2: pl-14
+    // Level 1: pl-2 (ultra tight spacing)
+    // Level 2: pl-4
     const basePadding = "px-2";
-    const nestedPadding = depth > 0 ? `pl-${10 + (depth - 1) * 4}` : basePadding;
+    const nestedPadding = depth > 0 ? `pl-${2 + (depth - 1) * 2}` : basePadding;
+
+    const renderIcon = (menuName, depth, hasChildren) => {
+      if (depth === 0) {
+        return (
+          <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-gradient-to-br from-[#4DB8AC] to-[#1E6B8C] text-white shadow-md flex-shrink-0 group-hover:shadow-lg transition-all">
+            {getMenuIcon(menuName)}
+          </div>
+        );
+      }
+      
+      // For nested items
+      return (
+        <div className="w-9 h-9 flex items-center justify-center rounded-lg flex-shrink-0 transition-all">
+          {hasChildren && (
+            <span className="text-[#1E6B8C] dark:text-[#4DB8AC]">
+               {getMenuIcon(menuName)}
+            </span>
+          )}
+        </div>
+      );
+    };
 
     if (!hasChildren) {
       return (
@@ -741,16 +780,13 @@ export default function Sidebar({ open }) {
           key={menu.menuID}
           href={menu.menuPath || "#"}
           className={cn(
-            "flex items-center gap-3 py-2.5 text-sm font-medium rounded-lg hover:bg-[#4DB8AC]/10 hover:text-[#1E6B8C] transition-all duration-200 group",
+            "flex items-center gap-1.5 py-1.5 text-sm font-medium rounded-lg hover:bg-[#4DB8AC]/10 hover:text-[#1E6B8C] transition-all duration-200 group",
             open ? "justify-start" : "justify-center",
             depth > 0 ? nestedPadding : "px-2"
           )}
         >
-          {depth === 0 && (
-            <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-gradient-to-br from-[#4DB8AC] to-[#1E6B8C] text-white shadow-md flex-shrink-0 group-hover:shadow-lg transition-all">
-               {getMenuIcon(menu.menuName)}
-            </div>
-          )}
+          {/* Always render icon container for alignment if open, or if depth 0 */}
+          {(open || depth === 0) && renderIcon(menu.menuName, depth, false)}
 
           {open && (
             <span className={cn(
@@ -774,15 +810,12 @@ export default function Sidebar({ open }) {
         <CollapsibleTrigger asChild>
           <button
             className={cn(
-              "w-full flex items-center gap-3 py-2.5 rounded-lg hover:bg-[#4DB8AC]/10 hover:text-[#1E6B8C] transition-all duration-200 text-left group",
+              "w-full flex items-center gap-1.5 py-1.5 rounded-lg hover:bg-[#4DB8AC]/10 hover:text-[#1E6B8C] transition-all duration-200 text-left group",
                depth > 0 ? nestedPadding : "px-2"
             )}
           >
-             {depth === 0 && (
-                <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-gradient-to-br from-[#4DB8AC] to-[#1E6B8C] text-white shadow-md flex-shrink-0 group-hover:shadow-lg transition-all">
-                  {getMenuIcon(menu.menuName)}
-                </div>
-              )}
+             {/* Always render icon container for alignment */}
+             {(open || depth === 0) && renderIcon(menu.menuName, depth, true)}
 
             {open && (
               <>
@@ -864,7 +897,7 @@ export default function Sidebar({ open }) {
         )}
       </div>
 
-      <nav className="flex-1 overflow-y-auto overflow-x-hidden mt-6 space-y-1 px-2 pb-6 scrollbar-thin scrollbar-thumb-[#4DB8AC]/20 scrollbar-track-transparent hover:scrollbar-thumb-[#4DB8AC]/40">
+      <nav className="flex-1 overflow-y-auto overflow-x-hidden mt-6 space-y-1 px-2 pb-6 no-scrollbar">
         {menuData?.map((menu) => renderMenuItem(menu, 0))}
       </nav>
     </aside>

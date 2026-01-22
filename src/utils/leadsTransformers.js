@@ -35,7 +35,9 @@ export const transformFormDataToAPI = (formData) => {
     // Converted to PascalCase for .NET standards, with redundant fallbacks
     EnquiryID: formData.enquiryID || 0,
     enquiryID: formData.enquiryID || 0, // Fallback
-    ClinicID: formData.clinicName ? CLINIC_ID_MAP[formData.clinicName] : 0,
+    // Default to 1 (Panvel) if clinic name doesn't match a mapped ID, to satisfy backend FK constraint
+    ClinicID: formData.clinicName ? (CLINIC_ID_MAP[formData.clinicName] || 1) : 1,
+    ClinicName: formData.clinicName || "",
     SourceID: formData.leadSource ? LEAD_SOURCE_MAP[formData.leadSource] : 0,
     RoleID: 0,
     EnquiryNo: formData.leadNo || "",
@@ -98,7 +100,7 @@ export const transformAPILeadToDisplay = (apiLead) => {
     leadNo: apiLead.leadNo || apiLead.LeadNo || `E${apiLead.leadID}`,
     name: `${apiLead.firstName || ''} ${apiLead.lastName || ''}`.trim(),
     mobileNo: apiLead.phoneNo1 || apiLead.PhoneNo1 || '',
-    clinicName: getClinicNameFromID(apiLead.clinicID || apiLead.ClinicID),
+    clinicName: apiLead.clinicName || apiLead.ClinicName || getClinicNameFromID(apiLead.clinicID || apiLead.ClinicID),
     sourceName: getSourceNameFromID(apiLead.leadSourceID || apiLead.LeadSourceID),
     status: apiLead.patientFollowup || apiLead.PatientFollowup || 'Patient',
     date: formatDate(apiLead.leadDate || apiLead.LeadDate),

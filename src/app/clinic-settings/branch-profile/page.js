@@ -12,6 +12,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  validateEmail,
+  validateMobile,
+  validatePhone,
+  validatePincode,
+  validateRequired,
+  hasErrors
+} from "@/lib/validations";
 
 export default function BranchProfile() {
   const [clinicName, setClinicName] = useState("");
@@ -39,6 +47,7 @@ export default function BranchProfile() {
     userName: ""
   };
   const [formData, setFormData] = useState(initialFormState);
+  const [errors, setErrors] = useState({});
 
   // Mock data for Branch Profile
   const [branches, setBranches] = useState([
@@ -72,25 +81,86 @@ export default function BranchProfile() {
           clinicName: branch.clinicName,
           addressLine1: branch.address,
           location: branch.location,
-          mobile: branch.phone.split(',')[0], // Simplified extraction
+          mobile: branch.phone.split(',')[0].trim(), // Simplified extraction
           openTime: branch.openTime,
           closeTime: branch.closeTime
       });
+      setErrors({});
       setEditingId(branch.id);
       setViewMode("create");
   };
 
   const handleAddNew = () => {
     setFormData(initialFormState);
+    setErrors({});
     setEditingId(null);
     setViewMode("create");
   };
 
+  // Validation handlers
+  const handleMobileChange = (e) => {
+    const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+    setFormData({...formData, mobile: value});
+    const result = validateMobile(value);
+    setErrors(prev => ({...prev, mobile: result.error}));
+  };
+
+  const handleEmailChange = (e) => {
+    const value = e.target.value;
+    setFormData({...formData, email: value});
+    const result = validateEmail(value);
+    setErrors(prev => ({...prev, email: result.error}));
+  };
+
+  const handlePincodeChange = (e) => {
+    const value = e.target.value.replace(/\D/g, '').slice(0, 6);
+    setFormData({...formData, pincode: value});
+    const result = validatePincode(value);
+    setErrors(prev => ({...prev, pincode: result.error}));
+  };
+
+  const handleTelephoneChange = (e) => {
+    const value = e.target.value.replace(/\D/g, '').slice(0, 12);
+    setFormData({...formData, telephone: value});
+    const result = validatePhone(value);
+    setErrors(prev => ({...prev, telephone: result.error}));
+  };
+
   const handleSubmit = (e) => {
       e.preventDefault();
+
+      // Validate all fields
+      const newErrors = {};
+
+      // Required field validations
+      const clinicResult = validateRequired(formData.clinicName, "Clinic Name");
+      if (!clinicResult.isValid) newErrors.clinicName = clinicResult.error;
+
+      const mobileResult = validateMobile(formData.mobile);
+      if (!mobileResult.isValid) newErrors.mobile = mobileResult.error;
+      else if (!formData.mobile) newErrors.mobile = "Mobile number is required";
+
+      const emailResult = validateEmail(formData.email);
+      if (!emailResult.isValid) newErrors.email = emailResult.error;
+
+      const pincodeResult = validatePincode(formData.pincode);
+      if (!pincodeResult.isValid) newErrors.pincode = pincodeResult.error;
+
+      const telephoneResult = validatePhone(formData.telephone);
+      if (!telephoneResult.isValid) newErrors.telephone = telephoneResult.error;
+
+      if (!formData.openTime) newErrors.openTime = "Open time is required";
+      if (!formData.closeTime) newErrors.closeTime = "Close time is required";
+
+      setErrors(newErrors);
+
+      if (hasErrors(newErrors)) {
+          return;
+      }
+
       // Combine address lines for the table view
       const fullAddress = `${formData.addressLine1} ${formData.addressLine2 || ''} ${formData.city || ''} ${formData.pincode || ''}`.trim();
-      
+
       if (editingId) {
           setBranches(branches.map(b => b.id === editingId ? {
               ...b,
@@ -145,7 +215,15 @@ export default function BranchProfile() {
                          </div>
                          <div className="space-y-2">
                              <label className="text-sm text-gray-600 dark:text-gray-400">PinCode</label>
-                             <Input value={formData.pincode} onChange={e => setFormData({...formData, pincode: e.target.value})} />
+                             <Input
+                                type="text"
+                                maxLength={6}
+                                placeholder="Enter 6-digit pincode"
+                                value={formData.pincode}
+                                onChange={handlePincodeChange}
+                                className={errors.pincode ? "border-red-500" : ""}
+                             />
+                             {errors.pincode && <p className="text-red-500 text-xs mt-1">{errors.pincode}</p>}
                          </div>
                           <div className="space-y-2">
                              <label className="text-sm text-gray-600 dark:text-gray-400">State</label>
@@ -161,11 +239,26 @@ export default function BranchProfile() {
                          </div>
                          <div className="space-y-2">
                              <label className="text-sm text-gray-600 dark:text-gray-400">Mobile No 1. <span className="text-red-500">*</span></label>
-                             <Input required value={formData.mobile} onChange={e => setFormData({...formData, mobile: e.target.value})} />
+                             <Input
+                                type="tel"
+                                maxLength={10}
+                                placeholder="Enter 10-digit mobile number"
+                                value={formData.mobile}
+                                onChange={handleMobileChange}
+                                className={errors.mobile ? "border-red-500" : ""}
+                             />
+                             {errors.mobile && <p className="text-red-500 text-xs mt-1">{errors.mobile}</p>}
                          </div>
                          <div className="space-y-2">
                              <label className="text-sm text-gray-600 dark:text-gray-400">Email <span className="text-red-500">*</span></label>
-                             <Input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} />
+                             <Input
+                                type="email"
+                                placeholder="Enter email address"
+                                value={formData.email}
+                                onChange={handleEmailChange}
+                                className={errors.email ? "border-red-500" : ""}
+                             />
+                             {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
                          </div>
                          <div className="space-y-2">
                              <label className="text-sm text-gray-600 dark:text-gray-400">Open Time (HH:MM) <span className="text-red-500">*</span></label>
@@ -217,7 +310,15 @@ export default function BranchProfile() {
                          </div>
                          <div className="space-y-2">
                              <label className="text-sm text-gray-600 dark:text-gray-400">Telephone No</label>
-                             <Input value={formData.telephone} onChange={e => setFormData({...formData, telephone: e.target.value})} />
+                             <Input
+                                type="tel"
+                                maxLength={12}
+                                placeholder="Enter telephone number"
+                                value={formData.telephone}
+                                onChange={handleTelephoneChange}
+                                className={errors.telephone ? "border-red-500" : ""}
+                             />
+                             {errors.telephone && <p className="text-red-500 text-xs mt-1">{errors.telephone}</p>}
                          </div>
                           <div className="space-y-2">
                              <label className="text-sm text-gray-600 dark:text-gray-400">Day Of Week <span className="text-red-500">*</span></label>

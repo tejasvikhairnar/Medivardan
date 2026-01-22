@@ -312,8 +312,170 @@ export default function DoctorRegistrationPage() {
   };
 
   const handleAddNew = () => {
+    // Reset form to initial state for adding new
+    setFormData({
+      clinicName: "",
+      doctorType: "full-time",
+      date: new Date().toISOString().split('T')[0],
+      title: "Dr.",
+      firstName: "",
+      lastName: "",
+      dateOfBirth: "",
+      gender: "male",
+      addressLine1: "",
+      addressLine2: "",
+      country: "India",
+      state: "Maharashtra",
+      city: "Mumbai",
+      areaPin: "",
+      mobileNo1: "",
+      mobileNo2: "",
+      email: "",
+      bloodGroup: "",
+      inTime: "",
+      outTime: "",
+      educationList: [],
+      currentEducation: {
+        degree: "",
+        board: "",
+        upload: null,
+      },
+      specialities: {
+        asthesticDentist: false,
+        generalDentist: false,
+        orthodontics: false,
+        periodontics: false,
+        conservativeDentist: false,
+        oralMaxillofacial: false,
+        pedodontics: false,
+        prosthodontics: false,
+        endodontics: false,
+        oralPathology: false,
+      },
+      profilePhoto: null,
+      adharCardNo: "",
+      adharCardImage: null,
+      panCardNo: "",
+      panCardImage: null,
+      registrationNo: "",
+      certificateImage: null,
+      indemnityPolicyNo: "",
+      indemnityPolicyImage: null,
+      doctorID: 0 // Ensure 0 for Add
+    });
+    
     setShowAddForm(true);
     setActiveTab("personal");
+  };
+
+  const handleEditDoctor = async (doctor) => {
+    console.log("Editing doctor (summary):", doctor);
+    const doctorID = doctor.doctorID || doctor.DoctorID;
+    
+    if (!doctorID) {
+      alert("Error: Doctor ID not found");
+      return;
+    }
+
+    try {
+      // Show loading indicator eventually - for now using alert or simple log? 
+      // Better to have a local loading state if feasible, but user just wants it to work.
+      // We'll set a loading state if we had one for the form, but we don't. 
+      // We can use a toast or just proceed. 
+      console.log(`Fetching full details for doctor ID: ${doctorID}...`);
+      
+      // Import getDoctorById dynamically or move import to top. 
+      // Since we can't easily change imports at top in this replace block without context, 
+      // we'll assume we can import it or use a hook. 
+      // BETTER APPROACH: Use the import from @/api/client/doctors
+      
+      const { getDoctorById } = await import("@/api/client/doctors");
+      const fullDoctorData = await getDoctorById(doctorID);
+      
+      console.log("Full doctor details fetched:", fullDoctorData);
+      
+      // Use the full data (or valid object from response)
+      // The API response might be wrapped or direct. getDoctorById returns response.data
+      const dr = fullDoctorData.length > 0 ? fullDoctorData[0] : fullDoctorData;
+
+      setFormData({
+        doctorID: dr.doctorID || 0,
+        clinicName: (dr.clinicName || "").toLowerCase(),
+        
+        doctorType: "full-time", // Map this if API returns ID: 1->full-time, etc.
+        date: (() => {
+          if (!dr.regDate) return new Date().toISOString().split('T')[0];
+          const parsed = new Date(dr.regDate);
+          return isNaN(parsed.getTime()) ? new Date().toISOString().split('T')[0] : parsed.toISOString().split('T')[0];
+        })(),
+  
+        title: dr.title || "Dr.",
+        firstName: dr.firstName || "",
+        lastName: dr.lastName || "",
+        dateOfBirth: (() => {
+          if (!dr.dob) return "";
+          const parsed = new Date(dr.dob);
+          return isNaN(parsed.getTime()) ? "" : parsed.toISOString().split('T')[0];
+        })(),
+        gender: dr.gender ? dr.gender.toLowerCase() : "male",
+        
+        addressLine1: dr.residential_Address || dr.line1 || "", 
+        addressLine2: dr.line2 || "",
+        country: "India", 
+        state: "Maharashtra", 
+        city: "Mumbai", 
+        areaPin: dr.areaPin || "",
+        
+        mobileNo1: dr.mobile1 || dr.mobileNo || "",
+        mobileNo2: dr.mobile2 || "",
+        email: dr.email || dr.emailID || "",
+        bloodGroup: dr.bloodGroup || "",
+        
+        inTime: dr.inTime ? dr.inTime.substring(0, 5) : "",
+        outTime: dr.outTime ? dr.outTime.substring(0, 5) : "",
+        
+        // Education
+        educationList: [], // If API returns list, map it here
+        currentEducation: {
+          degree: dr.basicDegree || "",
+          board: "",
+          upload: null,
+        },
+        
+        // Specialities
+        // If API returns specialityID, map it. 
+        // Example: if dr.specialityID is "2", set orthodontics: true
+        specialities: {
+          asthesticDentist: false,
+          generalDentist: false,
+          orthodontics: false,
+          periodontics: false,
+          conservativeDentist: false,
+          oralMaxillofacial: false,
+          pedodontics: false,
+          prosthodontics: false,
+          endodontics: false,
+          oralPathology: false,
+        },
+        
+        profilePhoto: null, 
+        adharCardNo: dr.adharCardNo || "",
+        adharCardImage: null,
+        panCardNo: dr.panCardNo || "",
+        panCardImage: null,
+        registrationNo: dr.registrationNo || "",
+        certificateImage: null,
+        indemnityPolicyNo: dr.identityPolicyNo || "",
+        indemnityPolicyImage: null,
+      });
+      
+      setShowAddForm(true);
+      setActiveTab("personal");
+
+    } catch (err) {
+      console.error("Failed to fetch doctor details:", err);
+      alert("Failed to load doctor details. Please try again.");
+    }
   };
 
   // Filter doctors based on search criteria
@@ -1257,7 +1419,7 @@ export default function DoctorRegistrationPage() {
               </Select>
               <Button
                 onClick={handleSearch}
-                className="bg-orange-600 hover:bg-orange-700 text-white"
+                className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white"
               >
                 Search
               </Button>
@@ -1286,7 +1448,7 @@ export default function DoctorRegistrationPage() {
           </Button>
           <Button
             onClick={handleAddNew}
-            className="bg-blue-600 hover:bg-blue-700 text-white"
+            className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white"
           >
             Add New
           </Button>
@@ -1332,26 +1494,26 @@ export default function DoctorRegistrationPage() {
                 <>
                   <Table>
                     <TableHeader>
-                      <TableRow className="bg-green-100 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/20">
-                        <TableHead className="font-semibold text-gray-900 dark:text-gray-100">
+                      <TableRow className="bg-[#0f7396]/10 dark:bg-[#0f7396]/20 hover:bg-[#0f7396]/10 dark:hover:bg-[#0f7396]/20 border-[#0f7396]/20">
+                        <TableHead className="font-semibold text-[#0f7396] dark:text-[#0f7396]">
                           Sr. No.
                         </TableHead>
-                        <TableHead className="font-semibold text-gray-900 dark:text-gray-100">
+                        <TableHead className="font-semibold text-[#0f7396] dark:text-[#0f7396]">
                           Doctor ID
                         </TableHead>
-                        <TableHead className="font-semibold text-gray-900 dark:text-gray-100">
+                        <TableHead className="font-semibold text-[#0f7396] dark:text-[#0f7396]">
                           Photo
                         </TableHead>
-                        <TableHead className="font-semibold text-gray-900 dark:text-gray-100">
+                        <TableHead className="font-semibold text-[#0f7396] dark:text-[#0f7396]">
                           Name
                         </TableHead>
-                        <TableHead className="font-semibold text-gray-900 dark:text-gray-100">
+                        <TableHead className="font-semibold text-[#0f7396] dark:text-[#0f7396]">
                           Mobile No.
                         </TableHead>
-                        <TableHead className="font-semibold text-gray-900 dark:text-gray-100">
+                        <TableHead className="font-semibold text-[#0f7396] dark:text-[#0f7396]">
                           Email ID
                         </TableHead>
-                        <TableHead className="font-semibold text-gray-900 dark:text-gray-100">
+                        <TableHead className="font-semibold text-[#0f7396] dark:text-[#0f7396]">
                           Reg Date
                         </TableHead>
                         <TableHead className="font-semibold text-gray-900 dark:text-gray-100 text-center">
@@ -1402,6 +1564,7 @@ export default function DoctorRegistrationPage() {
                             <TableCell>
                               <div className="flex items-center justify-center gap-2">
                                 <button
+                                  onClick={() => handleEditDoctor(doctor)}
                                   className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
                                 >
                                   <Edit className="w-4 h-4 text-gray-600 dark:text-gray-400" />

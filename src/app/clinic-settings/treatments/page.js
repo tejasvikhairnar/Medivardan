@@ -22,22 +22,24 @@ export default function Treatments() {
   const initialFormState = {
     treatmentName: "",
     cost: "",
-    group: ""
+    group: "",
+    maxDiscount: ""
   };
   const [formData, setFormData] = useState(initialFormState);
+  const [discountError, setDiscountError] = useState("");
 
   // Mock data for Treatments
   const [treatments, setTreatments] = useState([
-    { id: 1, treatmentName: "ABUTMENT", cost: "12000", group: "Implant" },
-    { id: 2, treatmentName: "ALIGNER - EXCLUSIVE", cost: "75000", group: "Aligner" },
-    { id: 3, treatmentName: "ALIGNER - EXCLUSIVE", cost: "75000", group: "Aligner" },
-    { id: 4, treatmentName: "ALIGNER ATTACHMENT", cost: "500", group: "Aligner" },
-    { id: 5, treatmentName: "ALIGNER-CLASSIC", cost: "35000", group: "Aligner" },
-    { id: 6, treatmentName: "ALIGNER-CLASSIC", cost: "35000", group: "Aligner" },
-    { id: 7, treatmentName: "ALIGNER-CLASSIC BOTH ARCHES", cost: "50000", group: "Aligner" },
-    { id: 8, treatmentName: "ALIGNER-PREMIUM", cost: "100000", group: "Aligner" },
-    { id: 9, treatmentName: "ALIGNER-PREMIUM", cost: "100000", group: "Aligner" },
-    { id: 10, treatmentName: "ALVEOPLASTY - DOUBLE ARCH", cost: "20000", group: "General" }
+    { id: 1, treatmentName: "ABUTMENT", cost: "12000", group: "Implant", maxDiscount: "10" },
+    { id: 2, treatmentName: "ALIGNER - EXCLUSIVE", cost: "75000", group: "Aligner", maxDiscount: "5" },
+    { id: 3, treatmentName: "ALIGNER - EXCLUSIVE", cost: "75000", group: "Aligner", maxDiscount: "5" },
+    { id: 4, treatmentName: "ALIGNER ATTACHMENT", cost: "500", group: "Aligner", maxDiscount: "15" },
+    { id: 5, treatmentName: "ALIGNER-CLASSIC", cost: "35000", group: "Aligner", maxDiscount: "10" },
+    { id: 6, treatmentName: "ALIGNER-CLASSIC", cost: "35000", group: "Aligner", maxDiscount: "10" },
+    { id: 7, treatmentName: "ALIGNER-CLASSIC BOTH ARCHES", cost: "50000", group: "Aligner", maxDiscount: "8" },
+    { id: 8, treatmentName: "ALIGNER-PREMIUM", cost: "100000", group: "Aligner", maxDiscount: "5" },
+    { id: 9, treatmentName: "ALIGNER-PREMIUM", cost: "100000", group: "Aligner", maxDiscount: "5" },
+    { id: 10, treatmentName: "ALVEOPLASTY - DOUBLE ARCH", cost: "20000", group: "General", maxDiscount: "12" }
   ]);
 
   const filteredData = treatments.filter(item => 
@@ -54,26 +56,54 @@ export default function Treatments() {
       setFormData({
           treatmentName: treatment.treatmentName,
           cost: treatment.cost,
-          group: treatment.group || "General" // Defaulting if missing
+          group: treatment.group || "General", // Defaulting if missing
+          maxDiscount: treatment.maxDiscount || ""
       });
+      setDiscountError("");
       setEditingId(treatment.id);
       setViewMode("create");
   };
 
   const handleAddNew = () => {
     setFormData(initialFormState);
+    setDiscountError("");
     setEditingId(null);
     setViewMode("create");
   };
 
+  const validateDiscount = (value) => {
+      if (value === "") return true; // Allow empty
+      const num = parseFloat(value);
+      if (isNaN(num)) return false;
+      return num >= 0 && num <= 100;
+  };
+
+  const handleDiscountChange = (e) => {
+      const value = e.target.value;
+      setFormData({...formData, maxDiscount: value});
+      if (value !== "" && !validateDiscount(value)) {
+          setDiscountError("Discount must be between 0 and 100");
+      } else {
+          setDiscountError("");
+      }
+  };
+
   const handleSubmit = (e) => {
       e.preventDefault();
+
+      // Validate discount before submit
+      if (formData.maxDiscount !== "" && !validateDiscount(formData.maxDiscount)) {
+          setDiscountError("Discount must be between 0 and 100");
+          return;
+      }
+
       if (editingId) {
           setTreatments(treatments.map(t => t.id === editingId ? {
               ...t,
               treatmentName: formData.treatmentName,
               cost: formData.cost,
-              group: formData.group
+              group: formData.group,
+              maxDiscount: formData.maxDiscount
           } : t));
           alert("Treatment Updated Successfully!");
       } else {
@@ -82,7 +112,8 @@ export default function Treatments() {
               id: newId,
               treatmentName: formData.treatmentName,
               cost: formData.cost,
-              group: formData.group
+              group: formData.group,
+              maxDiscount: formData.maxDiscount
           };
           setTreatments([...treatments, newTreatment]);
           alert("Treatment Created Successfully!");
@@ -110,7 +141,7 @@ export default function Treatments() {
                      </div>
                      <div className="space-y-2">
                          <label className="text-sm text-gray-600 dark:text-gray-400">Treatment Group</label>
-                         <select 
+                         <select
                             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                             value={formData.group}
                             onChange={e => setFormData({...formData, group: e.target.value})}
@@ -122,6 +153,21 @@ export default function Treatments() {
                              <option value="Braces">Braces</option>
                              <option value="Aligner">Aligner</option>
                          </select>
+                     </div>
+                     <div className="space-y-2">
+                         <label className="text-sm text-gray-600 dark:text-gray-400">Maximum Discount (In %)</label>
+                         <Input
+                            type="number"
+                            min="0"
+                            max="100"
+                            placeholder="Enter discount (0-100)"
+                            value={formData.maxDiscount}
+                            onChange={handleDiscountChange}
+                            className={discountError ? "border-red-500" : ""}
+                         />
+                         {discountError && (
+                            <p className="text-red-500 text-xs mt-1">{discountError}</p>
+                         )}
                      </div>
                 </div>
 
@@ -177,6 +223,7 @@ export default function Treatments() {
               <TableHead className="font-bold text-gray-700 dark:text-gray-300 w-[60px]">Sr. No.</TableHead>
               <TableHead className="font-bold text-gray-700 dark:text-gray-300">Treatment Name</TableHead>
               <TableHead className="font-bold text-gray-700 dark:text-gray-300">Cost</TableHead>
+              <TableHead className="font-bold text-gray-700 dark:text-gray-300">Max Discount (%)</TableHead>
               <TableHead className="font-bold text-gray-700 dark:text-gray-300 w-[100px] text-center"></TableHead>
             </TableRow>
           </TableHeader>
@@ -186,6 +233,7 @@ export default function Treatments() {
                 <TableCell className="dark:text-gray-300">{index + 1}</TableCell>
                 <TableCell className="dark:text-gray-300">{row.treatmentName}</TableCell>
                 <TableCell className="dark:text-gray-300">{row.cost}</TableCell>
+                <TableCell className="dark:text-gray-300">{row.maxDiscount || "-"}</TableCell>
                 <TableCell className="dark:text-gray-300">
                     <div className="flex items-center justify-center gap-4">
                         <Button 
@@ -210,7 +258,7 @@ export default function Treatments() {
             ))}
              {filteredData.length === 0 && (
               <TableRow>
-                <TableCell colSpan={4} className="text-center h-24 text-gray-500">
+                <TableCell colSpan={5} className="text-center h-24 text-gray-500">
                   No treatments found.
                 </TableCell>
               </TableRow>

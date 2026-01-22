@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { getLeads } from "@/api/client/leads";
+import { transformAPILeadToDisplay } from "@/utils/leadsTransformers";
 import { Pagination } from "@/components/Pagination";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -68,20 +69,12 @@ export default function NewLeadPage() {
       console.log('[DEBUG] Item Keys:', data && data[0] ? Object.keys(data[0]) : 'No keys');
       
       // Transform API data to match table structure
-      const transformedLeads = Array.isArray(data) ? data.map((lead, index) => ({
-        srNo: index + 1, // Absolute index for client-side list
-        leadNo: (lead.EnquiryID || lead.enquiryId || lead.enquiryID || lead.id) ? `E${lead.EnquiryID || lead.enquiryId || lead.enquiryID || lead.id}` : (lead.enquiryNo || "-"),
-        name: `${lead.firstName || lead.FirstName || ""} ${lead.lastName || lead.LastName || ""}`.trim() || "-",
-        mobileNo: lead.MobileNo || lead.mobileNo || lead.Mobile || lead.mobile || lead.PhoneNo1 || lead.phoneNo1 || "-",
-        clinicName: lead.clinicName || lead.ClinicName || "-",
-        sourceName: lead.sourceName || lead.SourceName || "-",
-        status: lead.Status || lead.status || lead.PatientStatus || lead.patientStatus || lead.PStatus || lead.pstatus || lead.PatientFollowup || lead.patientFollowup || lead.patientFollowUp || lead.PatientFollowUp || lead.LeadStatus || lead.EnquiryStatus || "-",
-        date: (lead.enquiryDate || lead.EnquiryDate || lead.LeadDate || lead.leadDate) ? new Date(lead.enquiryDate || lead.EnquiryDate || lead.LeadDate || lead.leadDate).toLocaleDateString("en-GB", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric"
-        }) : "-",
-        rawDate: lead.enquiryDate || lead.EnquiryDate || lead.LeadDate || lead.leadDate
+      const transformedLeads = Array.isArray(data) ? data.map((lead) => ({
+        ...transformAPILeadToDisplay(lead),
+        srNo: lead.srNo || undefined // Keep existing srNo if present, otherwise it will be handled by transformer or index in loop
+      })).map((lead, index) => ({
+         ...lead,
+         srNo: index + 1 // override srNo for list view order
       })) : [];
 
       setLeads(transformedLeads);

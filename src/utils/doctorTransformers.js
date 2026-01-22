@@ -46,10 +46,12 @@ const SPECIALITY_ID_MAP = {
  * @returns {Object} Transformed data for API
  */
 export const transformFormDataToAPI = (formData) => {
+  const isUpdate = formData.doctorID && formData.doctorID > 0;
+  
   const payload = {
     // Mode and IDs
-    mode: 1,  // 1 for Add
-    doctorID: 0, 
+    mode: isUpdate ? 2 : 1,  // 1 for Add, 2 for Update
+    doctorID: formData.doctorID || 0, 
     clinicID: formData.clinicName ? CLINIC_ID_MAP[formData.clinicName] : 1, // Default to 1 (Panvel) if missing
     doctorTypeID: DOCTOR_TYPE_MAP[formData.doctorType] || 1,
 

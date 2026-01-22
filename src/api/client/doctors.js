@@ -125,20 +125,45 @@ const transformToApiPayload = (data) => {
 
 export const upsertDoctor = async (doctorData) => {
   try {
+    // Determine if it's an update based on doctorID
+    const isUpdate = doctorData.doctorID && doctorData.doctorID > 0;
+    
+    // Use the input data directly if it's already transformed, or transform it
+    // Ideally, we respect the transformation from the hook. 
+    // Re-applying transformation might be redundant but ensures schema compliance.
     const payload = transformToApiPayload(doctorData);
-    console.log("Adding Doctor Payload:", JSON.stringify(payload, null, 2));
+    
+    // Ensure doctorID is set correctly in payload
+    payload.doctorID = doctorData.doctorID || 0;
 
-    const response = await axiosClient.post(
-      "/api/doctors/add",
-      payload,
-      { baseURL: '' } 
-    );
+    console.log(`[Doctor API] ${isUpdate ? 'Updating' : 'Adding'} Doctor Payload:`, JSON.stringify(payload, null, 2));
+
+    let response;
+    if (isUpdate) {
+      // Use efficient upsert endpoint (same as add but handles updates internally)
+      response = await axiosClient.post(
+        "/api/doctors/upsert",
+        payload,
+        { baseURL: '' }
+      );
+    } else {
+      // Use Add endpoint
+      response = await axiosClient.post(
+        "/api/doctors/add",
+        payload,
+        { baseURL: '' }
+      );
+    }
 
     const data = response.data;
-    if (typeof data === 'number') {
-      return { doctorID: data, success: true };
-    }
-    return { ...data, success: true };
+    
+    // Return consistent format
+    return { 
+      doctorID: typeof data === 'number' ? data : (data?.doctorID || payload.doctorID),
+      success: true,
+      data: data 
+    };
+
   } catch (error) {
     console.error("[Doctor API] Error upserting doctor:", error);
     const errorMessage = error.response?.data?.message ||
@@ -171,15 +196,11 @@ export const deleteDoctor = async (doctorId) => {
  */
 export const getDoctorById = async (doctorId) => {
   try {
-    const response = await axiosClient.get(
-      `/api/doctors/get-by-id`,
-      {
-        params: { DoctorID: doctorId },
-        baseURL: '' // Force relative URL
-      }
-    );
-
-    return response.data;
+    // Use searchDoctors which hits a known working endpoint
+    const doctors = await searchDoctors({ DoctorID: doctorId });
+    
+    // Return first match or null
+    return (doctors && doctors.length > 0) ? doctors[0] : null;
   } catch (error) {
     console.error("[Doctor API] Error fetching doctor:", error);
     throw error;

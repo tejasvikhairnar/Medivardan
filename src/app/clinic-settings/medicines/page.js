@@ -19,6 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { validateCost, validateRequired, hasErrors } from "@/lib/validations";
 
 export default function Medicines() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -35,6 +36,7 @@ export default function Medicines() {
     companyName: ""
   };
   const [formData, setFormData] = useState(initialFormState);
+  const [errors, setErrors] = useState({});
 
   // Mock data
   const [medicines, setMedicines] = useState([
@@ -70,18 +72,52 @@ export default function Medicines() {
           price: medicine.price,
           companyName: medicine.company
       });
+      setErrors({});
       setEditingId(medicine.id);
       setViewMode("create");
   };
 
   const handleAddNew = () => {
     setFormData(initialFormState);
+    setErrors({});
     setEditingId(null);
     setViewMode("create");
   };
 
+  const handlePriceChange = (e) => {
+    const value = e.target.value;
+    // Allow only numbers and decimal point
+    if (value === '' || /^\d*\.?\d*$/.test(value)) {
+      setFormData({...formData, price: value});
+      const result = validateCost(value);
+      setErrors(prev => ({...prev, price: result.error}));
+    }
+  };
+
   const handleSubmit = (e) => {
       e.preventDefault();
+
+      // Validate all fields
+      const newErrors = {};
+
+      const typeResult = validateRequired(formData.medicinesType, "Medicine Type");
+      if (!typeResult.isValid) newErrors.medicinesType = typeResult.error;
+
+      const nameResult = validateRequired(formData.medicineName, "Medicine Name");
+      if (!nameResult.isValid) newErrors.medicineName = nameResult.error;
+
+      const unitResult = validateRequired(formData.unit, "Unit");
+      if (!unitResult.isValid) newErrors.unit = unitResult.error;
+
+      const priceResult = validateCost(formData.price);
+      if (!priceResult.isValid) newErrors.price = priceResult.error;
+
+      setErrors(newErrors);
+
+      if (hasErrors(newErrors)) {
+          return;
+      }
+
       if (editingId) {
           setMedicines(medicines.map(m => m.id === editingId ? {
               ...m,

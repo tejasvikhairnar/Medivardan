@@ -519,16 +519,13 @@ export default function AddLeadFormPage() {
                 <Label htmlFor="clinicName" className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   Clinic Name <span className="text-red-500">*</span>
                 </Label>
-                <Select value={formData.clinicName} onValueChange={(value) => handleInputChange("clinicName", value)}>
-                  <SelectTrigger className="border-gray-300 dark:border-gray-700 w-full">
-                    <SelectValue placeholder="Select Clinic" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Panvel">Panvel</SelectItem>
-                    <SelectItem value="Pune">Pune</SelectItem>
-                    <SelectItem value="Mumbai">Mumbai</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Input
+                  id="clinicName"
+                  placeholder="Enter Clinic Name"
+                  value={formData.clinicName}
+                  onChange={(e) => handleInputChange("clinicName", e.target.value)}
+                  className="border-gray-300 dark:border-gray-700 w-full"
+                />
               </div>
             </div>
 

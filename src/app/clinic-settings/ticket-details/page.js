@@ -129,11 +129,12 @@ export default function TicketDetails() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-4 items-end">
-        <div className="w-[300px]">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end w-full">
+        <div className="w-full space-y-2">
+             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Issue Type</label>
              <Select value={issueTypeFilter} onValueChange={setIssueTypeFilter}>
-                <SelectTrigger className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700">
-                <SelectValue placeholder="--- Select ---" />
+                <SelectTrigger className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 w-full">
+                <SelectValue placeholder="Select Issue Type" />
                 </SelectTrigger>
                 <SelectContent>
                  <SelectItem value="all">All</SelectItem>
@@ -143,10 +144,11 @@ export default function TicketDetails() {
                 </SelectContent>
             </Select>
         </div>
-        <div className="w-[200px]">
+        <div className="w-full space-y-2">
+             <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700">
-                <SelectValue placeholder="--- Select ---" />
+                <SelectTrigger className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 w-full">
+                <SelectValue placeholder="Select Status" />
                 </SelectTrigger>
                 <SelectContent>
                 <SelectItem value="all">All</SelectItem>
@@ -157,18 +159,22 @@ export default function TicketDetails() {
             </Select>
         </div>
 
-         <div className="w-[150px]">
+         <div className="w-full space-y-2">
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Date</label>
             <Input
+                type="date"
                 placeholder="From Date"
                 value={fromDate}
                 onChange={(e) => setFromDate(e.target.value)}
-                 className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700"
+                 className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 w-full"
             />
         </div>
         {/* Search button logic is implicit in filters currently but a button can trigger a re-fetch if this was real API */}
-         <Button className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap">
-                Search
-        </Button>
+         <div className="pb-0.5">
+             <Button className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white font-medium shadow-sm transition-all whitespace-nowrap h-10 w-full">
+                    Search
+            </Button>
+         </div>
       </div>
 
        <div className="flex justify-end text-sm text-gray-500">
