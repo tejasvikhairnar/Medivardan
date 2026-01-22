@@ -194,19 +194,12 @@ export default function ItemMaster() {
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 flex-1"
                         />
-<<<<<<< HEAD
                          <Button onClick={() => setSearchTerm("")} variant="outline" className="mr-2 px-6 font-medium shadow-sm transition-all whitespace-nowrap border-[#0f7396] text-[#0f7396] hover:bg-[#0f7396]/10">
                             Clear
                          </Button>
                          <Button onClick={handleAdd} className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap">
                             + Add New
-=======
-                         <Button onClick={() => setSearchTerm("")} className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap">
-                           Clear
                          </Button>
-                         <Button onClick={handleAdd} className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap">
-                           Add Item
->>>>>>> 407b160398f8ce793f41756269787a4622edd0b9
                          </Button>
                     </div>
                 </div>
