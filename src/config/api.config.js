@@ -20,20 +20,23 @@ export const API_CONFIG = {
     },
     DOCTOR: {
       GET_ALL: "/Doctor/search",
+      GET_BY_ID: "/Doctor/GetDoctorById",
+      UPDATE: "/Doctor/UpdateDoctorProfile",
       UPSERT: "/DoctorRegistration/UpsertDoctor",
       ADD: "/Doctor/AddDoctor",
+      DELETE: "/Doctor", // DELETE /Doctor/{id}
     },
   },
 
   // Feature Flags
   FEATURES: {
     // Use mock fallback when external API fails
-    USE_MOCK_FALLBACK_FOR_GET: true,
+    USE_MOCK_FALLBACK_FOR_GET: false,
     USE_MOCK_FALLBACK_FOR_UPSERT: false,
 
     // Sync data to mock storage even when real API works
     // This ensures doctors appear in the list (since GetAllDoctors is broken)
-    SYNC_TO_MOCK_STORAGE: true,
+    SYNC_TO_MOCK_STORAGE: false,
   },
 
   // Request timeout (milliseconds)

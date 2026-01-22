@@ -8,7 +8,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 // Using Axios + React Query instead of old service
 import { useDoctors } from "@/hooks/useDoctors";
-import { useUpsertDoctor } from "@/hooks/useDoctorMutations";
+import { useUpsertDoctor, useDeleteDoctor } from "@/hooks/useDoctorMutations";
+import { getDoctorById } from "@/api/doctor";
+import { transformAPItoForm } from "@/api/doctor/transformers";
 import {
   Select,
   SelectContent,
@@ -29,6 +31,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { Settings, Eye, Edit, Calendar, X, Loader2, Trash2, Clock } from "lucide-react";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 import CustomPagination from "@/components/ui/custom-pagination";
 
 export default function DoctorRegistrationPage() {
@@ -49,6 +52,7 @@ export default function DoctorRegistrationPage() {
   // React Query hooks for data fetching and mutations
   const { data: doctors = [], isLoading, error, refetch } = useDoctors();
   const upsertMutation = useUpsertDoctor();
+  const deleteMutation = useDeleteDoctor();
 
   const [formData, setFormData] = useState({
     // Clinic & Doctor Type
@@ -188,6 +192,22 @@ export default function DoctorRegistrationPage() {
     }
   };
 
+  /* File Upload Helper using direct Axios to avoid interceptor issues */
+  const uploadFile = async (file) => {
+    if (!file) return null;
+    const uploadData = new FormData();
+    uploadData.append("file", file);
+    try {
+        const res = await axios.post("/api/upload", uploadData, {
+            headers: { "Content-Type": "multipart/form-data" }
+        });
+        return res.data.url; 
+    } catch (e) {
+        console.error("Upload failed", e);
+        return null;
+    }
+  };
+
   const handleFormSubmit = async () => {
     // Validate mandatory fields
     const mandatoryFields = {
@@ -225,8 +245,55 @@ export default function DoctorRegistrationPage() {
       return;
     }
 
+    // 1. Upload Files
+    const profileUrl = await uploadFile(formData.profilePhoto);
+    const adharUrl = await uploadFile(formData.adharCardImage);
+    const panUrl = await uploadFile(formData.panCardImage);
+    const regUrl = await uploadFile(formData.certificateImage); 
+    const indemnityUrl = await uploadFile(formData.indemnityPolicyImage);
+    
+    // Education Uploads processing
+    let deg1Url = null;
+    let deg2Url = null;
+    let basicDegree = formData.currentEducation.degree;
+    
+    // Prioritize education list
+    if (formData.educationList.length > 0) {
+          const edu1 = formData.educationList[0];
+          deg1Url = await uploadFile(edu1.upload);
+          basicDegree = edu1.degree;
+          
+          if (formData.educationList.length > 1) {
+              const edu2 = formData.educationList[1];
+              deg2Url = await uploadFile(edu2.upload);
+          }
+    } else if (formData.currentEducation.degree) {
+          // Fallback if not added to list but typed in
+          deg1Url = await uploadFile(formData.currentEducation.upload);
+    }
+
+    // 2. Prepare Data for Transformer
+    // We pass formData + validation URLs to the mutation.
+    // The mutation calls upsertDoctor -> checks transformFormDataToAPI
+    const dataForTransformer = {
+        ...formData,
+        profileImageUrl: profileUrl,
+        adharCardImageUrl: adharUrl,
+        panCardImageUrl: panUrl,
+        registrationImageUrl: regUrl,
+        identityPolicyImageUrl: indemnityUrl,
+        degreeUpload1: deg1Url,
+        degreeUpload2: deg2Url,
+        currentEducation: {
+            ...formData.currentEducation,
+            degree: basicDegree 
+        }
+    };
+    
+    console.log("Submitting with Files:", dataForTransformer);
+
     // Submit using React Query mutation
-    upsertMutation.mutate(formData, {
+    upsertMutation.mutate(dataForTransformer, {
       onSuccess: (data) => {
         alert(`Doctor added successfully! Doctor ID: ${data.doctorID}`);
         
@@ -260,9 +327,11 @@ export default function DoctorRegistrationPage() {
             degree: "",
             board: "",
             upload: null,
+            degreeUpload1: null // Reset these too
           },
           specialities: {
             asthesticDentist: false,
+            // ... reset all ... (simplified)
             generalDentist: false,
             orthodontics: false,
             periodontics: false,
@@ -312,139 +381,34 @@ export default function DoctorRegistrationPage() {
   };
 
   const handleAddNew = () => {
-    // Reset form to initial state for adding new
+    // Reset form data to default state (simplified for brevity, ensure full reset in production)
     setFormData({
-      clinicName: "",
-      doctorType: "full-time",
-      date: new Date().toISOString().split('T')[0],
-      title: "Dr.",
-      firstName: "",
-      lastName: "",
-      dateOfBirth: "",
-      gender: "male",
-      addressLine1: "",
-      addressLine2: "",
-      country: "India",
-      state: "Maharashtra",
-      city: "Mumbai",
-      areaPin: "",
-      mobileNo1: "",
-      mobileNo2: "",
-      email: "",
-      bloodGroup: "",
-      inTime: "",
-      outTime: "",
-      educationList: [],
-      currentEducation: {
-        degree: "",
-        board: "",
-        upload: null,
-      },
-      specialities: {
-        asthesticDentist: false,
-        generalDentist: false,
-        orthodontics: false,
-        periodontics: false,
-        conservativeDentist: false,
-        oralMaxillofacial: false,
-        pedodontics: false,
-        prosthodontics: false,
-        endodontics: false,
-        oralPathology: false,
-      },
-      profilePhoto: null,
-      adharCardNo: "",
-      adharCardImage: null,
-      panCardNo: "",
-      panCardImage: null,
-      registrationNo: "",
-      certificateImage: null,
-      indemnityPolicyNo: "",
-      indemnityPolicyImage: null,
-      doctorID: 0 // Ensure 0 for Add
-    });
-    
-    setShowAddForm(true);
-    setActiveTab("personal");
-  };
-
-  const handleEditDoctor = async (doctor) => {
-    console.log("Editing doctor (summary):", doctor);
-    const doctorID = doctor.doctorID || doctor.DoctorID;
-    
-    if (!doctorID) {
-      alert("Error: Doctor ID not found");
-      return;
-    }
-
-    try {
-      // Show loading indicator eventually - for now using alert or simple log? 
-      // Better to have a local loading state if feasible, but user just wants it to work.
-      // We'll set a loading state if we had one for the form, but we don't. 
-      // We can use a toast or just proceed. 
-      console.log(`Fetching full details for doctor ID: ${doctorID}...`);
-      
-      // Import getDoctorById dynamically or move import to top. 
-      // Since we can't easily change imports at top in this replace block without context, 
-      // we'll assume we can import it or use a hook. 
-      // BETTER APPROACH: Use the import from @/api/client/doctors
-      
-      const { getDoctorById } = await import("@/api/client/doctors");
-      const fullDoctorData = await getDoctorById(doctorID);
-      
-      console.log("Full doctor details fetched:", fullDoctorData);
-      
-      // Use the full data (or valid object from response)
-      // The API response might be wrapped or direct. getDoctorById returns response.data
-      const dr = fullDoctorData.length > 0 ? fullDoctorData[0] : fullDoctorData;
-
-      setFormData({
-        doctorID: dr.doctorID || 0,
-        clinicName: (dr.clinicName || "").toLowerCase(),
-        
-        doctorType: "full-time", // Map this if API returns ID: 1->full-time, etc.
-        date: (() => {
-          if (!dr.regDate) return new Date().toISOString().split('T')[0];
-          const parsed = new Date(dr.regDate);
-          return isNaN(parsed.getTime()) ? new Date().toISOString().split('T')[0] : parsed.toISOString().split('T')[0];
-        })(),
-  
-        title: dr.title || "Dr.",
-        firstName: dr.firstName || "",
-        lastName: dr.lastName || "",
-        dateOfBirth: (() => {
-          if (!dr.dob) return "";
-          const parsed = new Date(dr.dob);
-          return isNaN(parsed.getTime()) ? "" : parsed.toISOString().split('T')[0];
-        })(),
-        gender: dr.gender ? dr.gender.toLowerCase() : "male",
-        
-        addressLine1: dr.residential_Address || dr.line1 || "", 
-        addressLine2: dr.line2 || "",
-        country: "India", 
-        state: "Maharashtra", 
-        city: "Mumbai", 
-        areaPin: dr.areaPin || "",
-        
-        mobileNo1: dr.mobile1 || dr.mobileNo || "",
-        mobileNo2: dr.mobile2 || "",
-        email: dr.email || dr.emailID || "",
-        bloodGroup: dr.bloodGroup || "",
-        
-        inTime: dr.inTime ? dr.inTime.substring(0, 5) : "",
-        outTime: dr.outTime ? dr.outTime.substring(0, 5) : "",
-        
-        // Education
-        educationList: [], // If API returns list, map it here
+        clinicName: "",
+        doctorType: "full-time",
+        date: new Date().toISOString().split('T')[0],
+        title: "Dr.",
+        firstName: "",
+        lastName: "",
+        dateOfBirth: "",
+        gender: "male",
+        addressLine1: "",
+        addressLine2: "",
+        country: "India",
+        state: "Maharashtra",
+        city: "Mumbai",
+        areaPin: "",
+        mobileNo1: "",
+        mobileNo2: "",
+        email: "",
+        bloodGroup: "",
+        inTime: "",
+        outTime: "",
+        educationList: [],
         currentEducation: {
-          degree: dr.basicDegree || "",
+          degree: "",
           board: "",
           upload: null,
         },
-        
-        // Specialities
-        // If API returns specialityID, map it. 
-        // Example: if dr.specialityID is "2", set orthodontics: true
         specialities: {
           asthesticDentist: false,
           generalDentist: false,
@@ -457,25 +421,69 @@ export default function DoctorRegistrationPage() {
           endodontics: false,
           oralPathology: false,
         },
-        
-        profilePhoto: null, 
-        adharCardNo: dr.adharCardNo || "",
+        profilePhoto: null,
+        adharCardNo: "",
         adharCardImage: null,
-        panCardNo: dr.panCardNo || "",
+        panCardNo: "",
         panCardImage: null,
-        registrationNo: dr.registrationNo || "",
+        registrationNo: "",
         certificateImage: null,
-        indemnityPolicyNo: dr.identityPolicyNo || "",
+        indemnityPolicyNo: "",
         indemnityPolicyImage: null,
       });
-      
-      setShowAddForm(true);
-      setActiveTab("personal");
+    setShowAddForm(true);
+    setActiveTab("personal");
+  };
 
-    } catch (err) {
-      console.error("Failed to fetch doctor details:", err);
-      alert("Failed to load doctor details. Please try again.");
-    }
+  const handleEdit = async (doctor) => {
+      try {
+          console.log("[handleEdit] Doctor Object:", doctor);
+          const doctorID = doctor.doctorID;
+          console.log("[handleEdit] Extracted ID:", doctorID);
+
+          if (!doctorID) {
+              alert("Error: Doctor ID is missing");
+              return;
+          }
+
+          // Fetch full details
+          const apiData = await getDoctorById(doctorID);
+
+          if (apiData) {
+              const formDataFromApi = transformAPItoForm(apiData);
+              if (formDataFromApi) {
+                  setFormData(formDataFromApi);
+                  setShowAddForm(true);
+                  setActiveTab("personal");
+              }
+          }
+      } catch (error) {
+          console.error("Failed to fetch doctor details", error);
+          alert("Failed to load doctor details for editing.");
+      }
+  };
+
+  const handleDelete = (doctor) => {
+      const doctorID = doctor.doctorID;
+      const doctorName = doctor.name || "this doctor";
+
+      if (!doctorID) {
+          alert("Error: Doctor ID is missing");
+          return;
+      }
+
+      // Confirmation dialog
+      if (window.confirm(`Are you sure you want to delete ${doctorName} (ID: ${doctorID})? This action cannot be undone.`)) {
+          deleteMutation.mutate(doctorID, {
+              onSuccess: () => {
+                  alert(`Doctor "${doctorName}" deleted successfully!`);
+                  refetch();
+              },
+              onError: (error) => {
+                  alert(`Failed to delete doctor: ${error.message}`);
+              },
+          });
+      }
   };
 
   // Filter doctors based on search criteria
@@ -1448,7 +1456,7 @@ export default function DoctorRegistrationPage() {
           </Button>
           <Button
             onClick={handleAddNew}
-            className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white"
+            className="bg-blue-600 hover:bg-blue-700 text-white"
           >
             Add New
           </Button>
@@ -1494,26 +1502,26 @@ export default function DoctorRegistrationPage() {
                 <>
                   <Table>
                     <TableHeader>
-                      <TableRow className="bg-[#0f7396]/10 dark:bg-[#0f7396]/20 hover:bg-[#0f7396]/10 dark:hover:bg-[#0f7396]/20 border-[#0f7396]/20">
-                        <TableHead className="font-semibold text-[#0f7396] dark:text-[#0f7396]">
+                      <TableRow className="bg-green-100 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/20">
+                        <TableHead className="font-semibold text-gray-900 dark:text-gray-100">
                           Sr. No.
                         </TableHead>
-                        <TableHead className="font-semibold text-[#0f7396] dark:text-[#0f7396]">
+                        <TableHead className="font-semibold text-gray-900 dark:text-gray-100">
                           Doctor ID
                         </TableHead>
-                        <TableHead className="font-semibold text-[#0f7396] dark:text-[#0f7396]">
+                        <TableHead className="font-semibold text-gray-900 dark:text-gray-100">
                           Photo
                         </TableHead>
-                        <TableHead className="font-semibold text-[#0f7396] dark:text-[#0f7396]">
+                        <TableHead className="font-semibold text-gray-900 dark:text-gray-100">
                           Name
                         </TableHead>
-                        <TableHead className="font-semibold text-[#0f7396] dark:text-[#0f7396]">
+                        <TableHead className="font-semibold text-gray-900 dark:text-gray-100">
                           Mobile No.
                         </TableHead>
-                        <TableHead className="font-semibold text-[#0f7396] dark:text-[#0f7396]">
+                        <TableHead className="font-semibold text-gray-900 dark:text-gray-100">
                           Email ID
                         </TableHead>
-                        <TableHead className="font-semibold text-[#0f7396] dark:text-[#0f7396]">
+                        <TableHead className="font-semibold text-gray-900 dark:text-gray-100">
                           Reg Date
                         </TableHead>
                         <TableHead className="font-semibold text-gray-900 dark:text-gray-100 text-center">
@@ -1529,7 +1537,7 @@ export default function DoctorRegistrationPage() {
                             className="hover:bg-gray-50 dark:hover:bg-gray-800/50"
                           >
                             <TableCell className="text-gray-900 dark:text-gray-100">
-                              {doctor.srNo}
+                              {(currentPage - 1) * itemsPerPage + index + 1}
                             </TableCell>
                             <TableCell className="text-gray-900 dark:text-gray-100">
                               {doctor.doctorID}
@@ -1564,8 +1572,8 @@ export default function DoctorRegistrationPage() {
                             <TableCell>
                               <div className="flex items-center justify-center gap-2">
                                 <button
-                                  onClick={() => handleEditDoctor(doctor)}
                                   className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+                                  onClick={() => handleEdit(doctor)}
                                 >
                                   <Edit className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                                 </button>
@@ -1581,8 +1589,15 @@ export default function DoctorRegistrationPage() {
                                 </button>
                                 <button
                                   className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded"
+                                  onClick={() => handleDelete(doctor)}
+                                  disabled={deleteMutation.isPending}
+                                  title="Delete Doctor"
                                 >
-                                  <Trash2 className="w-4 h-4 text-gray-600 dark:text-red-400" />
+                                  {deleteMutation.isPending ? (
+                                    <Loader2 className="w-4 h-4 text-red-400 animate-spin" />
+                                  ) : (
+                                    <Trash2 className="w-4 h-4 text-gray-600 dark:text-red-400 hover:text-red-600" />
+                                  )}
                                 </button>
                               </div>
                             </TableCell>

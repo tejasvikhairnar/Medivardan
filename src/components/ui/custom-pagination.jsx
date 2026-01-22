@@ -39,7 +39,7 @@ export default function CustomPagination({ totalItems, itemsPerPage = 10, curren
                         variant={currentPage === page ? "default" : "outline"}
                         size="sm"
                         onClick={() => onPageChange(page)}
-                        className={`h-8 w-8 p-0 ${currentPage === page ? "bg-[#D35400] hover:bg-[#ba4a00]" : ""}`}
+                        className={`h-8 w-8 p-0 ${currentPage === page ? "bg-[#0f7396] hover:bg-[#0b5c7a]" : ""}`}
                     >
                         {page}
                     </Button>

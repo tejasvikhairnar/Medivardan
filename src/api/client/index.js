@@ -16,8 +16,8 @@ export * from './common';
 export * from './dashboard';
 export * from './dashboardCount';
 
-// Doctors
-export * from './doctors';
+// Doctors - Moved to @/api/doctor
+export * from '@/api/doctor';
 
 // User
 export * from './getUser';

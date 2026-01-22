@@ -55,8 +55,19 @@ export async function GET(request) {
 
     // Extract auth header from incoming request to pass to backend
     const authHeader = request.headers.get('authorization');
-    
+
     if (!authHeader) {
+        // No auth token - return mock data for development
+        if (USE_MOCK_FALLBACK) {
+            console.log('⚠️  No auth token provided, using mock data for leads list');
+            const mockLeads = getMockLeads();
+            return NextResponse.json(mockLeads, {
+                headers: {
+                    'X-Data-Source': 'mock',
+                    'X-Warning': 'Mock data - no auth token provided'
+                }
+            });
+        }
         return NextResponse.json(
             { error: 'Unauthorized', details: 'No authorization header provided' },
             { status: 401 }
@@ -92,19 +103,31 @@ export async function GET(request) {
         console.log(`[DEBUG] Final GET query: ${getQueryString}`);
 
         console.time("ExternalAPI_Duration");
-        response = await axiosClient.get(`/api/Leads/GetAllLeads${getQueryString ? `?${getQueryString}` : ''}`, requestConfig);
+        response = await axiosClient.get(`/Leads/GetAllLeads${getQueryString ? `?${getQueryString}` : ''}`, requestConfig);
         console.timeEnd("ExternalAPI_Duration");
     } catch (error) {
         console.timeEnd("ExternalAPI_Duration");
         console.error(`[DEBUG] GET Error: ${error.message}`);
-        
+
         if (error.response) {
              console.error(`[DEBUG] GET Error Status: ${error.response.status}`);
              console.error(`[DEBUG] GET Error Data:`, JSON.stringify(error.response.data));
-             
+
+             // Fallback to mock data if enabled
+             if (USE_MOCK_FALLBACK) {
+                 console.log('⚠️  External API failed, using mock data for leads list');
+                 const mockLeads = getMockLeads();
+                 return NextResponse.json(mockLeads, {
+                     headers: {
+                         'X-Data-Source': 'mock',
+                         'X-Warning': `Mock data - external API error: ${error.response.status}`
+                     }
+                 });
+             }
+
              // Return the ACTUAL upstream error code (e.g. 400) instead of 500
              return NextResponse.json(
-                 { error: 'External API Error', details: error.response.data }, 
+                 { error: 'External API Error', details: error.response.data },
                  { status: error.response.status }
              );
         }

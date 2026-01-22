@@ -130,7 +130,7 @@ const AreaManagerPage = () => {
               <div className="relative flex-1">
                 <Input 
                   placeholder="Area Manager Name" 
-                  className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 active:border-orange-500 focus:border-orange-500 pl-3"
+                  className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 active:border-[#0f7396] focus:border-[#0f7396] pl-3"
                   value={searchName}
                   onChange={(e) => setSearchName(e.target.value)}
                 />

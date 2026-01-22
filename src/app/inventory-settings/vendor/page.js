@@ -201,11 +201,11 @@ export default function Vendor() {
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 flex-1"
                 />
-                 <Button onClick={() => setSearchTerm("")} variant="outline" className="mr-2 px-6 font-medium shadow-sm transition-all whitespace-nowrap border-[#0f7396] text-[#0f7396] hover:bg-[#0f7396]/10">
-                    Clear
+                 <Button onClick={() => setSearchTerm("")} className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap">
+                   Clear
                  </Button>
                  <Button onClick={handleAdd} className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap">
-                    + Add New
+                   Add Vendor
                  </Button>
             </div>
             

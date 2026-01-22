@@ -17,10 +17,14 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Settings } from "lucide-react";
 import { useRouter } from "next/navigation";
+import axios from "axios";
+import { addDoctor } from "@/api/doctor";
+import { transformFormDataToAPI } from "@/api/doctor/transformers";
 
 export default function AddDoctorPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("personal");
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     // Clinic & Doctor Type
@@ -143,7 +147,22 @@ export default function AddDoctorPage() {
     }
   };
 
-  const handleSubmit = () => {
+  const uploadFile = async (file) => {
+    if (!file) return null;
+    const uploadData = new FormData();
+    uploadData.append("file", file);
+    try {
+        const res = await axios.post("/api/upload", uploadData, {
+            headers: { "Content-Type": "multipart/form-data" }
+        });
+        return res.data.url; 
+    } catch (e) {
+        console.error("Upload failed", e);
+        return null;
+    }
+  };
+
+  const handleSubmit = async () => {
     // Validate mandatory fields
     const mandatoryFields = {
       clinicName: "Clinic Name",
@@ -183,9 +202,67 @@ export default function AddDoctorPage() {
       return;
     }
 
-    // Add your form submission logic here
-    alert('Doctor added successfully!');
-    router.push("/doctor/doctor-registration");
+    setLoading(true);
+    try {
+        // 1. Upload Files
+        const profileUrl = await uploadFile(formData.profilePhoto);
+        const adharUrl = await uploadFile(formData.adharCardImage);
+        const panUrl = await uploadFile(formData.panCardImage);
+        const regUrl = await uploadFile(formData.certificateImage); 
+        const indemnityUrl = await uploadFile(formData.indemnityPolicyImage);
+        
+        // Education Uploads processing
+        let deg1Url = null;
+        let deg2Url = null;
+        let basicDegree = formData.currentEducation.degree;
+        
+        // Prioritize education list
+        if (formData.educationList.length > 0) {
+             const edu1 = formData.educationList[0];
+             deg1Url = await uploadFile(edu1.upload);
+             basicDegree = edu1.degree;
+             
+             if (formData.educationList.length > 1) {
+                 const edu2 = formData.educationList[1];
+                 deg2Url = await uploadFile(edu2.upload);
+             }
+        } else if (formData.currentEducation.degree) {
+             // Fallback if not added to list but typed in
+             deg1Url = await uploadFile(formData.currentEducation.upload);
+        }
+
+        // 2. Prepare Payload Data
+        const dataForTransformer = {
+            ...formData,
+            profileImageUrl: profileUrl,
+            adharCardImageUrl: adharUrl,
+            panCardImageUrl: panUrl,
+            registrationImageUrl: regUrl,
+            identityPolicyImageUrl: indemnityUrl,
+            degreeUpload1: deg1Url,
+            degreeUpload2: deg2Url,
+            currentEducation: {
+                ...formData.currentEducation,
+                degree: basicDegree 
+            }
+        };
+
+        const apiPayload = transformFormDataToAPI(dataForTransformer);
+        console.log('Source FormData:', formData);
+        console.log('Transformed API Payload:', apiPayload);
+
+        // 3. Call API
+        await addDoctor(apiPayload);
+
+        alert("Doctor added successfully!");
+        router.push("/doctor/doctor-registration");
+        
+    } catch (error) {
+        console.error("Error adding doctor:", error);
+        alert("Failed to add doctor. Please check the network tab for details.");
+    } finally {
+        setLoading(false);
+    }
   };
 
   return (

@@ -1,7 +1,8 @@
 import axios from "axios";
+import { API_CONFIG } from "@/config/api.config";
 
 const axiosClient = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL || "https://bmetrics.in/APIDemo",
+    baseURL: process.env.NEXT_PUBLIC_API_URL || API_CONFIG.BASE_URL,
 });
 
 axiosClient.interceptors.request.use(
@@ -74,11 +75,12 @@ axiosClient.interceptors.response.use(
             switch (error.response.status) {
                 case 401:
                     // Token expired or unauthorized
-                    localStorage.removeItem("token");
-                    localStorage.removeItem("user");
-                    localStorage.removeItem("userID");
-                    // Redirect to login page
-                    if (typeof window !== 'undefined') {
+                    // Only access localStorage in browser environment
+                    if (typeof window !== 'undefined' && window.localStorage) {
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("user");
+                        localStorage.removeItem("userID");
+                        // Redirect to login page
                         window.location.href = '/';
                     }
                     break;

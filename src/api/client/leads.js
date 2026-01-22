@@ -1,45 +1,85 @@
-import axiosClient from "@/lib/axiosClient";
+/**
+ * Leads API Client
+ * Uses native fetch for local Next.js API routes
+ */
 
 export const getLeads = async (params = {}) => {
     const mergedParams = { PageSize: 20, ...params };
-    const response = await axiosClient.get('/api/Leads/getLeads', {
-        params: mergedParams,
-        baseURL: '' // Force relative path to hit Next.js API route instead of external API
+
+    // Build query string
+    const queryString = new URLSearchParams(
+        Object.entries(mergedParams).filter(([_, v]) => v !== undefined && v !== null && v !== '')
+    ).toString();
+
+    const url = `/api/Leads/getLeads${queryString ? `?${queryString}` : ''}`;
+
+    // Get token from localStorage for auth header
+    let authHeader = '';
+    if (typeof window !== 'undefined' && window.localStorage) {
+        const token = localStorage.getItem("token") || localStorage.getItem("jwt_token");
+        if (token) {
+            authHeader = `Bearer ${token}`;
+        }
+    }
+
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            ...(authHeader && { 'Authorization': authHeader })
+        },
+        cache: 'no-store'
     });
 
-    return response.data;
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
 }
 
 export const upsertLead = async (data) => {
-    const response = await axiosClient.post('/api/Leads/upsertLeads', data, {
-        baseURL: '' // Force relative path to hit Next.js API route
+    // Get token from localStorage for auth header
+    let authHeader = '';
+    if (typeof window !== 'undefined' && window.localStorage) {
+        const token = localStorage.getItem("token") || localStorage.getItem("jwt_token");
+        if (token) {
+            authHeader = `Bearer ${token}`;
+        }
+    }
+
+    const response = await fetch('/api/Leads/upsertLeads', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            ...(authHeader && { 'Authorization': authHeader })
+        },
+        body: JSON.stringify(data)
     });
 
-    return response.data;
+    if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+    }
+
+    return response.json();
 }
 
 export const getLeadById = async (id) => {
-    // Try both keys in case backend prefers one
-    const response = await axiosClient.get('/api/Leads/getLeads', {
-        params: { EnquiryID: id, LeadID: id },
-        baseURL: ''
-    });
-    
+    const data = await getLeads({ EnquiryID: id, LeadID: id });
+
     // The API might return a list (paginated or filtered).
     // We must find the specific item because even with filtering, backend behavior is unverified.
-    if (Array.isArray(response.data)) {
-        const found = response.data.find(item => 
-            String(item.leadID || item.LeadID) === String(id) || 
+    if (Array.isArray(data)) {
+        const found = data.find(item =>
+            String(item.leadID || item.LeadID) === String(id) ||
             String(item.enquiryID || item.EnquiryID) === String(id)
         );
-        // If found specific match, return it. 
-        // If not found but list has 1 item and we filtered by ID, maybe that's it? 
-        // Safer to return first item IF we are confident, but "works only for recent" suggests we were just picking the first of a full list.
-        // So allow fallback to [0] ONLY if the list is small (length 1), otherwise return null implies not found.
-        
+
         if (found) return found;
-        if (response.data.length === 1) return response.data[0];
+        if (data.length === 1) return data[0];
     }
-    
+
     return null;
 }

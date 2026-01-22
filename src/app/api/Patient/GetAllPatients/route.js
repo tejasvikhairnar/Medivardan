@@ -39,7 +39,7 @@ export async function GET(request) {
     };
 
     // The user provided curl uses GET, so we use GET.
-    const response = await axiosClient.get('/api/Patient/GetAllPatients', requestConfig);
+    const response = await axiosClient.get('/Patient/GetAllPatients', requestConfig);
 
     const data = response.data;
     
