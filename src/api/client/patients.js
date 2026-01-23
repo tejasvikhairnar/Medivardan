@@ -3,11 +3,8 @@ import axiosClient from "@/lib/axiosClient";
 export const patientService = {
   // Get patient by ID
   getPatientById: async (patientId) => {
-    const response = await axiosClient.get(`/api/Patient/GetPatientById`, {
+    const response = await axiosClient.get(`/api/Patient/GetPatientById/${patientId}`, {
       baseURL: '',
-      params: {
-        patientId,
-      },
     });
     return response.data;
   },

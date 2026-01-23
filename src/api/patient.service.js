@@ -4,11 +4,8 @@ export const patientService = {
   // Get patient by ID
   getPatientById: async (patientId) => {
     // Local route expects patientId param
-    const response = await axiosClient.get(`/api/Patient/GetPatientById`, {
-      params: {
-        patientId,
-      },
-    });
+    // Based on User feedback: path param approach
+    const response = await axiosClient.get(`/api/Patient/GetPatientById/${patientId}`);
     return response.data;
   },
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -14,6 +14,57 @@ import { transformPatientFormDataToAPI } from '@/utils/patientTransformers';
 export default function RegistrationForm() {
   const [activeTab, setActiveTab] = useState('personal')
   const [loading, setLoading] = useState(false)
+  const [isEditMode, setIsEditMode] = useState(false);
+  
+  // Fetch Patient Data for Edit Mode
+  const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+  const initialPatientId = searchParams ? searchParams.get('patientId') : null;
+
+  useEffect(() => {
+    if (initialPatientId) {
+        setIsEditMode(true);
+        fetchPatientData(initialPatientId);
+    }
+  }, [initialPatientId]);
+
+  const fetchPatientData = async (id) => {
+    try {
+        setLoading(true);
+        const data = await patientService.getPatientById(id);
+        if (data) {
+            setFormData(prev => ({
+                ...prev,
+                // Personal Information
+                clinicName: data.clinicName || data.ClinicName || prev.clinicName,
+                casePaperNo: data.patientCode || data.PatientCode || prev.casePaperNo,
+                patientNo: data.patientID || data.id || prev.patientNo,
+                date: data.registrationDate ? new Date(data.registrationDate).toISOString().split('T')[0] : prev.date,
+                firstName: data.firstName || data.FirstName || prev.firstName,
+                lastName: data.lastName || data.LastName || prev.lastName,
+                dateOfBirth: data.dob ? new Date(data.dob).toISOString().split('T')[0] : prev.dateOfBirth,
+                gender: data.gender || prev.gender,
+                mobileNo: data.mobile || data.mobileNo || prev.mobileNo,
+                email: data.email || prev.email,
+                age: data.age || prev.age,
+                
+                // Address (Map fields carefully)
+                flatHouseNo: data.address || prev.flatHouseNo, // Assuming simplified mapping for now
+                areaStreet: data.street || prev.areaStreet,
+                landmark: data.landmark || prev.landmark,
+                country: data.country || prev.country,
+                state: data.state || prev.state,
+                city: data.city || prev.city,
+                
+                bloodGroup: data.bloodGroup || prev.bloodGroup,
+                enquirySource: data.enquirySource || prev.enquirySource,
+            }));
+        }
+    } catch (error) {
+        console.error("Error fetching patient for edit:", error);
+    } finally {
+        setLoading(false);
+    }
+  };
   const [formData, setFormData] = useState({
     // Clinic
     clinicName: '',

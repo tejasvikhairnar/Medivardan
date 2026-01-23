@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, MinusSquare, Trash2, Save, Loader2 } from "lucide-react";
 import { upsertConsultation } from "@/api/client/consultation";
+import { patientService } from "@/api/client/patients";
 import { toast } from "sonner";
 
 export default function ConsultationPage() {
@@ -28,18 +29,18 @@ export default function ConsultationPage() {
     nextConsultationTime: "",
   });
 
-  const patientInfo = {
-    name: "Aman Sharma",
-    id: "PT-2025-00123",
-    patientId: 101, // Mock ID
-    age: 29,
-    gender: "Male",
-    contact: "+91 98765 43210",
-    registrationDate: "2023-04-15",
-    dob: "1996-06-25",
-    visits: 5,
-    lastDiagnosis: "Tooth Extraction",
-  };
+  const [patientInfo, setPatientInfo] = useState({
+    name: "",
+    id: "",
+    patientId: null,
+    age: "",
+    gender: "",
+    contact: "",
+    registrationDate: "",
+    dob: "",
+    visits: 0,
+    lastDiagnosis: "N/A",
+  });
 
   const clinicInfo = {
     name: "MEDIVARDAAN",
@@ -55,6 +56,40 @@ export default function ConsultationPage() {
     qualification: "BDS, MDS (Prosthodontics)",
     regDate: "2020-03-15",
     signature: "Dr. Kavita Rao",
+  };
+  
+  // Fetch Patient Data
+  const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+  const initialPatientId = searchParams ? searchParams.get('patientId') : null;
+
+  React.useEffect(() => {
+    if (initialPatientId) {
+        fetchPatientData(initialPatientId);
+    }
+  }, [initialPatientId]);
+
+  const fetchPatientData = async (id) => {
+    try {
+        const data = await patientService.getPatientById(id);
+        if (data) {
+            setPatientInfo({
+                name: `${data.firstName || ''} ${data.lastName || ''}`,
+                id: data.patientCode || 'N/A',
+                patientId: data.patientID || data.id,
+                age: data.age || 'N/A',
+                gender: data.gender || 'N/A',
+                contact: data.mobile || data.mobileNo || 'N/A',
+                registrationDate: data.registrationDate ? new Date(data.registrationDate).toLocaleDateString() : 'N/A',
+                dob: data.dob ? new Date(data.dob).toLocaleDateString() : 'N/A',
+                visits: data.visitCount || 0,
+                lastDiagnosis: data.lastDiagnosis || 'N/A'
+            });
+            // Pre-fill form if needed or just display info
+        }
+    } catch (error) {
+        console.error("Error fetching patient:", error);
+        toast.error("Failed to load patient details.");
+    }
   };
 
   const [ongoingTreatments, setOngoingTreatments] = useState([
