@@ -21,7 +21,7 @@ export async function GET(request) {
     const token = await authService.getToken();
 
     // Assuming the external API follows the pattern
-    const url = `${BASE_URL}/api/Patient/GetPatientById?PatientId=${patientId}`;
+    const url = `${BASE_URL}/Patient/GetPatientById?PatientId=${patientId}`;
     
     console.log('Fetching patient details from:', url);
 

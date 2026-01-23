@@ -31,17 +31,16 @@ export default function PatientSearchPage() {
   const [totalItems, setTotalItems] = useState(0);
 
   useEffect(() => {
-    fetchPatients();
-  }, []); // Initial fetch only. Search triggers re-fetch.
+    fetchPatients(currentPage);
+  }, [currentPage]); 
 
-
-  const fetchPatients = async () => {
+  const fetchPatients = async (page = currentPage) => {
     try {
       setIsLoading(true);
       
       const queryParams = {
-        PageNumber: 1,
-        PageSize: 1000,
+        PageNumber: page,
+        PageSize: pageSize,
       };
 
       // Add filters if present
@@ -54,32 +53,13 @@ export default function PatientSearchPage() {
 
       const data = await patientService.getAllPatients(queryParams);
       
-      // Handle response format
-      // Expecting array for now based on user description, but handling if it returns object with data field
       const list = Array.isArray(data) ? data : (data?.data || []);
-      const total = data?.totalCount || list.length; // Fallback if API doesn't return count
       
       setPatientsList(list);
       
-      // If the API returns total count separately, use it. 
-      // If it just returns a page, we might need to rely on list length or infinite scroll behavior logic
-      // For now assuming list length is page size or we get total.
-      // If API doesn't return total count, pagination might be limited.
-      // But typically "GetAll" with paging returns a wrapper. 
-      // If it returns just array, we can't really know total unless we fetch all.
-      // Based on typical bmetrics API it might return just array.
-      // We will assume 1000 items logic from leads if no count provided? 
-      // Or just set total to "current length + something" to enable next button?
-      // Let's assume for now detailed pagination requires TotalCount.
-      // If data has no 'TotalCount', we might need to fetch a large batch or simple prev/next.
-      // Let's set totalItems to a high number if we got full pageSize items to allow 'Next'
-      
-      if (data?.TotalCount) {
-          setTotalItems(data.TotalCount);
-      } else {
-          // Heuristic: If we got full page, assume there are more.
-          setTotalItems(list.length === pageSize ? (currentPage * pageSize) + 1 : (currentPage - 1) * pageSize + list.length);
-      }
+      // Heuristic: Set total items large to allow navigation, as API doesn't return total count
+      // mimicking "All Leads" behavior
+      setTotalItems(1000 * pageSize); 
 
     } catch (error) {
       console.error("Failed to fetch patients:", error);
@@ -93,8 +73,7 @@ export default function PatientSearchPage() {
   }
 
   function handleSearch() {
-    setCurrentPage(1); // Reset to page 1
-    fetchPatients();   // Trigger fetch
+    setCurrentPage(1); // will trigger useEffect
   }
 
   function handleViewConsultation(patient) {
@@ -234,13 +213,12 @@ export default function PatientSearchPage() {
                       </tr>
                     ) : patientsList.length > 0 ? (
                       patientsList
-                        .slice((currentPage - 1) * pageSize, currentPage * pageSize)
                         .map((patient, index) => (
                         <tr
                           key={patient.patientID || patient.id || index}
                           className="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900"
                         >
-                          <td className="p-3 text-gray-800 dark:text-gray-100">{(currentPage - 1) * pageSize + index + 1}</td>
+                          <td className="p-3 text-gray-800 dark:text-gray-100">{((currentPage - 1) * pageSize) + index + 1}</td>
                           <td className="p-3 text-gray-800 dark:text-gray-100">{patient.patientCode || patient.casePaperNo || "-"}</td>
                           <td className="p-3 text-gray-800 dark:text-gray-100">
                              {/* Handle typo in API response 'fristName' */}

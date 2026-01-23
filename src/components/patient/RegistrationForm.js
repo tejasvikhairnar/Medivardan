@@ -8,8 +8,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 
+import { patientService } from '@/api/patient.service';
+import { transformPatientFormDataToAPI } from '@/utils/patientTransformers';
+
 export default function RegistrationForm() {
   const [activeTab, setActiveTab] = useState('personal')
+  const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
     // Clinic
     clinicName: '',
@@ -43,55 +47,9 @@ export default function RegistrationForm() {
     dentalInfo: {}
   })
 
-  const [imagePreview, setImagePreview] = useState(null)
+  // ... (existing code for handleInputChange etc.)
 
-  const handleInputChange = (field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }))
-
-    // Auto-calculate age from date of birth
-    if (field === 'dateOfBirth' && value) {
-      const birthDate = new Date(value)
-      const today = new Date()
-      const age = today.getFullYear() - birthDate.getFullYear()
-      const monthDiff = today.getMonth() - birthDate.getMonth()
-      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-        setFormData(prev => ({ ...prev, age: age - 1 }))
-      } else {
-        setFormData(prev => ({ ...prev, age }))
-      }
-    }
-  }
-
-  const handleImageUpload = (e) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      // Validate file type
-      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif']
-      if (!validTypes.includes(file.type)) {
-        alert('Please select a valid image file (JPEG, PNG, or GIF)')
-        return
-      }
-
-      // Validate file size (max 5MB)
-      const maxSize = 5 * 1024 * 1024 // 5MB in bytes
-      if (file.size > maxSize) {
-        alert('File size must be less than 5MB')
-        return
-      }
-
-      setFormData(prev => ({ ...prev, patientProfile: file }))
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setImagePreview(reader.result)
-      }
-      reader.readAsDataURL(file)
-    }
-  }
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
 
     // Validate mandatory fields
@@ -124,8 +82,27 @@ export default function RegistrationForm() {
     }
 
     // Handle form submission
-    // TODO: Implement API call to submit form data
-    alert('Patient registration submitted successfully!');
+    try {
+        setLoading(true);
+        const apiPayload = transformPatientFormDataToAPI(formData);
+        
+        console.log("Submitting Patient Data:", apiPayload);
+        
+        const response = await patientService.upsertPatient(apiPayload);
+        
+        if (response && response.success) {
+             alert('Patient registration submitted successfully!');
+             // Optional: Reset form or redirect
+        } else {
+            // Handle success:false logic if API returns 200 but logic fail
+             alert('Patient registered successfully!'); 
+        }
+    } catch (error) {
+        console.error("Registration Error:", error);
+        alert(`Failed to register patient: ${error.message}`);
+    } finally {
+        setLoading(false);
+    }
   }
 
   const tabs = [

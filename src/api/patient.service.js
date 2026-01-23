@@ -3,11 +3,18 @@ import axiosClient from "@/lib/axiosClient";
 export const patientService = {
   // Get patient by ID
   getPatientById: async (patientId) => {
+    // Local route expects patientId param
     const response = await axiosClient.get(`/api/Patient/GetPatientById`, {
       params: {
         patientId,
       },
     });
+    return response.data;
+  },
+
+  // Upsert patient (Create/Update)
+  upsertPatient: async (patientData) => {
+    const response = await axiosClient.post(`/api/Patient/Upsert`, patientData);
     return response.data;
   },
 
