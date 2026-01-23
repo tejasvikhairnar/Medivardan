@@ -47,7 +47,44 @@ export default function RegistrationForm() {
     dentalInfo: {}
   })
 
-  // ... (existing code for handleInputChange etc.)
+  const [imagePreview, setImagePreview] = useState(null)
+
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }))
+
+    // Auto-calculate age from date of birth
+    if (field === 'dateOfBirth' && value) {
+        const birthDate = new Date(value)
+        const today = new Date()
+        const age = today.getFullYear() - birthDate.getFullYear()
+        const monthDiff = today.getMonth() - birthDate.getMonth()
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+          setFormData(prev => ({ ...prev, age: age - 1 }))
+        } else {
+          setFormData(prev => ({ ...prev, age }))
+        }
+    }
+  }
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData(prev => ({
+        ...prev,
+        patientProfile: file
+      }));
+
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault()
