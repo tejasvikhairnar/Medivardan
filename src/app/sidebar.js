@@ -258,6 +258,11 @@ export default function Sidebar({ open }) {
     menuPath: null,
     menuChild: [
       {
+        menuID: 'all-patient-list',
+        menuName: 'All Patient List',
+        menuPath: '/patient/all-patient-list'
+      },
+      {
         menuID: 'patient-search',
         menuName: 'Patient Search',
         menuPath: '/MIS/patient-search'

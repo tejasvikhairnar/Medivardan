@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, MinusSquare, Trash2, Save, Loader2 } from "lucide-react";
-import { upsertConsultation } from "@/api/consultation";
+import { upsertConsultation } from "@/api/client/consultation";
+import { patientService } from "@/api/client/patients";
 import { toast } from "sonner";
 
 export default function ConsultationPage() {
@@ -28,18 +29,18 @@ export default function ConsultationPage() {
     nextConsultationTime: "",
   });
 
-  const patientInfo = {
-    name: "Aman Sharma",
-    id: "PT-2025-00123",
-    patientId: 101, // Mock ID
-    age: 29,
-    gender: "Male",
-    contact: "+91 98765 43210",
-    registrationDate: "2023-04-15",
-    dob: "1996-06-25",
-    visits: 5,
-    lastDiagnosis: "Tooth Extraction",
-  };
+  const [patientInfo, setPatientInfo] = useState({
+    name: "",
+    id: "",
+    patientId: null,
+    age: "",
+    gender: "",
+    contact: "",
+    registrationDate: "",
+    dob: "",
+    visits: 0,
+    lastDiagnosis: "N/A",
+  });
 
   const clinicInfo = {
     name: "MEDIVARDAAN",
@@ -55,6 +56,40 @@ export default function ConsultationPage() {
     qualification: "BDS, MDS (Prosthodontics)",
     regDate: "2020-03-15",
     signature: "Dr. Kavita Rao",
+  };
+  
+  // Fetch Patient Data
+  const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+  const initialPatientId = searchParams ? searchParams.get('patientId') : null;
+
+  React.useEffect(() => {
+    if (initialPatientId) {
+        fetchPatientData(initialPatientId);
+    }
+  }, [initialPatientId]);
+
+  const fetchPatientData = async (id) => {
+    try {
+        const data = await patientService.getPatientById(id);
+        if (data) {
+            setPatientInfo({
+                name: `${data.firstName || ''} ${data.lastName || ''}`,
+                id: data.patientCode || 'N/A',
+                patientId: data.patientID || data.id,
+                age: data.age || 'N/A',
+                gender: data.gender || 'N/A',
+                contact: data.mobile || data.mobileNo || 'N/A',
+                registrationDate: data.registrationDate ? new Date(data.registrationDate).toLocaleDateString() : 'N/A',
+                dob: data.dob ? new Date(data.dob).toLocaleDateString() : 'N/A',
+                visits: data.visitCount || 0,
+                lastDiagnosis: data.lastDiagnosis || 'N/A'
+            });
+            // Pre-fill form if needed or just display info
+        }
+    } catch (error) {
+        console.error("Error fetching patient:", error);
+        toast.error("Failed to load patient details.");
+    }
   };
 
   const [ongoingTreatments, setOngoingTreatments] = useState([
@@ -304,7 +339,7 @@ export default function ConsultationPage() {
       <div className="max-w-6xl mx-auto space-y-6" ref={printRef}>
         {/* Clinic & Doctor Details */}
         <Card className="border border-gray-200 dark:border-gray-700 shadow-md bg-white dark:bg-gray-800">
-          <CardHeader className="p-6 bg-primary border-b border-primary">
+          <CardHeader className="p-6 bg-[#0f7396] border-b border-[#0f7396]">
             <div className="flex items-start justify-between">
               <div>
                 <h1 className="text-2xl font-bold text-white">{clinicInfo.name}</h1>
@@ -341,7 +376,7 @@ export default function ConsultationPage() {
                 <p><span className="font-medium">Last Diagnosis:</span> {patientInfo.lastDiagnosis}</p>
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button variant="outline" data-no-print size="sm" className="print:hidden border-primary text-primary hover:bg-primary hover:text-white">
+                    <Button variant="outline" data-no-print size="sm" className="print:hidden border-[#0f7396] text-[#0f7396] hover:bg-[#0f7396] hover:text-white">
                       View Details
                     </Button>
                   </DialogTrigger>
@@ -364,7 +399,7 @@ export default function ConsultationPage() {
         {/* Consultation Section */}
         <Card className="border border-gray-200 dark:border-gray-700 shadow-md bg-white dark:bg-gray-800">
           <CardHeader className="p-5 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-            <p className="text-xl font-semibold text-primary dark:text-primary">
+            <p className="text-xl font-semibold text-[#0f7396] dark:text-[#0f7396]">
               Consultation Details
             </p>
           </CardHeader>
@@ -411,7 +446,7 @@ export default function ConsultationPage() {
                     className="w-48 bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:ring-2 focus:ring-[#4DB8AC] focus:border-[#4DB8AC]"
                     data-no-print
                   />
-                  <Button onClick={addTreatment} data-no-print className="bg-primary hover:bg-primary/90 text-white"><Plus className="h-4 w-4"/></Button>
+                  <Button onClick={addTreatment} data-no-print className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white"><Plus className="h-4 w-4"/></Button>
                 </div>
               </div>
               <ul className="mt-2 space-y-2">
@@ -422,7 +457,7 @@ export default function ConsultationPage() {
                       size="sm"
                       variant="ghost"
                       onClick={() => removeTreatment(i)}
-                      className="text-primary hover:text-[#0b5c7a] hover:bg-primary/10 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-primary/20 print:hidden"
+                      className="text-[#0f7396] hover:text-[#0b5c7a] hover:bg-[#0f7396]/10 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-[#0f7396]/20 print:hidden"
                       data-no-print
                     >
                       <MinusSquare className="h-4 w-4"/>
@@ -434,12 +469,12 @@ export default function ConsultationPage() {
 
             {/* Medicines */}
             <div className="space-y-3">
-              <Label className="text-lg font-semibold text-primary dark:text-primary">Medicines</Label>
+              <Label className="text-lg font-semibold text-[#0f7396] dark:text-[#0f7396]">Medicines</Label>
 
               <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-primary/10 dark:bg-primary/20">
+                    <tr className="bg-[#0f7396]/10 dark:bg-[#0f7396]/20">
                       <th className="p-2 text-left font-medium text-gray-700 dark:text-gray-300 min-w-[140px]">Type</th>
                       <th className="p-2 text-center font-medium text-gray-700 dark:text-gray-300 min-w-[80px]">In House</th>
                       <th className="p-2 text-left font-medium text-gray-700 dark:text-gray-300 min-w-[200px]">Medicines</th>
@@ -611,7 +646,7 @@ export default function ConsultationPage() {
                             size="sm"
                             variant="ghost"
                             onClick={() => removeMedicine(i)}
-                            className="text-primary hover:text-[#0b5c7a] hover:bg-primary/10 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-primary/20 h-7 w-7 p-0"
+                            className="text-[#0f7396] hover:text-[#0b5c7a] hover:bg-[#0f7396]/10 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-[#0f7396]/20 h-7 w-7 p-0"
                             data-no-print
                           >
                             <Trash2 className="h-4 w-4"/>
@@ -628,7 +663,7 @@ export default function ConsultationPage() {
                 <Button
                   type="button"
                   onClick={addMedicine}
-                  className="bg-primary hover:bg-primary/90 text-white"
+                  className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white"
                   data-no-print
                 >
                   Add New
@@ -666,7 +701,7 @@ export default function ConsultationPage() {
                       className="w-64 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-[#4DB8AC] focus:border-[#4DB8AC]"
                       data-no-print
                     />
-                    <Button onClick={addLabTest} data-no-print className="bg-primary hover:bg-primary/90 text-white"><Plus className="h-4 w-4"/></Button>
+                    <Button onClick={addLabTest} data-no-print className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white"><Plus className="h-4 w-4"/></Button>
                   </div>
                 </div>
               </div>
@@ -678,7 +713,7 @@ export default function ConsultationPage() {
                       size="sm"
                       variant="ghost"
                       onClick={() => removeLabTest(i)}
-                      className="text-primary hover:text-[#0b5c7a] hover:bg-primary/10 print:hidden"
+                      className="text-[#0f7396] hover:text-[#0b5c7a] hover:bg-[#0f7396]/10 print:hidden"
                       data-no-print
                     >
                       <MinusSquare className="h-4 w-4"/>
@@ -743,7 +778,7 @@ export default function ConsultationPage() {
                     className="bg-white dark:bg-gray-900/50 border-gray-300 dark:border-teal-800/50 text-gray-900 dark:text-teal-50 focus:ring-2 focus:ring-[#4DB8AC] focus:border-[#4DB8AC] dark:focus:border-teal-500"
                   />
                 </div>
-                <Button className="w-full mt-4 print:hidden bg-primary hover:bg-primary/90 text-white dark:bg-primary dark:hover:bg-primary/90 dark:shadow-lg dark:shadow-teal-900/30" data-no-print>Book Appointment</Button>
+                <Button className="w-full mt-4 print:hidden bg-[#0f7396] hover:bg-[#0b5c7a] text-white dark:bg-[#0f7396] dark:hover:bg-[#0b5c7a] dark:shadow-lg dark:shadow-teal-900/30" data-no-print>Book Appointment</Button>
               </div>
             </div>
 
@@ -756,7 +791,7 @@ export default function ConsultationPage() {
                 onClick={handleSubmit} 
                 disabled={isSubmitting}
                 data-no-print 
-                className="px-8 bg-primary hover:bg-primary/90 text-white"
+                className="px-8 bg-[#0f7396] hover:bg-[#0b5c7a] text-white"
               >
                 {isSubmitting ? (
                     <>

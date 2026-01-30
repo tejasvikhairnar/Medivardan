@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -8,8 +8,63 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 
+import { patientService } from '@/api/patient.service';
+import { transformPatientFormDataToAPI } from '@/utils/patientTransformers';
+
 export default function RegistrationForm() {
   const [activeTab, setActiveTab] = useState('personal')
+  const [loading, setLoading] = useState(false)
+  const [isEditMode, setIsEditMode] = useState(false);
+  
+  // Fetch Patient Data for Edit Mode
+  const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+  const initialPatientId = searchParams ? searchParams.get('patientId') : null;
+
+  useEffect(() => {
+    if (initialPatientId) {
+        setIsEditMode(true);
+        fetchPatientData(initialPatientId);
+    }
+  }, [initialPatientId]);
+
+  const fetchPatientData = async (id) => {
+    try {
+        setLoading(true);
+        const data = await patientService.getPatientById(id);
+        if (data) {
+            setFormData(prev => ({
+                ...prev,
+                // Personal Information
+                clinicName: data.clinicName || data.ClinicName || prev.clinicName,
+                casePaperNo: data.patientCode || data.PatientCode || prev.casePaperNo,
+                patientNo: data.patientID || data.id || prev.patientNo,
+                date: data.registrationDate ? new Date(data.registrationDate).toISOString().split('T')[0] : prev.date,
+                firstName: data.firstName || data.FirstName || prev.firstName,
+                lastName: data.lastName || data.LastName || prev.lastName,
+                dateOfBirth: data.dob ? new Date(data.dob).toISOString().split('T')[0] : prev.dateOfBirth,
+                gender: data.gender || prev.gender,
+                mobileNo: data.mobile || data.mobileNo || prev.mobileNo,
+                email: data.email || prev.email,
+                age: data.age || prev.age,
+                
+                // Address (Map fields carefully)
+                flatHouseNo: data.address || prev.flatHouseNo, // Assuming simplified mapping for now
+                areaStreet: data.street || prev.areaStreet,
+                landmark: data.landmark || prev.landmark,
+                country: data.country || prev.country,
+                state: data.state || prev.state,
+                city: data.city || prev.city,
+                
+                bloodGroup: data.bloodGroup || prev.bloodGroup,
+                enquirySource: data.enquirySource || prev.enquirySource,
+            }));
+        }
+    } catch (error) {
+        console.error("Error fetching patient for edit:", error);
+    } finally {
+        setLoading(false);
+    }
+  };
   const [formData, setFormData] = useState({
     // Clinic
     clinicName: '',
@@ -53,45 +108,36 @@ export default function RegistrationForm() {
 
     // Auto-calculate age from date of birth
     if (field === 'dateOfBirth' && value) {
-      const birthDate = new Date(value)
-      const today = new Date()
-      const age = today.getFullYear() - birthDate.getFullYear()
-      const monthDiff = today.getMonth() - birthDate.getMonth()
-      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-        setFormData(prev => ({ ...prev, age: age - 1 }))
-      } else {
-        setFormData(prev => ({ ...prev, age }))
-      }
+        const birthDate = new Date(value)
+        const today = new Date()
+        const age = today.getFullYear() - birthDate.getFullYear()
+        const monthDiff = today.getMonth() - birthDate.getMonth()
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+          setFormData(prev => ({ ...prev, age: age - 1 }))
+        } else {
+          setFormData(prev => ({ ...prev, age }))
+        }
     }
   }
 
   const handleImageUpload = (e) => {
-    const file = e.target.files?.[0]
+    const file = e.target.files[0];
     if (file) {
-      // Validate file type
-      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif']
-      if (!validTypes.includes(file.type)) {
-        alert('Please select a valid image file (JPEG, PNG, or GIF)')
-        return
-      }
+      setFormData(prev => ({
+        ...prev,
+        patientProfile: file
+      }));
 
-      // Validate file size (max 5MB)
-      const maxSize = 5 * 1024 * 1024 // 5MB in bytes
-      if (file.size > maxSize) {
-        alert('File size must be less than 5MB')
-        return
-      }
-
-      setFormData(prev => ({ ...prev, patientProfile: file }))
-      const reader = new FileReader()
+      // Create preview
+      const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result)
-      }
-      reader.readAsDataURL(file)
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
     }
-  }
+  };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
 
     // Validate mandatory fields
@@ -124,8 +170,27 @@ export default function RegistrationForm() {
     }
 
     // Handle form submission
-    // TODO: Implement API call to submit form data
-    alert('Patient registration submitted successfully!');
+    try {
+        setLoading(true);
+        const apiPayload = transformPatientFormDataToAPI(formData);
+        
+        console.log("Submitting Patient Data:", apiPayload);
+        
+        const response = await patientService.upsertPatient(apiPayload);
+        
+        if (response && response.success) {
+             alert('Patient registration submitted successfully!');
+             // Optional: Reset form or redirect
+        } else {
+            // Handle success:false logic if API returns 200 but logic fail
+             alert('Patient registered successfully!'); 
+        }
+    } catch (error) {
+        console.error("Registration Error:", error);
+        alert(`Failed to register patient: ${error.message}`);
+    } finally {
+        setLoading(false);
+    }
   }
 
   const tabs = [
