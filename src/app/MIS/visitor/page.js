@@ -114,7 +114,7 @@ export default function VisitorPage() {
           </div>
         
           <div className="space-y-2">
-             <Button className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white w-full">
+             <Button className="bg-primary hover:bg-primary/90 text-white w-full">
                 Search
             </Button>
           </div>

@@ -184,8 +184,8 @@ export default function Vendor() {
     <div className="p-6 bg-white dark:bg-gray-900 min-h-screen space-y-6">
       {/* Header */}
       <div className="flex items-center gap-2 border-b border-gray-200 dark:border-gray-800 pb-4">
-        <Settings className="w-5 h-5 text-[#0f7396]" />
-        <h1 className="text-lg font-bold text-[#0f7396] uppercase tracking-wide">
+        <Settings className="w-5 h-5 text-primary" />
+        <h1 className="text-lg font-bold text-primary uppercase tracking-wide">
           VENDOR
         </h1>
       </div>
@@ -201,10 +201,10 @@ export default function Vendor() {
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 flex-1"
                 />
-                 <Button onClick={() => setSearchTerm("")} className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap">
+                 <Button onClick={() => setSearchTerm("")} className="bg-primary hover:bg-primary/90 text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap">
                    Clear
                  </Button>
-                 <Button onClick={handleAdd} className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap">
+                 <Button onClick={handleAdd} className="bg-primary hover:bg-primary/90 text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap">
                    Add Vendor
                  </Button>
             </div>
@@ -217,8 +217,8 @@ export default function Vendor() {
           {/* Table */}
            <div className="border border-gray-200 dark:border-gray-700 rounded-t-lg overflow-hidden overflow-x-auto">
             <Table>
-              <TableHeader className="bg-[#0f7396]/10 dark:bg-gray-800">
-                <TableRow className="hover:bg-[#0f7396]/10 dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
+              <TableHeader className="bg-primary/10 dark:bg-gray-800">
+                <TableRow className="hover:bg-primary/10 dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
                   <TableHead className="font-bold text-gray-700 dark:text-gray-300 w-[60px]">Sr. No.</TableHead>
                   <TableHead className="font-bold text-gray-700 dark:text-gray-300">Clinic Name</TableHead>
                   <TableHead className="font-bold text-gray-700 dark:text-gray-300">Vendor Type</TableHead>
@@ -289,7 +289,7 @@ export default function Vendor() {
                         variant={currentPage === page ? "default" : "outline"}
                         size="sm"
                         onClick={() => handlePageChange(page)}
-                        className={currentPage === page ? "bg-[#0f7396] hover:bg-[#0b5c7a] text-white" : ""}
+                        className={currentPage === page ? "bg-primary hover:bg-primary/90 text-white" : ""}
                     >
                         {page}
                     </Button>
@@ -362,10 +362,10 @@ export default function Vendor() {
            </div>
 
           <div className="flex justify-center gap-4 pt-4">
-            <Button onClick={handleSubmit} className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white min-w-[100px]">
+            <Button onClick={handleSubmit} className="bg-primary hover:bg-primary/90 text-white min-w-[100px]">
               Submit
             </Button>
-            <Button onClick={handleCancel} variant="destructive" className="bg-[#0f7396] hover:bg-[#0b5c7a] min-w-[100px]">
+            <Button onClick={handleCancel} variant="destructive" className="bg-primary hover:bg-primary/90 min-w-[100px]">
               Cancel
             </Button>
           </div>

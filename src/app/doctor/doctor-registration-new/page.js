@@ -304,10 +304,10 @@ export default function DoctorRegistrationPage() {
     <div className="w-full p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-[#0f7396]/10 flex items-center justify-center">
-          <Settings className="w-4 h-4 text-[#0f7396]" />
+        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+          <Settings className="w-4 h-4 text-primary" />
         </div>
-        <h1 className="text-xl font-bold text-[#0f7396] dark:text-[#0f7396]">
+        <h1 className="text-xl font-bold text-primary dark:text-primary">
           DOCTOR REGISTRATION (Axios + React Query)
         </h1>
       </div>
@@ -329,7 +329,7 @@ export default function DoctorRegistrationPage() {
         <Card className="border-2 border-blue-500 dark:border-blue-700">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-[#0f7396] dark:text-[#0f7396]">
+              <h2 className="text-lg font-bold text-primary dark:text-primary">
                 Add New Doctor
               </h2>
               <Button
@@ -368,19 +368,19 @@ export default function DoctorRegistrationPage() {
               <TabsList className="w-full grid grid-cols-3 bg-gray-100 dark:bg-gray-800">
                 <TabsTrigger
                   value="personal"
-                  className="data-[state=active]:bg-[#0f7396] data-[state=active]:text-white"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-white"
                 >
                   Personal Information
                 </TabsTrigger>
                 <TabsTrigger
                   value="education"
-                  className="data-[state=active]:bg-[#0f7396] data-[state=active]:text-white"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-white"
                 >
                   Education
                 </TabsTrigger>
                 <TabsTrigger
                   value="documents"
-                  className="data-[state=active]:bg-[#0f7396] data-[state=active]:text-white"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-white"
                 >
                   Documents
                 </TabsTrigger>
@@ -533,7 +533,7 @@ export default function DoctorRegistrationPage() {
                 <div className="flex justify-end pt-4">
                   <Button
                     onClick={handleNext}
-                    className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-8"
+                    className="bg-primary hover:bg-primary/90 text-white px-8"
                   >
                     Next
                   </Button>
@@ -546,7 +546,7 @@ export default function DoctorRegistrationPage() {
                 <div className="flex justify-end pt-4">
                   <Button
                     onClick={handleNext}
-                    className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-8"
+                    className="bg-primary hover:bg-primary/90 text-white px-8"
                   >
                     Next
                   </Button>
@@ -614,7 +614,7 @@ export default function DoctorRegistrationPage() {
                   <Button
                     onClick={handleFormSubmit}
                     disabled={upsertMutation.isPending}
-                    className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-8 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="bg-primary hover:bg-primary/90 text-white px-8 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {upsertMutation.isPending ? (
                       <>
@@ -629,7 +629,7 @@ export default function DoctorRegistrationPage() {
                     onClick={() => setShowAddForm(false)}
                     disabled={upsertMutation.isPending}
                     variant="outline"
-                    className="bg-[#0f7396] hover:bg-[#0f7396] text-white border-[#0f7396] px-8 disabled:opacity-50"
+                    className="bg-primary hover:bg-primary text-white border-primary px-8 disabled:opacity-50"
                   >
                     Cancel
                   </Button>
@@ -672,7 +672,7 @@ export default function DoctorRegistrationPage() {
             </Select>
             <Button
               onClick={handleSearch}
-              className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white"
+              className="bg-primary hover:bg-primary/90 text-white"
             >
               Search
             </Button>
@@ -684,7 +684,7 @@ export default function DoctorRegistrationPage() {
       <div className="flex items-center justify-end gap-3">
         <Button
           onClick={handleAddNew}
-          className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white"
+          className="bg-primary hover:bg-primary/90 text-white"
         >
           Add New
         </Button>
@@ -696,13 +696,13 @@ export default function DoctorRegistrationPage() {
           <CardContent className="p-6 flex items-start gap-3">
             <AlertCircle className="w-5 h-5 text-red-600 mt-0.5" />
             <div className="flex-1">
-              <h3 className="text-lg font-semibold text-red-800 dark:text-[#0f7396] mb-1">
+              <h3 className="text-lg font-semibold text-red-800 dark:text-primary mb-1">
                 Error Loading Doctors
               </h3>
               <p className="text-red-700 dark:text-red-300">{error.message}</p>
               <Button
                 onClick={() => refetch()}
-                className="mt-3 bg-[#0f7396] hover:bg-[#0f7396] text-white"
+                className="mt-3 bg-primary hover:bg-primary text-white"
                 size="sm"
               >
                 Retry
@@ -726,7 +726,7 @@ export default function DoctorRegistrationPage() {
             ) : (
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-[#0f7396]/10 hover:bg-[#0f7396]/20">
+                  <TableRow className="bg-primary/10 hover:bg-primary/20">
                     <TableHead className="font-semibold text-gray-900 dark:text-gray-100">
                       Sr. No.
                     </TableHead>

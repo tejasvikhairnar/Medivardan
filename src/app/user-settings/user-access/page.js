@@ -80,9 +80,9 @@ const UserAccessPage = () => {
       {/* Header */}
       <div className="flex items-center gap-3">
         <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
-          <Settings className="w-4 h-4 text-[#0f7396] dark:text-[#0f7396]" />
+          <Settings className="w-4 h-4 text-primary dark:text-primary" />
         </div>
-        <h1 className="text-xl font-bold text-[#0f7396] dark:text-[#0f7396]">
+        <h1 className="text-xl font-bold text-primary dark:text-primary">
           USER ACCESS
         </h1>
       </div>
@@ -110,7 +110,7 @@ const UserAccessPage = () => {
             {selectedRole && (
                 <div className="rounded-md border border-gray-200 dark:border-gray-700 overflow-hidden">
                     <Table>
-                        <TableHeader className="bg-[#0f7396]/10 dark:bg-[#0f7396]/20">
+                        <TableHeader className="bg-primary/10 dark:bg-primary/20">
                             <TableRow className="border-b border-gray-200 dark:border-gray-700 hover:bg-transparent">
                             <TableHead className="w-[300px] text-gray-700 dark:text-gray-200 font-bold">Module Name</TableHead>
                             <TableHead className="text-center text-gray-700 dark:text-gray-200 font-bold">View</TableHead>
@@ -170,7 +170,7 @@ const UserAccessPage = () => {
                 <div className="flex justify-end pt-4">
                     <Button 
                         onClick={handleSave}
-                        className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white dark:bg-[#0f7396] dark:hover:bg-[#0b5c7a] w-40"
+                        className="bg-primary hover:bg-primary/90 text-white dark:bg-primary dark:hover:bg-primary/90 w-40"
                     >
                         <Save className="w-4 h-4 mr-2" />
                         Save Changes

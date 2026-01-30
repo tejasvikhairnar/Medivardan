@@ -102,8 +102,8 @@ export default function NewAppointmentPage() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-6 px-4">
       <div className="max-w-5xl mx-auto">
         <Card className="border border-gray-200 dark:border-gray-700 shadow-md bg-white dark:bg-gray-800">
-          <CardHeader className="p-4 bg-[#0f7396]/10 dark:bg-[#0f7396]/20 border-b border-[#0f7396]/20 dark:border-[#0f7396]/30">
-            <h2 className="text-lg font-semibold text-[#0f7396] dark:text-[#0f7396] flex items-center gap-2">
+          <CardHeader className="p-4 bg-primary/10 dark:bg-primary/20 border-b border-primary/20 dark:border-primary/30">
+            <h2 className="text-lg font-semibold text-primary dark:text-primary flex items-center gap-2">
               <Calendar className="w-5 h-5" /> BOOK APPOINTMENT
             </h2>
           </CardHeader>
@@ -231,7 +231,7 @@ export default function NewAppointmentPage() {
                           value="Male"
                           checked={formData.gender === 'Male'}
                           onChange={(e) => handleInputChange('gender', e.target.value)}
-                          className="w-4 h-4 text-[#0f7396] focus:ring-[#0f7396] cursor-pointer accent-[#0f7396]"
+                          className="w-4 h-4 text-primary focus:ring-[#0f7396] cursor-pointer accent-[#0f7396]"
                         />
                         <span className="text-sm">Male</span>
                       </label>
@@ -242,7 +242,7 @@ export default function NewAppointmentPage() {
                           value="Female"
                           checked={formData.gender === 'Female'}
                           onChange={(e) => handleInputChange('gender', e.target.value)}
-                          className="w-4 h-4 text-[#0f7396] focus:ring-[#0f7396] cursor-pointer accent-[#0f7396]"
+                          className="w-4 h-4 text-primary focus:ring-[#0f7396] cursor-pointer accent-[#0f7396]"
                         />
                         <span className="text-sm">Female</span>
                       </label>
@@ -340,7 +340,7 @@ export default function NewAppointmentPage() {
                 </Button>
                 <Button
                   type="submit"
-                  className="px-8 bg-[#0f7396] hover:bg-[#0b5c7a] text-white"
+                  className="px-8 bg-primary hover:bg-primary/90 text-white"
                 >
                   Book Appointment
                 </Button>

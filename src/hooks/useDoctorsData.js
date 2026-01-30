@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getCommonData } from "@/api/client/common";
+import { getCommonData } from "@/api/common";
 
 export const useDoctorsData = (ClinicId) => {
     return useQuery({

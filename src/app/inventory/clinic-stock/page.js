@@ -92,8 +92,8 @@ export default function ClinicStock() {
     <div className="p-6 bg-white dark:bg-gray-900 min-h-screen space-y-6">
       {/* Header */}
       <div className="flex items-center gap-2 border-b border-gray-200 dark:border-gray-800 pb-4">
-        <Package className="w-5 h-5 text-[#0f7396]" />
-        <h1 className="text-lg font-bold text-[#0f7396] uppercase tracking-wide">
+        <Package className="w-5 h-5 text-primary" />
+        <h1 className="text-lg font-bold text-primary uppercase tracking-wide">
           CLINIC STOCK
         </h1>
       </div>
@@ -127,7 +127,7 @@ export default function ClinicStock() {
             </div>
 
             <div className="flex gap-2">
-                 <Button className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 font-medium shadow-sm transition-all md:w-auto w-full">
+                 <Button className="bg-primary hover:bg-primary/90 text-white px-6 font-medium shadow-sm transition-all md:w-auto w-full">
                     Search
                 </Button>
             </div>
@@ -142,8 +142,8 @@ export default function ClinicStock() {
       {/* Table */}
        <div className="border border-gray-200 dark:border-gray-700 rounded-t-lg overflow-hidden overflow-x-auto">
         <Table>
-          <TableHeader className="bg-[#0f7396]/10 dark:bg-[#0f7396]/20">
-            <TableRow className="hover:bg-[#0f7396]/10 dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
+          <TableHeader className="bg-primary/10 dark:bg-primary/20">
+            <TableRow className="hover:bg-primary/10 dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
               <TableHead className="font-bold text-gray-700 dark:text-gray-300 w-[60px]">Sr. No.</TableHead>
               <TableHead className="font-bold text-gray-700 dark:text-gray-300">Clinic Name</TableHead>
               <TableHead className="font-bold text-gray-700 dark:text-gray-300">Item Name</TableHead>
@@ -176,7 +176,7 @@ export default function ClinicStock() {
        {/* Footer / Pagination */}
        <div className="flex justify-between items-center pt-2">
          {/* Excel Export Icon */}
-         <Button variant="ghost" size="icon" onClick={handleExport} className="text-[#0f7396] hover:text-[#0b5c7a]">
+         <Button variant="ghost" size="icon" onClick={handleExport} className="text-primary hover:text-[#0b5c7a]">
               <FileSpreadsheet className="w-6 h-6" />
          </Button>
 

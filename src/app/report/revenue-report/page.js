@@ -143,8 +143,8 @@ export default function RevenueReport() {
     <div className="p-6 bg-white dark:bg-gray-900 min-h-screen space-y-6">
       {/* Header */}
       <div className="flex items-center gap-2 border-b border-gray-200 dark:border-gray-800 pb-4">
-        <Settings className="w-5 h-5 text-[#0f7396] animate-spin-slow" />
-        <h1 className="text-lg font-bold text-[#0f7396] uppercase tracking-wide">
+        <Settings className="w-5 h-5 text-primary animate-spin-slow" />
+        <h1 className="text-lg font-bold text-primary uppercase tracking-wide">
           REVENUE REPORT
         </h1>
       </div>
@@ -210,7 +210,7 @@ export default function RevenueReport() {
                 />
             </div>
 
-            <Button className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-8 font-medium shadow-sm transition-all w-full md:w-auto ml-auto">
+            <Button className="bg-primary hover:bg-primary/90 text-white px-8 font-medium shadow-sm transition-all w-full md:w-auto ml-auto">
               Search
             </Button>
         </div>
@@ -229,8 +229,8 @@ export default function RevenueReport() {
       {/* Table */}
        <div className="border border-gray-200 dark:border-gray-700 rounded-t-lg overflow-hidden overflow-x-auto">
         <Table>
-          <TableHeader className="bg-[#0f7396]/10 dark:bg-gray-800">
-            <TableRow className="hover:bg-[#0f7396]/10 dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
+          <TableHeader className="bg-primary/10 dark:bg-gray-800">
+            <TableRow className="hover:bg-primary/10 dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
               <TableHead className="font-bold text-gray-700 dark:text-gray-300 w-[60px]">Sr No.</TableHead>
               <TableHead className="font-bold text-gray-700 dark:text-gray-300">InvoiceNo</TableHead>
               <TableHead className="font-bold text-gray-700 dark:text-gray-300">PaidAmount</TableHead>

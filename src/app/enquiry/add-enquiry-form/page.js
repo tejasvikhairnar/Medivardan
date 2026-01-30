@@ -14,10 +14,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Settings } from "lucide-react";
+import { Settings, Eye } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { upsertLead, getLeadById } from "@/api/client/leads";
+import { upsertLead, getLeadById } from "@/api/leads";
 import { transformFormDataToAPI } from "@/utils/leadsTransformers";
+import { useClinics, useDoctorTypes } from "@/hooks/useMasterData";
+import { useDoctors } from "@/hooks/useDoctors";
+import { PageHeader } from "@/components/shared/PageHeader";
 
 export default function AddLeadFormPage() {
   const router = useRouter();
@@ -28,15 +31,22 @@ export default function AddLeadFormPage() {
 
   const [loading, setLoading] = useState(false);
 
+  // Master Data
+  const { data: clinics = [] } = useClinics();
+  const { data: doctors = [] } = useDoctors(); // Fetch all doctors
+  
+  // Filter doctors for assignment (optional logic)
+  const assignableDoctors = doctors;
+
   const [formData, setFormData] = useState({
-    enquiryID: 0, // Hidden field for updates
+    enquiryID: 0,
     leadNo: "",
     leadDate: new Date().toISOString().split('T')[0],
     firstName: "",
     lastName: "",
     dateOfBirth: "",
     age: "",
-    gender: "",
+    gender: "male",
     email: "",
     address: "",
     area: "",
@@ -47,8 +57,8 @@ export default function AddLeadFormPage() {
     mobileNo1: "",
     mobileNo2: "",
     contactType: "doctors",
-    clinicName: "Panvel",
-    assignTo: "",
+    clinicID: "", // Replaces clinicName
+    assignToEmpID: "", // Replaces assignTo string
     patientFollowup: "patient",
     interestLevel: "1",
     patientStatus: "cooperative",
@@ -68,10 +78,8 @@ export default function AddLeadFormPage() {
       setLoading(true);
       const data = await getLeadById(id);
       if (data) {
-        // Extract ID robustly
         const extractedID = data.EnquiryID || data.enquiryID || data.LeadID || data.leadID || data.id || 0;
         
-        // Map API data to form state
         setFormData(prev => ({
           ...prev,
           enquiryID: extractedID,
@@ -81,11 +89,10 @@ export default function AddLeadFormPage() {
           lastName: data.lastName || data.LastName || "",
           dateOfBirth: (data.dateBirth || data.DateBirth || data.dateOfBirth) ? new Date(data.dateBirth || data.DateBirth || data.dateOfBirth).toISOString().split('T')[0] : "",
           age: data.age || data.Age || "",
-          gender: data.gender || data.Gender || "",
+          gender: (data.gender || data.Gender || "male").toLowerCase(),
           email: data.emailid || data.Emailid || data.email || "",
           address: data.address || data.Address || "",
           area: data.area || data.Area || "",
-          // Use defaults if missing or map correctly
           country: "India", 
           state: "Maharashtra",
           city: "Mumbai",
@@ -93,8 +100,10 @@ export default function AddLeadFormPage() {
           mobileNo1: data.phoneNo1 || data.PhoneNo1 || data.mobile || "",
           mobileNo2: data.telephone || data.Telephone || "",
           contactType: "doctors", 
-          clinicName: data.clinicName || data.ClinicName || "Panvel",
-          assignTo: "", 
+          
+          clinicID: (data.clinicID || data.ClinicID || "").toString(),
+          assignToEmpID: (data.assignToEmpID || data.AssignToEmpID || "").toString(),
+          
           patientFollowup: (data.patientFollowup || data.PatientFollowup || "patient").toLowerCase(),
           interestLevel: String(data.interestLevel || data.InterestLevel || "1"),
           patientStatus: (data.pstatus || data.PatientStatus || "cooperative").toLowerCase(),
@@ -111,22 +120,26 @@ export default function AddLeadFormPage() {
   };
 
   const handleInputChange = (field, value) => {
-    if (isViewMode) return; // Prevent edits in view mode
+    if (isViewMode) return; 
 
     if (field === "mobileNo1" || field === "mobileNo2") {
       const numericValue = value.replace(/\D/g, "");
       if (numericValue.length > 10) return;
-      
-      setFormData((prev) => ({
-        ...prev,
-        [field]: numericValue,
-      }));
+      setFormData((prev) => ({ ...prev, [field]: numericValue }));
       return;
     }
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+
+    if (field === "clinicID") {
+        const selectedClinic = clinics.find(c => String(c.clinicId || c.id) === String(value));
+        setFormData(prev => ({ 
+            ...prev, 
+            clinicID: value,
+            clinicName: selectedClinic ? (selectedClinic.clinicName || selectedClinic.name) : ""
+        }));
+        return;
+    }
+    
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -137,14 +150,15 @@ export default function AddLeadFormPage() {
       firstName: "First Name",
       leadSource: "Lead Source",
       mobileNo1: "Mobile No 1",
-      clinicName: "Clinic Name",
-      assignTo: "Assign To",
-      leadFor: "Lead For"
+      clinicID: "Clinic",
+      assignToEmpID: "Assign To",
+      leadFor: "Lead For",
+      email: "Email"
     };
 
     const missingFields = [];
     Object.entries(mandatoryFields).forEach(([field, label]) => {
-      if (!formData[field] || formData[field].trim() === "") {
+      if (!formData[field] || String(formData[field]).trim() === "") {
         missingFields.push(label);
       }
     });
@@ -154,53 +168,43 @@ export default function AddLeadFormPage() {
       return;
     }
 
-    // Validate mobile number format
     if (formData.mobileNo1.length < 10) {
       alert('Please enter a valid 10-digit mobile number');
       return;
     }
 
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      alert('Please enter a valid email address');
+      return;
+    }
+
     try {
       setLoading(true);
-
-      // Transform form data to API format
       const apiData = transformFormDataToAPI(formData);
+      console.log('Transformed API data:', apiData);
 
-      // Debug: Log the transformed data
-      console.log('Form data before transformation:', formData);
-      console.log('Transformed API data (Browser):', apiData); // Log object directly for inspection
-      console.log('Transformed API data (JSON):', JSON.stringify(apiData, null, 2));
-
-      // Call API to add/update lead
       const response = await upsertLead(apiData);
+      console.log("Lead upsert response:", response);
 
-      console.log("Lead added successfully:", response);
-
-
-
-      // Check if using mock data and show appropriate message
       const isMock = response.isMockData || false;
       const actionText = mode === 'edit' ? "updated" : "added";
       const successMessage = isMock
-        ? `Lead ${actionText} successfully!\n\n⚠️ Note: Using mock data - changes are NOT saved to the external database.`
-        : `Lead ${actionText} successfully!\n\n✅ Data has been saved to the backend API.\n\nServer Response: ${response.debugResponse || "OK"}`;
+        ? `Lead ${actionText} successfully! (Mock Data)`
+        : `Lead ${actionText} successfully!`;
 
       alert(successMessage);
-
-      // Redirect to leads list page
       router.push("/enquiry/new-enquiry");
     } catch (error) {
       console.error("Error submitting lead:", error);
-      
       let errorMessage = error.message;
       if (error.response && error.response.data) {
-          // Try to extract a meaningful message from backend response
           errorMessage = typeof error.response.data === 'object' 
             ? (error.response.data.message || error.response.data.error || JSON.stringify(error.response.data))
             : error.response.data;
       }
-
-      alert(`Failed to ${mode === 'edit' ? 'update' : 'add'} lead: ${errorMessage}\n\nPlease check the console for more details.`);
+      alert(`Failed to ${mode === 'edit' ? 'update' : 'add'} lead: ${errorMessage}`);
     } finally {
       setLoading(false);
     }
@@ -210,17 +214,136 @@ export default function AddLeadFormPage() {
     router.push("/enquiry/new-enquiry");
   };
 
+  // helper to get name from ID
+  const getClinicName = (id) => clinics.find(c => String(c.clinicId || c.id) === String(id))?.clinicName || "Unknown";
+  const getDoctorName = (id) => doctors.find(d => String(d.doctorID || d.srNo) === String(id))?.name || "Unknown";
+
+  if (isViewMode) {
+    return (
+      <div className="w-full p-6 space-y-6">
+        {/* Header */}
+      <PageHeader 
+        title="VIEW LEAD DETAILS" 
+        icon={Eye} 
+      />
+
+        <Card className="border-t-4 border-t-primary shadow-md">
+          <CardContent className="p-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              
+              {/* Personal Information */}
+              <div className="space-y-4">
+                <h3 className="font-semibold text-lg text-primary border-b pb-2">Personal Information</h3>
+                <div className="grid grid-cols-2 gap-y-4 text-sm">
+                   <div className="text-gray-500">Lead No:</div>
+                   <div className="font-medium">{formData.leadNo}</div>
+                   
+                   <div className="text-gray-500">Full Name:</div>
+                   <div className="font-medium">{formData.firstName} {formData.lastName}</div>
+                   
+                   <div className="text-gray-500">Age / Gender:</div>
+                   <div className="font-medium capitalize">{formData.age} / {formData.gender}</div>
+                   
+                   <div className="text-gray-500">Date of Birth:</div>
+                   <div className="font-medium">{formData.dateOfBirth || '-'}</div>
+                </div>
+              </div>
+
+              {/* Contact Details */}
+              <div className="space-y-4">
+                <h3 className="font-semibold text-lg text-primary border-b pb-2">Contact Details</h3>
+                <div className="grid grid-cols-2 gap-y-4 text-sm">
+                   <div className="text-gray-500">Mobile 1:</div>
+                   <div className="font-medium">{formData.mobileNo1}</div>
+                   
+                   <div className="text-gray-500">Mobile 2:</div>
+                   <div className="font-medium">{formData.mobileNo2 || '-'}</div>
+                   
+                   <div className="text-gray-500">Email:</div>
+                   <div className="font-medium">{formData.email || '-'}</div>
+                   
+                   <div className="text-gray-500">Address:</div>
+                   <div className="font-medium">{formData.address || '-'}</div>
+                   
+                   <div className="text-gray-500">Area/City:</div>
+                   <div className="font-medium">{formData.area}, {formData.city}</div>
+                </div>
+              </div>
+
+              {/* Lead Source & Assignment */}
+              <div className="space-y-4">
+                <h3 className="font-semibold text-lg text-primary border-b pb-2">Assignment</h3>
+                <div className="grid grid-cols-2 gap-y-4 text-sm">
+                   <div className="text-gray-500">Clinic:</div>
+                   <div className="font-medium text-blue-600">{getClinicName(formData.clinicID)}</div>
+                   
+                   <div className="text-gray-500">Assigned To:</div>
+                   <div className="font-medium">{getDoctorName(formData.assignToEmpID)}</div>
+                   
+                   <div className="text-gray-500">Lead Source:</div>
+                   <div className="font-medium capitalize">{formData.leadSource}</div>
+                   
+                   <div className="text-gray-500">Lead Date:</div>
+                   <div className="font-medium">{formData.leadDate}</div>
+                </div>
+              </div>
+
+              {/* Status & Followup (Full Width) */}
+              <div className="col-span-1 md:col-span-2 lg:col-span-3 space-y-4 mt-4">
+                <h3 className="font-semibold text-lg text-primary border-b pb-2">Status & Follow-up</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
+                   <div>
+                      <div className="text-gray-500 mb-1">Interest Level:</div>
+                      <div className="flex gap-2">
+                         {[1, 2, 3].map(level => (
+                           <span key={level} className={`px-3 py-1 rounded-full text-xs font-bold border ${String(formData.interestLevel) === String(level) ? 'bg-primary text-white border-primary' : 'bg-gray-100 text-gray-400 border-gray-200'}`}>
+                             Level {level}
+                           </span>
+                         ))}
+                      </div>
+                   </div>
+                   
+                   <div>
+                      <div className="text-gray-500 mb-1">Patient Status:</div>
+                      <div className="font-medium capitalize px-3 py-1 bg-green-50 text-green-700 inline-block rounded-md">
+                        {formData.patientStatus.replace('-', ' ')}
+                      </div>
+                   </div>
+                   
+                   <div>
+                      <div className="text-gray-500 mb-1">Follow-up Type:</div>
+                      <div className="font-medium capitalize">{formData.patientFollowup}</div>
+                   </div>
+                   
+                   <div className="md:col-span-3 mt-2">
+                       <div className="text-gray-500 mb-1">Conversation Details:</div>
+                       <div className="p-3 bg-gray-50 rounded-md border border-gray-100 text-gray-700 leading-relaxed italic">
+                         {formData.conversationDetails || 'No conversation details recorded.'}
+                       </div>
+                   </div>
+                </div>
+              </div>
+
+            </div>
+            
+            <div className="flex justify-center mt-8 pt-6 border-t">
+               <Button onClick={handleCancel} className="bg-gray-600 hover:bg-gray-700 text-white min-w-[150px]">
+                 Back to List
+               </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
-          <Settings className="w-4 h-4 text-[#0f7396]" />
-        </div>
-        <h1 className="text-xl font-bold text-[#0f7396] dark:text-[#0f7396]">
-          {mode === 'create' ? 'ADD LEAD' : mode === 'edit' ? 'EDIT LEAD' : 'VIEW LEAD'}
-        </h1>
-      </div>
+      <PageHeader 
+        title={mode === 'create' ? 'ADD LEAD' : 'EDIT LEAD'} 
+        icon={Settings} 
+      />
 
       {/* Form */}
       <Card className="border-gray-200 dark:border-gray-800">
@@ -229,192 +352,80 @@ export default function AddLeadFormPage() {
             {/* Row 1: Lead No and Lead Date */}
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-2">
-                <Label htmlFor="leadNo" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Lead No.
-                </Label>
-                <Input
-                  id="leadNo"
-                  value={formData.leadNo}
-                  onChange={(e) => handleInputChange("leadNo", e.target.value)}
-                  className="border-gray-300 dark:border-gray-700 bg-gray-100 w-full"
-                  readOnly
-                />
+                <Label htmlFor="leadNo">Lead No.</Label>
+                <Input id="leadNo" value={formData.leadNo} readOnly className="w-full h-10" />
               </div>
-
               <div className="space-y-2">
-                <Label htmlFor="leadDate" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Lead Date
-                </Label>
-                <Input
-                  id="leadDate"
-                  type="date"
-                  value={formData.leadDate}
-                  onChange={(e) => handleInputChange("leadDate", e.target.value)}
-                  className="border-gray-300 dark:border-gray-700 w-full"
-                />
+                <Label htmlFor="leadDate">Lead Date</Label>
+                <Input id="leadDate" type="date" value={formData.leadDate} onChange={(e) => handleInputChange("leadDate", e.target.value)} className="w-full h-10" />
               </div>
             </div>
 
             {/* Row 2: First Name and Last Name */}
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-2">
-                <Label htmlFor="firstName" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  First Name <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  id="firstName"
-                  placeholder="First Name"
-                  value={formData.firstName}
-                  onChange={(e) => handleInputChange("firstName", e.target.value)}
-                  required
-                  className="border-gray-300 dark:border-gray-700 w-full"
-                />
+                <Label htmlFor="firstName">First Name <span className="text-red-500">*</span></Label>
+                <Input id="firstName" placeholder="First Name" value={formData.firstName} onChange={(e) => handleInputChange("firstName", e.target.value)} required className="w-full h-10" />
               </div>
-
               <div className="space-y-2">
-                <Label htmlFor="lastName" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Last Name
-                </Label>
-                <Input
-                  id="lastName"
-                  placeholder="Enter Last Name"
-                  value={formData.lastName}
-                  onChange={(e) => handleInputChange("lastName", e.target.value)}
-                  className="border-gray-300 dark:border-gray-700 w-full"
-                />
+                <Label htmlFor="lastName">Last Name</Label>
+                <Input id="lastName" placeholder="Enter Last Name" value={formData.lastName} onChange={(e) => handleInputChange("lastName", e.target.value)} className="w-full h-10" />
               </div>
             </div>
 
             {/* Row 3: Date of Birth and Age */}
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-2">
-                <Label htmlFor="dateOfBirth" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Date of Birth
-                </Label>
-                <Input
-                  id="dateOfBirth"
-                  type="date"
-                  placeholder="Date of Birth"
-                  value={formData.dateOfBirth}
-                  onChange={(e) => handleInputChange("dateOfBirth", e.target.value)}
-                  className="border-gray-300 dark:border-gray-700 w-full"
-                />
+                <Label htmlFor="dateOfBirth">Date of Birth</Label>
+                <Input id="dateOfBirth" type="date" value={formData.dateOfBirth} onChange={(e) => handleInputChange("dateOfBirth", e.target.value)} className="w-full h-10" />
               </div>
-
               <div className="space-y-2">
-                <Label htmlFor="age" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Age
-                </Label>
-                <Input
-                  id="age"
-                  type="number"
-                  placeholder="Enter Age"
-                  value={formData.age}
-                  onChange={(e) => handleInputChange("age", e.target.value)}
-                  className="border-gray-300 dark:border-gray-700 w-full"
-                />
+                <Label htmlFor="age">Age</Label>
+                <Input id="age" type="number" placeholder="Enter Age" value={formData.age} onChange={(e) => handleInputChange("age", e.target.value)} className="w-full h-10" />
               </div>
             </div>
 
             {/* Row 4: Gender and Email */}
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-2">
-                <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Gender
-                </Label>
-                <RadioGroup
-                  value={formData.gender}
-                  onValueChange={(value) => handleInputChange("gender", value)}
-                  className="flex gap-6"
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="male" id="male" />
-                    <Label htmlFor="male" className="cursor-pointer font-normal">Male</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="female" id="female" />
-                    <Label htmlFor="female" className="cursor-pointer font-normal">Female</Label>
-                  </div>
+                <Label>Gender</Label>
+                <RadioGroup value={formData.gender} onValueChange={(value) => handleInputChange("gender", value)} className="flex gap-6">
+                  <div className="flex items-center space-x-2"><RadioGroupItem value="male" id="male" /><Label htmlFor="male">Male</Label></div>
+                  <div className="flex items-center space-x-2"><RadioGroupItem value="female" id="female" /><Label htmlFor="female">Female</Label></div>
                 </RadioGroup>
               </div>
-
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Email
-                </Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter Email"
-                  value={formData.email}
-                  onChange={(e) => handleInputChange("email", e.target.value)}
-                  className="border-gray-300 dark:border-gray-700 w-full"
-                />
+                <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
+                <Input id="email" type="email" placeholder="Enter Email" value={formData.email} onChange={(e) => handleInputChange("email", e.target.value)} className="w-full h-10" />
               </div>
             </div>
 
             {/* Row 5: Address and Area */}
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-2">
-                <Label htmlFor="address" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Address
-                </Label>
-                <Textarea
-                  id="address"
-                  placeholder="Enter Address"
-                  value={formData.address}
-                  onChange={(e) => handleInputChange("address", e.target.value)}
-                  rows={3}
-                  className="border-gray-300 dark:border-gray-700 resize-none w-full"
-                />
+                <Label htmlFor="address">Address</Label>
+                <Textarea id="address" placeholder="Enter Address" value={formData.address} onChange={(e) => handleInputChange("address", e.target.value)} rows={3} className="resize-none w-full" />
               </div>
-
               <div className="space-y-2">
-                <Label htmlFor="area" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Area
-                </Label>
-                <Textarea
-                  id="area"
-                  placeholder="Enter Area"
-                  value={formData.area}
-                  onChange={(e) => handleInputChange("area", e.target.value)}
-                  rows={3}
-                  className="border-gray-300 dark:border-gray-700 resize-none w-full"
-                />
+                <Label htmlFor="area">Area</Label>
+                <Textarea id="area" placeholder="Enter Area" value={formData.area} onChange={(e) => handleInputChange("area", e.target.value)} rows={3} className="resize-none w-full" />
               </div>
             </div>
 
             {/* Row 6: Country and State */}
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-2">
-                <Label htmlFor="country" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Country
-                </Label>
+                <Label htmlFor="country">Country</Label>
                 <Select value={formData.country} onValueChange={(value) => handleInputChange("country", value)}>
-                  <SelectTrigger className="border-gray-300 dark:border-gray-700 w-full">
-                    <SelectValue placeholder="Select Country" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="India">India</SelectItem>
-                    <SelectItem value="USA">USA</SelectItem>
-                    <SelectItem value="UK">UK</SelectItem>
-                  </SelectContent>
+                  <SelectTrigger className="w-full h-10"><SelectValue placeholder="Select Country" /></SelectTrigger>
+                  <SelectContent><SelectItem value="India">India</SelectItem><SelectItem value="USA">USA</SelectItem></SelectContent>
                 </Select>
               </div>
-
               <div className="space-y-2">
-                <Label htmlFor="state" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  State
-                </Label>
+                <Label htmlFor="state">State</Label>
                 <Select value={formData.state} onValueChange={(value) => handleInputChange("state", value)}>
-                  <SelectTrigger className="border-gray-300 dark:border-gray-700 w-full">
-                    <SelectValue placeholder="Select State" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Maharashtra">Maharashtra</SelectItem>
-                    <SelectItem value="Gujarat">Gujarat</SelectItem>
-                    <SelectItem value="Karnataka">Karnataka</SelectItem>
-                  </SelectContent>
+                  <SelectTrigger className="w-full h-10"><SelectValue placeholder="Select State" /></SelectTrigger>
+                  <SelectContent><SelectItem value="Maharashtra">Maharashtra</SelectItem><SelectItem value="Gujarat">Gujarat</SelectItem></SelectContent>
                 </Select>
               </div>
             </div>
@@ -422,13 +433,9 @@ export default function AddLeadFormPage() {
             {/* Row 7: City and Lead Source */}
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-2">
-                <Label htmlFor="city" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  City
-                </Label>
+                <Label htmlFor="city">City</Label>
                 <Select value={formData.city} onValueChange={(value) => handleInputChange("city", value)}>
-                  <SelectTrigger className="border-gray-300 dark:border-gray-700 w-full">
-                    <SelectValue placeholder="Select City" />
-                  </SelectTrigger>
+                  <SelectTrigger className="w-full h-10"><SelectValue placeholder="Select City" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="Mumbai">Mumbai</SelectItem>
                     <SelectItem value="Pune">Pune</SelectItem>
@@ -436,15 +443,10 @@ export default function AddLeadFormPage() {
                   </SelectContent>
                 </Select>
               </div>
-
               <div className="space-y-2">
-                <Label htmlFor="leadSource" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Lead Source <span className="text-red-500">*</span>
-                </Label>
+                <Label htmlFor="leadSource">Lead Source <span className="text-red-500">*</span></Label>
                 <Select value={formData.leadSource} onValueChange={(value) => handleInputChange("leadSource", value)}>
-                  <SelectTrigger className="border-gray-300 dark:border-gray-700 w-full">
-                    <SelectValue placeholder="--- Select Source ---" />
-                  </SelectTrigger>
+                  <SelectTrigger className="w-full h-10"><SelectValue placeholder="--- Select Source ---" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="google">Google</SelectItem>
                     <SelectItem value="facebook">Facebook</SelectItem>
@@ -460,110 +462,63 @@ export default function AddLeadFormPage() {
             {/* Row 8: Mobile No 1 and Mobile No 2 */}
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-2">
-                <Label htmlFor="mobileNo1" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Mobile No 1. <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  id="mobileNo1"
-                  type="tel"
-                  placeholder="Enter Mobile"
-                  value={formData.mobileNo1}
-                  onChange={(e) => handleInputChange("mobileNo1", e.target.value)}
-                  required
-                  className="border-gray-300 dark:border-gray-700 w-full"
-                />
+                <Label htmlFor="mobileNo1">Mobile No 1. <span className="text-red-500">*</span></Label>
+                <Input id="mobileNo1" type="tel" placeholder="Enter Mobile" value={formData.mobileNo1} onChange={(e) => handleInputChange("mobileNo1", e.target.value)} required className="w-full h-10" />
               </div>
-
               <div className="space-y-2">
-                <Label htmlFor="mobileNo2" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Mobile No 2.
-                </Label>
-                <Input
-                  id="mobileNo2"
-                  type="tel"
-                  placeholder="Enter Telephone"
-                  value={formData.mobileNo2}
-                  onChange={(e) => handleInputChange("mobileNo2", e.target.value)}
-                  className="border-gray-300 dark:border-gray-700 w-full"
-                />
+                <Label htmlFor="mobileNo2">Mobile No 2.</Label>
+                <Input id="mobileNo2" type="tel" placeholder="Enter Telephone" value={formData.mobileNo2} onChange={(e) => handleInputChange("mobileNo2", e.target.value)} className="w-full h-10" />
               </div>
             </div>
 
-            {/* Row 9: Contact Type and Clinic Name */}
+            {/* Row 9: Contact Type and Clinic Name (Now Dynamic) */}
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-2">
-                <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Contact Type
-                </Label>
-                <RadioGroup
-                  value={formData.contactType}
-                  onValueChange={(value) => handleInputChange("contactType", value)}
-                  className="flex gap-6"
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="doctors" id="doctors" />
-                    <Label htmlFor="doctors" className="cursor-pointer font-normal">Doctors</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="telecaller" id="telecaller" />
-                    <Label htmlFor="telecaller" className="cursor-pointer font-normal">Telecaller</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="receptionist" id="receptionist" />
-                    <Label htmlFor="receptionist" className="cursor-pointer font-normal">Receptionist</Label>
-                  </div>
+                <Label>Contact Type</Label>
+                <RadioGroup value={formData.contactType} onValueChange={(value) => handleInputChange("contactType", value)} className="flex gap-6">
+                  <div className="flex items-center space-x-2"><RadioGroupItem value="doctors" id="doctors" /><Label htmlFor="doctors">Doctors</Label></div>
+                  <div className="flex items-center space-x-2"><RadioGroupItem value="telecaller" id="telecaller" /><Label htmlFor="telecaller">Telecaller</Label></div>
                 </RadioGroup>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="clinicName" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Clinic Name <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  id="clinicName"
-                  placeholder="Enter Clinic Name"
-                  value={formData.clinicName}
-                  onChange={(e) => handleInputChange("clinicName", e.target.value)}
-                  className="border-gray-300 dark:border-gray-700 w-full"
-                />
+                <Label htmlFor="clinicID">Clinic Name <span className="text-red-500">*</span></Label>
+                <Select value={formData.clinicID} onValueChange={(value) => handleInputChange("clinicID", value)}>
+                    <SelectTrigger className="w-full h-10">
+                      <SelectValue placeholder="Select Clinic" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {clinics && clinics.map(clinic => (
+                          <SelectItem key={clinic.clinicId || clinic.id} value={(clinic.clinicId || clinic.id).toString()}>
+                              {clinic.clinicName || clinic.name}
+                          </SelectItem>
+                      ))}
+                    </SelectContent>
+                </Select>
               </div>
             </div>
 
-            {/* Row 10: Assign To */}
+            {/* Row 10: Assign To (Now Dynamic) */}
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-2">
-                <Label htmlFor="assignTo" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Assign To <span className="text-red-500">*</span>
-                </Label>
-                <Select value={formData.assignTo} onValueChange={(value) => handleInputChange("assignTo", value)}>
-                  <SelectTrigger className="border-gray-300 dark:border-gray-700 w-full">
-                    <SelectValue placeholder="--- Select ---" />
-                  </SelectTrigger>
+                <Label htmlFor="assignToEmpID">Assign To <span className="text-red-500">*</span></Label>
+                <Select value={formData.assignToEmpID} onValueChange={(value) => handleInputChange("assignToEmpID", value)}>
+                  <SelectTrigger className="w-full h-10"><SelectValue placeholder="--- Select ---" /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="doctor1">Dr. Kinnari Lade</SelectItem>
-                    <SelectItem value="doctor2">Dr. Rajesh Kumar</SelectItem>
-                    <SelectItem value="doctor3">Dr. Priya Singh</SelectItem>
+                     {assignableDoctors && assignableDoctors.length > 0 ? assignableDoctors.map(doc => (
+                         <SelectItem key={doc.doctorID || doc.srNo} value={(doc.doctorID || doc.srNo).toString()}>
+                             {doc.name}
+                         </SelectItem>
+                     )) : <SelectItem value="none" disabled>No Doctors Available</SelectItem>}
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Patient / Followup <span className="text-red-500">*</span>
-                </Label>
-                <RadioGroup
-                  value={formData.patientFollowup}
-                  onValueChange={(value) => handleInputChange("patientFollowup", value)}
-                  className="flex gap-6"
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="patient" id="patient" />
-                    <Label htmlFor="patient" className="cursor-pointer font-normal">Patient</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="followup" id="followup" />
-                    <Label htmlFor="followup" className="cursor-pointer font-normal">Followup</Label>
-                  </div>
+                <Label>Patient / Followup <span className="text-red-500">*</span></Label>
+                <RadioGroup value={formData.patientFollowup} onValueChange={(value) => handleInputChange("patientFollowup", value)} className="flex gap-6">
+                  <div className="flex items-center space-x-2"><RadioGroupItem value="patient" id="patient" /><Label htmlFor="patient">Patient</Label></div>
+                  <div className="flex items-center space-x-2"><RadioGroupItem value="followup" id="followup" /><Label htmlFor="followup">Followup</Label></div>
                 </RadioGroup>
               </div>
             </div>
@@ -571,79 +526,33 @@ export default function AddLeadFormPage() {
             {/* Row 11: Interest Level and Conversation Details */}
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-2">
-                <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Interest Level <span className="text-red-500">*</span>
-                </Label>
-                <RadioGroup
-                  value={formData.interestLevel}
-                  onValueChange={(value) => handleInputChange("interestLevel", value)}
-                  className="flex gap-4"
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="1" id="level1" />
-                    <Label htmlFor="level1" className="cursor-pointer font-normal">1</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="2" id="level2" />
-                    <Label htmlFor="level2" className="cursor-pointer font-normal">2</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="3" id="level3" />
-                    <Label htmlFor="level3" className="cursor-pointer font-normal">3</Label>
-                  </div>
-
+                <Label>Interest Level <span className="text-red-500">*</span></Label>
+                <RadioGroup value={formData.interestLevel} onValueChange={(value) => handleInputChange("interestLevel", value)} className="flex gap-4">
+                  <div className="flex items-center space-x-2"><RadioGroupItem value="1" id="level1" /><Label htmlFor="level1">1</Label></div>
+                  <div className="flex items-center space-x-2"><RadioGroupItem value="2" id="level2" /><Label htmlFor="level2">2</Label></div>
+                  <div className="flex items-center space-x-2"><RadioGroupItem value="3" id="level3" /><Label htmlFor="level3">3</Label></div>
                 </RadioGroup>
               </div>
-
               <div className="space-y-2">
-                <Label htmlFor="conversationDetails" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Conversation details
-                </Label>
-                <Textarea
-                  id="conversationDetails"
-                  placeholder="Enter conversation details"
-                  value={formData.conversationDetails}
-                  onChange={(e) => handleInputChange("conversationDetails", e.target.value)}
-                  rows={3}
-                  className="border-gray-300 dark:border-gray-700 resize-none w-full"
-                />
+                <Label htmlFor="conversationDetails">Conversation details</Label>
+                <Textarea id="conversationDetails" placeholder="Enter conversation details" value={formData.conversationDetails} onChange={(e) => handleInputChange("conversationDetails", e.target.value)} rows={3} className="resize-none w-full" />
               </div>
             </div>
 
             {/* Row 12: Patient Status and Enquiry For */}
             <div className="grid grid-cols-2 gap-2">
               <div className="space-y-2">
-                <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Patient Status
-                </Label>
-                <RadioGroup
-                  value={formData.patientStatus}
-                  onValueChange={(value) => handleInputChange("patientStatus", value)}
-                  className="flex gap-6"
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="less-cooperative" id="less-cooperative" />
-                    <Label htmlFor="less-cooperative" className="cursor-pointer font-normal">Less Co-operative</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="cooperative" id="cooperative" />
-                    <Label htmlFor="cooperative" className="cursor-pointer font-normal">Co-operative</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="very-cooperative" id="very-cooperative" />
-                    <Label htmlFor="very-cooperative" className="cursor-pointer font-normal">Very Co-operative</Label>
-                  </div>
+                <Label>Patient Status</Label>
+                <RadioGroup value={formData.patientStatus} onValueChange={(value) => handleInputChange("patientStatus", value)} className="flex gap-6">
+                  <div className="flex items-center space-x-2"><RadioGroupItem value="less-cooperative" id="less-cooperative" /><Label htmlFor="less-cooperative">Less Co-operative</Label></div>
+                  <div className="flex items-center space-x-2"><RadioGroupItem value="cooperative" id="cooperative" /><Label htmlFor="cooperative">Co-operative</Label></div>
+                  <div className="flex items-center space-x-2"><RadioGroupItem value="very-cooperative" id="very-cooperative" /><Label htmlFor="very-cooperative">Very Co-operative</Label></div>
                 </RadioGroup>
               </div>
-
               <div className="space-y-2">
-                <Label htmlFor="leadFor" className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                  Lead For <span className="text-red-500">*</span>
-                </Label>
+                <Label htmlFor="leadFor">Lead For <span className="text-red-500">*</span></Label>
                 <Select value={formData.leadFor} onValueChange={(value) => handleInputChange("leadFor", value)}>
-                  <SelectTrigger className="border-gray-300 dark:border-gray-700 w-full">
-                    <SelectValue placeholder="-- Select Treatment--" />
-                  </SelectTrigger>
+                  <SelectTrigger className="w-full h-10"><SelectValue placeholder="-- Select Treatment--" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="physiotherapy">Physiotherapy</SelectItem>
                     <SelectItem value="consultation">General Consultation</SelectItem>
@@ -656,21 +565,11 @@ export default function AddLeadFormPage() {
             {/* Action Buttons */}
             <div className="flex items-center justify-center gap-4 pt-6">
               {!isViewMode && (
-                <Button
-                  type="submit"
-                  disabled={loading}
-                  className="bg-green-600 hover:bg-green-700 text-white px-8 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
+                <Button type="submit" disabled={loading} className="bg-[#0f7396] hover:bg-[#0f7396]/90 text-white px-8 h-10 disabled:opacity-50 disabled:cursor-not-allowed">
                   {loading ? "Submitting..." : mode === 'edit' ? "Update" : "Submit"}
                 </Button>
               )}
-              <Button
-                type="button"
-                onClick={handleCancel}
-                className="bg-[#0f7396] hover:bg-[#0f7396] text-white px-8"
-              >
-                Cancel
-              </Button>
+              <Button type="button" onClick={handleCancel} variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50 px-8 h-10">Cancel</Button>
             </div>
           </form>
         </CardContent>

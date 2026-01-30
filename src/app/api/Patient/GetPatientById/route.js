@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { API_CONFIG } from '@/config/api.config';
-import { authService } from '@/services/authService';
+import { API_CONFIG } from '@/api/config';
+import { authService } from '@/api/auth';
 import axios from 'axios';
 
 const { BASE_URL } = API_CONFIG;

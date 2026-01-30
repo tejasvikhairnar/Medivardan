@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import axiosClient from '@/lib/axiosClient';
-import authService from '@/services/authService'; // Use authService
+import axiosClient from '@/api/client';
+import { authService } from '@/api/auth';
 
 // Flag to enable/disable mock data fallback for UpsertLeads endpoint
 // Set to false to always try real API first
@@ -9,6 +9,15 @@ const USE_MOCK_FALLBACK = false;
 export async function POST(request) {
   try {
     const body = await request.json();
+    
+    // LOGGING TO FILE FOR DEBUGGING
+    try {
+        const fs = require('fs');
+        const path = require('path');
+        const logPath = path.join(process.cwd(), 'debug_upsert_log.txt');
+        const logEntry = `\n\n[${new Date().toISOString()}] Payload:\n${JSON.stringify(body, null, 2)}\n`;
+        fs.appendFileSync(logPath, logEntry);
+    } catch (err) { console.error('Log file write failed', err); }
 
     console.log('Upserting lead with data:', JSON.stringify(body, null, 2));
 
@@ -64,6 +73,15 @@ export async function POST(request) {
     
     // Attempt to parse response
     const text = await response.text();
+
+    // LOG RESPONSE TO FILE
+    try {
+        const fs = require('fs');
+        const path = require('path');
+        const logPath = path.join(process.cwd(), 'debug_upsert_log.txt');
+        const logEntry = `[${new Date().toISOString()}] Response (${response.status}):\n${text}\n----------------------------------\n`;
+        fs.appendFileSync(logPath, logEntry);
+    } catch (err) { }
 
     let data;
     try {

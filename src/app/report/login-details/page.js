@@ -102,8 +102,8 @@ export default function LoginDetailsPage() {
     <div className="p-6 bg-white dark:bg-gray-900 min-h-screen space-y-6">
       {/* Header */}
       <div className="flex items-center gap-2 border-b border-gray-200 dark:border-gray-800 pb-4">
-        <Settings className="w-5 h-5 text-[#0f7396] animate-spin-slow" />
-        <h1 className="text-lg font-bold text-[#0f7396] uppercase tracking-wide">
+        <Settings className="w-5 h-5 text-primary animate-spin-slow" />
+        <h1 className="text-lg font-bold text-primary uppercase tracking-wide">
           LOGIN
         </h1>
       </div>
@@ -143,7 +143,7 @@ export default function LoginDetailsPage() {
                     />
                 </div>
 
-                <Button className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-8 font-medium shadow-sm transition-all w-full md:w-auto">
+                <Button className="bg-primary hover:bg-primary/90 text-white px-8 font-medium shadow-sm transition-all w-full md:w-auto">
                     Search
                 </Button>
                 </div>
@@ -157,8 +157,8 @@ export default function LoginDetailsPage() {
             {/* Table */}
             <div className="border border-gray-200 dark:border-gray-700 rounded-t-lg overflow-hidden">
                 <Table>
-                <TableHeader className="bg-[#0f7396]/10 dark:bg-gray-800">
-                    <TableRow className="hover:bg-[#0f7396]/10 dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
+                <TableHeader className="bg-primary/10 dark:bg-gray-800">
+                    <TableRow className="hover:bg-primary/10 dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
                     <TableHead className="font-bold text-gray-700 dark:text-gray-300 w-[60px]">Sr. No.</TableHead>
                     <TableHead className="font-bold text-gray-700 dark:text-gray-300">Name</TableHead>
                     <TableHead className="font-bold text-gray-700 dark:text-gray-300">User Name</TableHead>
@@ -213,7 +213,7 @@ export default function LoginDetailsPage() {
     ) : (
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm space-y-6 max-w-2xl mx-auto">
              <div className="space-y-4">
-                 <h3 className="font-bold text-lg text-[#0f7396] border-b pb-2">EDIT LOGIN DETAILS</h3>
+                 <h3 className="font-bold text-lg text-primary border-b pb-2">EDIT LOGIN DETAILS</h3>
                  
                  <div className="space-y-2">
                     <Label>Name</Label>
@@ -242,7 +242,7 @@ export default function LoginDetailsPage() {
 
              <div className="flex justify-end gap-4 pt-4">
                 <Button onClick={handleCancel} variant="outline" className="min-w-[100px]">Cancel</Button>
-                <Button onClick={handleSubmit} className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white min-w-[100px]">
+                <Button onClick={handleSubmit} className="bg-primary hover:bg-primary/90 text-white min-w-[100px]">
                     Update
                 </Button>
              </div>

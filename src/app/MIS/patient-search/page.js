@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Eye, Edit } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { patientService } from "@/api/client/patients";
+import { patientService } from "@/api/patient";
 import CustomPagination from "@/components/ui/custom-pagination";
 
 export default function PatientSearchPage() {
@@ -119,9 +119,9 @@ export default function PatientSearchPage() {
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Search Patient Section */}
         <Card className="border border-gray-200 dark:border-gray-700 shadow-md bg-white dark:bg-gray-800">
-          <CardHeader className="p-4 bg-[#0f7396]/10 dark:bg-[#0f7396]/20 border-b border-[#0f7396]/20 dark:border-[#0f7396]/30">
-            <h2 className="text-lg font-semibold text-[#0f7396] dark:text-[#0f7396] flex items-center gap-2">
-              <span className="text-[#0f7396]">⚙</span> PATIENT
+          <CardHeader className="p-4 bg-primary/10 dark:bg-primary/20 border-b border-primary/20 dark:border-primary/30">
+            <h2 className="text-lg font-semibold text-primary dark:text-primary flex items-center gap-2">
+              <span className="text-primary">⚙</span> PATIENT
             </h2>
           </CardHeader>
           <CardContent className="p-6">
@@ -194,13 +194,13 @@ export default function PatientSearchPage() {
                 />
               </div>
               <div className="flex gap-2">
-                <Button onClick={handleSearch} className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-8">
+                <Button onClick={handleSearch} className="bg-primary hover:bg-primary/90 text-white px-8">
                   Search
                 </Button>
                 <Button
                   onClick={handleExcelUpload}
                   variant="outline"
-                  className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white border-[#0f7396] px-6"
+                  className="bg-primary hover:bg-primary/90 text-white border-primary px-6"
                 >
                   Excel upload
                 </Button>
@@ -217,7 +217,7 @@ export default function PatientSearchPage() {
               <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-[#0f7396]/10 dark:bg-[#0f7396]/20">
+                    <tr className="bg-primary/10 dark:bg-primary/20">
                       <th className="p-3 text-left font-medium text-gray-700 dark:text-gray-300">Sr. No.</th>
                       <th className="p-3 text-left font-medium text-gray-700 dark:text-gray-300">Case Paper No.</th>
                       <th className="p-3 text-left font-medium text-gray-700 dark:text-gray-300">Name</th>

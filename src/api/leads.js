@@ -1,16 +1,18 @@
 /**
- * Leads API Client
- * Uses native fetch for local Next.js API routes
+ * Leads API
+ * Handles interactions with Leads/Enquiries via Next.js API Routes
  */
 
 export const getLeads = async (params = {}) => {
+    if (typeof window === 'undefined') return []; // Safety check for server-side
+
     const mergedParams = { PageSize: 20, ...params };
-
-    // Build query string
-    const queryString = new URLSearchParams(
-        Object.entries(mergedParams).filter(([_, v]) => v !== undefined && v !== null && v !== '')
-    ).toString();
-
+    
+    // Clean params
+    const cleanParams = Object.entries(mergedParams)
+        .filter(([_, v]) => v !== undefined && v !== null && v !== '');
+    
+    const queryString = new URLSearchParams(cleanParams).toString();
     const url = `/api/Leads/getLeads${queryString ? `?${queryString}` : ''}`;
 
     // Get token from localStorage for auth header
@@ -37,7 +39,7 @@ export const getLeads = async (params = {}) => {
     }
 
     return response.json();
-}
+};
 
 export const upsertLead = async (data) => {
     // Get token from localStorage for auth header
@@ -60,26 +62,24 @@ export const upsertLead = async (data) => {
 
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
+        console.error("Upsert Failure Details:", errorData); // Log details for debugging
         throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
     }
 
     return response.json();
-}
+};
 
 export const getLeadById = async (id) => {
+    // Reuse getLeads to fetch by ID, then filter/find the specific one
     const data = await getLeads({ EnquiryID: id, LeadID: id });
-
-    // The API might return a list (paginated or filtered).
-    // We must find the specific item because even with filtering, backend behavior is unverified.
+    
     if (Array.isArray(data)) {
         const found = data.find(item =>
             String(item.leadID || item.LeadID) === String(id) ||
             String(item.enquiryID || item.EnquiryID) === String(id)
         );
-
         if (found) return found;
         if (data.length === 1) return data[0];
     }
-
     return null;
-}
+};

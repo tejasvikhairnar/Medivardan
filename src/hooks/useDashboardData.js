@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { getDashboardData } from "@/api/client/dashboard";
+import { getDashboardData } from "@/api/dashboard";
 
 export const useDashboardData = (Regions, Id) => {
     return useQuery({

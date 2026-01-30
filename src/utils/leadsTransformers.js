@@ -35,9 +35,11 @@ export const transformFormDataToAPI = (formData) => {
     // Converted to PascalCase for .NET standards, with redundant fallbacks
     EnquiryID: formData.enquiryID || 0,
     enquiryID: formData.enquiryID || 0, // Fallback
-    // Default to 1 (Panvel) if clinic name doesn't match a mapped ID, to satisfy backend FK constraint
-    ClinicID: formData.clinicName ? (CLINIC_ID_MAP[formData.clinicName] || 1) : 1,
+    
+    // Use dynamic ClinicID if available, else fallback to map or default
+    ClinicID: formData.clinicID ? Number(formData.clinicID) : (formData.clinicName ? (CLINIC_ID_MAP[formData.clinicName] || 1) : 1),
     ClinicName: formData.clinicName || "",
+    
     SourceID: formData.leadSource ? LEAD_SOURCE_MAP[formData.leadSource] : 0,
     RoleID: 0,
     EnquiryNo: formData.leadNo || "",
@@ -45,8 +47,8 @@ export const transformFormDataToAPI = (formData) => {
     FirstName: formData.firstName || "",
     LastName: formData.lastName || "",
     DateBirth: formData.dateOfBirth ? new Date(formData.dateOfBirth).toISOString() : new Date().toISOString(),
-    Age: formData.age || "0",
-    Gender: formData.gender || "Male",
+    Age: String(formData.age || "0"),
+    Gender: formData.gender ? (formData.gender.charAt(0).toUpperCase() + formData.gender.slice(1)) : "Male",
     Address: formData.address || "",
     CountryID: 0,
     StateID: 0,
@@ -64,7 +66,7 @@ export const transformFormDataToAPI = (formData) => {
     PatientFollowup: formData.patientFollowup ? (formData.patientFollowup.charAt(0).toUpperCase() + formData.patientFollowup.slice(1)) : "Patient",
     patientFollowup: formData.patientFollowup ? (formData.patientFollowup.charAt(0).toUpperCase() + formData.patientFollowup.slice(1)) : "Patient",
     EnquiryStatus: formData.patientFollowup ? (formData.patientFollowup.charAt(0).toUpperCase() + formData.patientFollowup.slice(1)) : "Patient",
-    LeadStatus: formData.patientFollowup ? (formData.patientFollowup.charAt(0).toUpperCase() + formData.patientFollowup.slice(1)) : "Patient", // Added LeadStatus
+    LeadStatus: formData.patientFollowup ? (formData.patientFollowup.charAt(0).toUpperCase() + formData.patientFollowup.slice(1)) : "Patient", 
     
     // Numeric Status IDs (Guessing 1=Patient, 2=Followup)
     StatusID: (formData.patientFollowup === 'followup') ? 2 : 1,
@@ -72,19 +74,23 @@ export const transformFormDataToAPI = (formData) => {
     LeadStatusID: (formData.patientFollowup === 'followup') ? 2 : 1,
     
     FollowupDate: new Date().toISOString(),
-    InterestLevel: formData.interestLevel || "1",
-    InterestLevelCode: formData.interestLevel || "1",
-    CreatedBy: 0,
+    InterestLevel: String(formData.interestLevel || "1"),
+    InterestLevelCode: String(formData.interestLevel || "1"),
+    CreatedBy: 0, // TODO: Get from auth context
     ReceivedByEmpID: 0,
-    AssignToEmpID: 0,
+    
+    // Use dynamic AssignToEmpID
+    // Use dynamic AssignToEmpID - Safe Parse
+    AssignToEmpID: (formData.assignToEmpID && !isNaN(Number(formData.assignToEmpID))) ? Number(formData.assignToEmpID) : 0,
     TelecallerToEmpID: 0,
+    
     Conversation: formData.conversationDetails || "",
     TreatmentID: 0,
     ModifiedBy: 0,
     IsActive: true,
-    PatientStatus: formData.patientStatus || "Co-operative", 
-    PStatus: formData.patientStatus || "Co-operative",
-    pstatus: formData.patientStatus || "Co-operative",
+    PatientStatus: formData.patientStatus ? (formData.patientStatus.charAt(0).toUpperCase() + formData.patientStatus.slice(1)) : "Co-operative", 
+    PStatus: formData.patientStatus ? (formData.patientStatus.charAt(0).toUpperCase() + formData.patientStatus.slice(1)) : "Co-operative",
+    pstatus: formData.patientStatus ? (formData.patientStatus.charAt(0).toUpperCase() + formData.patientStatus.slice(1)) : "Co-operative",
     Mode: formData.enquiryID ? 2 : 1 // 1 = Insert, 2 = Update
   };
 };
@@ -97,13 +103,13 @@ export const transformFormDataToAPI = (formData) => {
 export const transformAPILeadToDisplay = (apiLead) => {
   return {
     srNo: apiLead.leadID || apiLead.LeadID,
-    leadNo: apiLead.leadNo || apiLead.LeadNo || `E${apiLead.leadID}`,
+    leadNo: apiLead.leadNo || apiLead.LeadNo || apiLead.EnquiryNo || apiLead.enquiryNo || `E${apiLead.leadID || apiLead.LeadID || apiLead.EnquiryID || apiLead.enquiryID}`,
     name: `${apiLead.firstName || ''} ${apiLead.lastName || ''}`.trim(),
-    mobileNo: apiLead.phoneNo1 || apiLead.PhoneNo1 || '',
+    mobileNo: apiLead.phoneNo1 || apiLead.PhoneNo1 || apiLead.MobileNo || apiLead.mobileNo || apiLead.Mobile || apiLead.mobile || '',
     clinicName: apiLead.clinicName || apiLead.ClinicName || getClinicNameFromID(apiLead.clinicID || apiLead.ClinicID),
-    sourceName: getSourceNameFromID(apiLead.leadSourceID || apiLead.LeadSourceID),
-    status: apiLead.patientFollowup || apiLead.PatientFollowup || 'Patient',
-    date: formatDate(apiLead.leadDate || apiLead.LeadDate),
+    sourceName: apiLead.sourceName || apiLead.SourceName || getSourceNameFromID(apiLead.leadSourceID || apiLead.LeadSourceID || apiLead.SourceID || apiLead.sourceID),
+    status: apiLead.patientFollowup || apiLead.PatientFollowup || apiLead.Status || apiLead.status || 'Patient',
+    date: formatDate(apiLead.leadDate || apiLead.LeadDate || apiLead.EnquiryDate || apiLead.enquiryDate || apiLead.createdDate),
     email: apiLead.emailid || apiLead.Emailid || '',
   };
 };

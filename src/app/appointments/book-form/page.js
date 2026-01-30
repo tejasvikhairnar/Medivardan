@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 
-import { upsertAppointment } from "@/api/client/appointments"
+import { upsertAppointment } from "@/api/appointments"
 import { transformAppointmentFormData } from "@/utils/appointmentTransformers"
 
 export default function BookAppointmentFormPage() {

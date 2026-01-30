@@ -144,8 +144,8 @@ export default function OfferList() {
       return (
         <div className="p-6 bg-white dark:bg-gray-900 min-h-screen space-y-6">
              <div className="flex items-center gap-2 border-b border-gray-200 dark:border-gray-800 pb-4">
-                <Settings className="w-5 h-5 text-[#0f7396]" />
-                <h1 className="text-lg font-bold text-[#0f7396] uppercase tracking-wide">
+                <Settings className="w-5 h-5 text-primary" />
+                <h1 className="text-lg font-bold text-primary uppercase tracking-wide">
                     {editingId ? "EDIT OFFER" : "OFFER"}
                 </h1>
             </div>
@@ -270,7 +270,7 @@ export default function OfferList() {
                     <div>
                          <Button 
                             type="button" 
-                            className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white"
+                            className="bg-primary hover:bg-primary/90 text-white"
                             onClick={() => document.getElementById('file-upload').click()}
                          >
                             Upload Image
@@ -279,7 +279,7 @@ export default function OfferList() {
                 </div>
 
                 <div className="flex justify-center pt-8 gap-4">
-                    <Button type="submit" className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-12 py-2 text-lg">SUBMIT</Button>
+                    <Button type="submit" className="bg-primary hover:bg-primary/90 text-white px-12 py-2 text-lg">SUBMIT</Button>
                     <Button 
                         type="button" 
                         variant="secondary"
@@ -298,8 +298,8 @@ export default function OfferList() {
     <div className="p-6 bg-white dark:bg-gray-900 min-h-screen space-y-6">
       {/* Header */}
       <div className="flex items-center gap-2 border-b border-gray-200 dark:border-gray-800 pb-4">
-        <Settings className="w-5 h-5 text-[#0f7396]" />
-        <h1 className="text-lg font-bold text-[#0f7396] uppercase tracking-wide">
+        <Settings className="w-5 h-5 text-primary" />
+        <h1 className="text-lg font-bold text-primary uppercase tracking-wide">
           OFFER LIST
         </h1>
       </div>
@@ -323,12 +323,12 @@ export default function OfferList() {
                 <SelectItem value="Default Offer">Default Offer</SelectItem>
                 </SelectContent>
             </Select>
-             <Button className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap">
+             <Button className="bg-primary hover:bg-primary/90 text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap">
                 Search
             </Button>
               <Button 
                 onClick={handleAddNew}
-                className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap"
+                className="bg-primary hover:bg-primary/90 text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap"
             >
                 Add New
             </Button>
@@ -338,8 +338,8 @@ export default function OfferList() {
       {/* Table */}
        <div className="border border-gray-200 dark:border-gray-700 rounded-t-lg overflow-hidden overflow-x-auto">
         <Table>
-          <TableHeader className="bg-[#0f7396]/10 dark:bg-gray-800">
-            <TableRow className="hover:bg-[#0f7396]/10 dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
+          <TableHeader className="bg-primary/10 dark:bg-gray-800">
+            <TableRow className="hover:bg-primary/10 dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
               <TableHead className="font-bold text-gray-700 dark:text-gray-300 w-[60px]">Sr. No.</TableHead>
               <TableHead className="font-bold text-gray-700 dark:text-gray-300">Offer Title</TableHead>
               <TableHead className="font-bold text-gray-700 dark:text-gray-300">Offer Type Name</TableHead>

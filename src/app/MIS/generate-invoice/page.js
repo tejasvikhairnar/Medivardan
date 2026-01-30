@@ -127,7 +127,7 @@ export default function GenerateInvoicePage() {
       <div className="bg-card rounded-xl border border-border overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
             <table className="w-full text-sm text-left">
-                <thead className="bg-[#0f7396]/10 dark:bg-accent text-foreground">
+                <thead className="bg-primary/10 dark:bg-accent text-foreground">
                     <tr>
                         <th className="p-4 font-semibold w-[5%] text-center border-b border-border">Sr.No</th>
                         <th className="p-4 font-semibold w-[35%] border-b border-border">Treatment</th>
@@ -163,7 +163,7 @@ export default function GenerateInvoicePage() {
                                     variant="ghost" 
                                     size="icon" 
                                     onClick={() => deleteRow(row.id)}
-                                    className="text-[#0f7396] hover:text-[#0b5c7a] hover:bg-[#0f7396]/10"
+                                    className="text-primary hover:text-[#0b5c7a] hover:bg-primary/10"
                                     disabled={rows.length === 1}
                                 >
                                     <Trash2 className="w-5 h-5" />
@@ -176,7 +176,7 @@ export default function GenerateInvoicePage() {
         </div>
         
         <div className="p-4 bg-background border-t border-border flex justify-end">
-            <Button onClick={addRow} className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white">
+            <Button onClick={addRow} className="bg-primary hover:bg-primary/90 text-white">
                 <Plus className="w-4 h-4 mr-2" /> Add New Row
             </Button>
         </div>
@@ -206,10 +206,10 @@ export default function GenerateInvoicePage() {
 
       {/* Action Buttons */}
        <div className="flex justify-center gap-4 py-6">
-            <Button className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-10 shadow-lg">
+            <Button className="bg-primary hover:bg-primary/90 text-white px-10 shadow-lg">
                 Submit
             </Button>
-            <Button className="bg-[#0f7396] hover:bg-[#0f7396] text-white px-10 shadow-lg">
+            <Button className="bg-primary hover:bg-primary text-white px-10 shadow-lg">
                 Cancel
             </Button>
        </div>

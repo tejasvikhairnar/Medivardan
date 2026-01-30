@@ -36,7 +36,7 @@ import {
 } from "lucide-react";
 
 import { useMenuData } from "@/hooks/useMenuData";
-import { getUser } from "@/api/client/getUser";
+import { useUser } from "@/hooks/useUser";
 
 // Function to get icon component for menu
 const getMenuIcon = (menuName) => {
@@ -72,7 +72,7 @@ const getMenuIcon = (menuName) => {
 };
 
 export default function Sidebar({ open }) {
-  let userDetails = getUser();
+  let userDetails = useUser();
   const UserRole = userDetails?.userData?.roleName;
 
   const { data, isLoading } = useMenuData(UserRole);
@@ -756,7 +756,7 @@ export default function Sidebar({ open }) {
     const renderIcon = (menuName, depth, hasChildren) => {
       if (depth === 0) {
         return (
-          <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-gradient-to-br from-[#4DB8AC] to-[#1E6B8C] text-white shadow-md flex-shrink-0 group-hover:shadow-lg transition-all">
+          <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-md flex-shrink-0 group-hover:shadow-lg transition-all">
             {getMenuIcon(menuName)}
           </div>
         );
@@ -766,7 +766,7 @@ export default function Sidebar({ open }) {
       return (
         <div className="w-9 h-9 flex items-center justify-center rounded-lg flex-shrink-0 transition-all">
           {hasChildren && (
-            <span className="text-[#1E6B8C] dark:text-[#4DB8AC]">
+            <span className="text-primary/80 group-hover:text-primary">
                {getMenuIcon(menuName)}
             </span>
           )}
@@ -780,7 +780,7 @@ export default function Sidebar({ open }) {
           key={menu.menuID}
           href={menu.menuPath || "#"}
           className={cn(
-            "flex items-center gap-1.5 py-1.5 text-sm font-medium rounded-lg hover:bg-[#4DB8AC]/10 hover:text-[#1E6B8C] transition-all duration-200 group",
+            "flex items-center gap-1.5 py-1.5 text-sm font-medium rounded-lg hover:bg-primary/10 hover:text-primary transition-all duration-200 group",
             open ? "justify-start" : "justify-center",
             depth > 0 ? nestedPadding : "px-2"
           )}
@@ -791,7 +791,7 @@ export default function Sidebar({ open }) {
           {open && (
             <span className={cn(
               "font-medium truncate transition-colors",
-              depth > 0 && "text-gray-600 dark:text-gray-400 group-hover:text-[#1E6B8C] dark:group-hover:text-[#4DB8AC]"
+              depth > 0 && "text-muted-foreground group-hover:text-primary"
             )}>
               {menu.menuName}
             </span>

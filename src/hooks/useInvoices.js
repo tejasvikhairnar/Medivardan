@@ -3,7 +3,7 @@
  */
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getAllInvoices, deleteInvoice, getChequeDetails } from "@/api/client/invoices";
+import { getAllInvoices, deleteInvoice, getChequeDetails } from "@/api/invoices";
 
 /**
  * Hook to fetch invoices

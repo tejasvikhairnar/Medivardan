@@ -42,9 +42,9 @@ export default function UpgradationPage() {
       {/* Header */}
       <div className="flex items-center gap-3 pb-2 border-b border-gray-200 dark:border-gray-800">
          <div className="p-2 bg-red-50 dark:bg-red-900/20 rounded-lg">
-             <Settings className="w-5 h-5 text-[#0f7396] animate-spin-slow" />
+             <Settings className="w-5 h-5 text-primary animate-spin-slow" />
          </div>
-        <h1 className="text-xl font-bold text-[#0f7396] uppercase tracking-wide">
+        <h1 className="text-xl font-bold text-primary uppercase tracking-wide">
           UPGRADATION
         </h1>
       </div>
@@ -183,7 +183,7 @@ export default function UpgradationPage() {
           
            {/* Submit Button */}
            <div className="flex justify-center pt-4">
-            <Button className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-8 h-10 font-bold shadow-md">
+            <Button className="bg-primary hover:bg-primary/90 text-white px-8 h-10 font-bold shadow-md">
                 Submit Upgradation
             </Button>
            </div>

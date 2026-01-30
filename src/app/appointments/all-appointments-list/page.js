@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { getAppointments } from '@/api/client/appointments'
+import { getAppointments } from '@/api/appointments'
 import { Pagination } from '@/components/Pagination'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 
@@ -232,10 +232,10 @@ export default function AllAppointmentsListPage() {
       <div className="max-w-[1600px] mx-auto p-6 space-y-6">
         
         <div className="flex items-center gap-3 pb-2 border-b border-gray-200 dark:border-gray-800">
-          <div className="p-2 rounded-lg bg-[#0f7396]/10 dark:bg-[#0f7396]/20">
-            <Calendar className="w-5 h-5 text-[#0f7396] dark:text-[#3aaecb]" />
+          <div className="p-2 rounded-lg bg-primary/10 dark:bg-primary/20">
+            <Calendar className="w-5 h-5 text-primary dark:text-[#3aaecb]" />
           </div>
-          <h1 className="text-xl font-bold text-[#0f7396] dark:text-[#3aaecb] uppercase tracking-wide">
+          <h1 className="text-xl font-bold text-primary dark:text-[#3aaecb] uppercase tracking-wide">
             All Appointment List
           </h1>
         </div>
@@ -356,7 +356,7 @@ export default function AllAppointmentsListPage() {
 
                     <Button
                     onClick={handleSearch}
-                    className="h-10 bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-8 shadow-sm"
+                    className="h-10 bg-primary hover:bg-primary/90 text-white px-8 shadow-sm"
                     >
                     <Search className="w-4 h-4 mr-2" />
                     Search
@@ -370,7 +370,7 @@ export default function AllAppointmentsListPage() {
                     ) : (
                     <table className="w-full">
                     <thead>
-                        <tr className="bg-[#0f7396]/10 dark:bg-[#0f7396]/20">
+                        <tr className="bg-primary/10 dark:bg-primary/20">
                         <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-200">Sr. No.</th>
                         <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-200">Name</th>
                         <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-200">Doctor Name</th>

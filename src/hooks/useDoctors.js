@@ -5,7 +5,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { getAllDoctors, getDoctorById } from "@/api/doctor";
-import { transformAPIDoctorToDisplay } from "@/api/doctor/transformers";
+import { transformAPIDoctorToDisplay } from "@/utils/doctorTransformers";
 
 /**
  * Hook to fetch all doctors

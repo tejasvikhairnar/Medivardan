@@ -22,6 +22,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Settings, Home } from "lucide-react"
 import Link from "next/link"
 import CustomPagination from "@/components/ui/custom-pagination"
+import { PageHeader } from "@/components/shared/PageHeader"
 
 export default function PendingFollowupsPage() {
   const [filters, setFilters] = useState({
@@ -60,14 +61,10 @@ export default function PendingFollowupsPage() {
       </div>
 
       {/* Header */}
-      <div className="flex items-center gap-3 pb-2">
-        <div className="w-8 h-8 rounded-full bg-teal-50 dark:bg-teal-900/20 flex items-center justify-center border border-teal-100 dark:border-teal-800">
-          <Settings className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-        </div>
-        <h1 className="text-xl font-bold text-teal-700 dark:text-teal-400 uppercase tracking-tight">
-          Pending Follow up Report
-        </h1>
-      </div>
+      <PageHeader 
+        title="Pending Follow up Report" 
+        icon={Settings} 
+      />
 
       {/* Filter Section */}
       <Card className="border-none shadow-sm bg-white dark:bg-slate-900">
@@ -124,7 +121,7 @@ export default function PendingFollowupsPage() {
             <div className="w-full">
               <Button 
                 onClick={handleSearch}
-                className="w-full bg-teal-600 hover:bg-teal-700 text-white dark:bg-teal-600 dark:hover:bg-teal-500"
+                className="w-full bg-[#0f7396] hover:bg-[#0f7396]/90 text-white dark:bg-[#0f7396] dark:hover:bg-[#0f7396]/90 h-10"
               >
                 Search
               </Button>
@@ -141,15 +138,15 @@ export default function PendingFollowupsPage() {
         </div>
         
         <Table>
-          <TableHeader className="bg-white dark:bg-slate-900">
+          <TableHeader className="bg-[#0f7396]/10 dark:bg-[#0f7396]/20">
             <TableRow className="dark:border-slate-800">
-              <TableHead className="w-[80px] dark:text-gray-300">Sr. No.</TableHead>
-              <TableHead className="dark:text-gray-300">Visitor Name</TableHead>
-              <TableHead className="dark:text-gray-300">Mobile</TableHead>
-              <TableHead className="dark:text-gray-300">Enquiry For</TableHead>
-              <TableHead className="dark:text-gray-300">Enquiry Date</TableHead>
-              <TableHead className="dark:text-gray-300">Followup Date</TableHead>
-              <TableHead className="dark:text-gray-300">Status</TableHead>
+              <TableHead className="w-[80px] font-bold text-[#0f7396] dark:text-[#0f7396]">Sr. No.</TableHead>
+              <TableHead className="font-bold text-[#0f7396] dark:text-[#0f7396]">Visitor Name</TableHead>
+              <TableHead className="font-bold text-[#0f7396] dark:text-[#0f7396]">Mobile</TableHead>
+              <TableHead className="font-bold text-[#0f7396] dark:text-[#0f7396]">Enquiry For</TableHead>
+              <TableHead className="font-bold text-[#0f7396] dark:text-[#0f7396]">Enquiry Date</TableHead>
+              <TableHead className="font-bold text-[#0f7396] dark:text-[#0f7396]">Followup Date</TableHead>
+              <TableHead className="font-bold text-[#0f7396] dark:text-[#0f7396]">Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

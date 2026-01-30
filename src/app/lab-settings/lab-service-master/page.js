@@ -109,8 +109,8 @@ export default function LabServiceMaster() {
     <div className="p-6 bg-white dark:bg-gray-900 min-h-screen space-y-6">
       {/* Header */}
       <div className="flex items-center gap-2 border-b border-gray-200 dark:border-gray-800 pb-4">
-        <Settings className="w-5 h-5 text-[#0f7396]" />
-        <h1 className="text-lg font-bold text-[#0f7396] uppercase tracking-wide">
+        <Settings className="w-5 h-5 text-primary" />
+        <h1 className="text-lg font-bold text-primary uppercase tracking-wide">
           TYPE OF WORK (LAB)
         </h1>
       </div>
@@ -129,12 +129,12 @@ export default function LabServiceMaster() {
                 }}
                 className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 flex-1"
               />
-              <Button className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap">
+              <Button className="bg-primary hover:bg-primary/90 text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap">
                 Search
               </Button>
               <Button
                 onClick={handleAdd}
-                className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap"
+                className="bg-primary hover:bg-primary/90 text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap"
               >
                 Add New
               </Button>
@@ -148,8 +148,8 @@ export default function LabServiceMaster() {
           {/* Table */}
           <div className="border border-gray-200 dark:border-gray-700 rounded-t-lg overflow-hidden overflow-x-auto">
             <Table>
-              <TableHeader className="bg-[#0f7396]/10 dark:bg-gray-800">
-                <TableRow className="hover:bg-[#0f7396]/10 dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
+              <TableHeader className="bg-primary/10 dark:bg-gray-800">
+                <TableRow className="hover:bg-primary/10 dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
                   <TableHead className="font-bold text-gray-700 dark:text-gray-300 w-[60px]">
                     Sr. No.
                   </TableHead>
@@ -233,7 +233,7 @@ export default function LabServiceMaster() {
                     onClick={() => handlePageChange(page)}
                     className={
                       currentPage === page
-                        ? "bg-[#0f7396] hover:bg-[#0b5c7a] text-white"
+                        ? "bg-primary hover:bg-primary/90 text-white"
                         : ""
                     }
                   >
@@ -279,7 +279,7 @@ export default function LabServiceMaster() {
             <Button
               onClick={handleCancel}
               variant="destructive"
-              className="bg-[#0f7396] hover:bg-[#0b5c7a] min-w-[100px]"
+              className="bg-primary hover:bg-primary/90 min-w-[100px]"
             >
               Cancel
             </Button>

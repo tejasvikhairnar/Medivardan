@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
-import { patientService } from "@/api/client/patients";
+import { patientService } from "@/api/patient";
 
 function PatientEditContent() {
   const router = useRouter();
@@ -1886,7 +1886,7 @@ function PatientEditContent() {
                     <Button
                       type="button"
                       onClick={handleCancel}
-                      className="bg-[#0f7396] hover:bg-[#0f7396] text-white px-8"
+                      className="bg-primary hover:bg-primary text-white px-8"
                     >
                       Cancel
                     </Button>

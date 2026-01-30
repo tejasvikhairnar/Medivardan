@@ -19,8 +19,8 @@ export default function BranchHandover() {
     <div className="p-6 bg-white dark:bg-gray-900 min-h-screen space-y-6">
       {/* Header */}
       <div className="flex items-center gap-2 border-b border-gray-200 dark:border-gray-800 pb-4">
-        <Settings className="w-5 h-5 text-[#0f7396]" />
-        <h1 className="text-lg font-bold text-[#0f7396] uppercase tracking-wide">
+        <Settings className="w-5 h-5 text-primary" />
+        <h1 className="text-lg font-bold text-primary uppercase tracking-wide">
           BRANCH HANDOVER
         </h1>
       </div>
@@ -70,7 +70,7 @@ export default function BranchHandover() {
 
         {/* Submit Button */}
         <div className="flex justify-center pt-4">
-            <Button className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-8 font-medium shadow-sm transition-all whitespace-nowrap">
+            <Button className="bg-primary hover:bg-primary/90 text-white px-8 font-medium shadow-sm transition-all whitespace-nowrap">
                 Submit
             </Button>
         </div>

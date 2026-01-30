@@ -77,8 +77,8 @@ export default function TicketDetails() {
       return (
           <div className="p-6 bg-white dark:bg-gray-900 min-h-screen space-y-6">
                <div className="flex items-center gap-2 border-b border-gray-200 dark:border-gray-800 pb-4">
-                <Settings className="w-5 h-5 text-[#0f7396]" />
-                <h1 className="text-lg font-bold text-[#0f7396] uppercase tracking-wide">IT / SUPPORT</h1>
+                <Settings className="w-5 h-5 text-primary" />
+                <h1 className="text-lg font-bold text-primary uppercase tracking-wide">IT / SUPPORT</h1>
               </div>
 
                <div className="space-y-6">
@@ -106,7 +106,7 @@ export default function TicketDetails() {
 
                        <div className="pt-4">
                          <Button 
-                            className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-8"
+                            className="bg-primary hover:bg-primary/90 text-white px-8"
                             onClick={handleUpdateStatus}
                          >
                             Submit
@@ -122,8 +122,8 @@ export default function TicketDetails() {
     <div className="p-6 bg-white dark:bg-gray-900 min-h-screen space-y-6">
       {/* Header */}
       <div className="flex items-center gap-2 border-b border-gray-200 dark:border-gray-800 pb-4">
-        <Settings className="w-5 h-5 text-[#0f7396]" />
-        <h1 className="text-lg font-bold text-[#0f7396] uppercase tracking-wide">
+        <Settings className="w-5 h-5 text-primary" />
+        <h1 className="text-lg font-bold text-primary uppercase tracking-wide">
           IT / SUPPORT
         </h1>
       </div>
@@ -171,7 +171,7 @@ export default function TicketDetails() {
         </div>
         {/* Search button logic is implicit in filters currently but a button can trigger a re-fetch if this was real API */}
          <div className="pb-0.5">
-             <Button className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white font-medium shadow-sm transition-all whitespace-nowrap h-10 w-full">
+             <Button className="bg-primary hover:bg-primary/90 text-white font-medium shadow-sm transition-all whitespace-nowrap h-10 w-full">
                     Search
             </Button>
          </div>
@@ -184,8 +184,8 @@ export default function TicketDetails() {
       {/* Table */}
        <div className="border border-gray-200 dark:border-gray-700 rounded-t-lg overflow-hidden overflow-x-auto">
         <Table>
-          <TableHeader className="bg-[#0f7396]/10 dark:bg-gray-800">
-            <TableRow className="hover:bg-[#0f7396]/10 dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
+          <TableHeader className="bg-primary/10 dark:bg-gray-800">
+            <TableRow className="hover:bg-primary/10 dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
               <TableHead className="font-bold text-gray-700 dark:text-gray-300 w-[60px]">Sr. No.</TableHead>
               <TableHead className="font-bold text-gray-700 dark:text-gray-300 w-[100px]">Date</TableHead>
               <TableHead className="font-bold text-gray-700 dark:text-gray-300">User Name</TableHead>
@@ -214,7 +214,7 @@ export default function TicketDetails() {
                 <TableCell className="dark:text-gray-300">
                     <Button 
                         onClick={() => handleSelect(row)}
-                        className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white h-8 text-xs px-4"
+                        className="bg-primary hover:bg-primary/90 text-white h-8 text-xs px-4"
                     >
                         Select
                     </Button>

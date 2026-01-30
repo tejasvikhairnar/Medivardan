@@ -79,7 +79,7 @@ export default function FinanceReconciliationPage() {
   return (
     <div className="w-full p-4 space-y-6 min-h-screen bg-white dark:bg-gray-950">
       {/* Header */}
-      <h1 className="text-xl font-bold text-[#0f7396] uppercase tracking-wide">
+      <h1 className="text-xl font-bold text-primary uppercase tracking-wide">
         FINANCE RECONCILIATIONS
       </h1>
 
@@ -144,14 +144,14 @@ export default function FinanceReconciliationPage() {
         <div className="md:col-span-3 flex gap-2">
             <Button
                 size="sm"
-                className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 h-9 rounded-md"
+                className="bg-primary hover:bg-primary/90 text-white px-6 h-9 rounded-md"
             >
                 Search
             </Button>
             <Button
                 size="sm"
                 onClick={handleClear}
-                className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 h-9 rounded-md"
+                className="bg-primary hover:bg-primary/90 text-white px-6 h-9 rounded-md"
             >
                 Clear
             </Button>
@@ -167,8 +167,8 @@ export default function FinanceReconciliationPage() {
       <div className="border border-gray-200 dark:border-gray-700 rounded-sm overflow-hidden bg-white dark:bg-gray-900 shadow-sm">
         <div className="overflow-x-auto">
             <Table>
-              <TableHeader className="bg-[#0f7396]/10 dark:bg-gray-800">
-                <TableRow className="border-b border-gray-100 dark:border-gray-700 hover:bg-[#0f7396]/10 dark:hover:bg-gray-800">
+              <TableHeader className="bg-primary/10 dark:bg-gray-800">
+                <TableRow className="border-b border-gray-100 dark:border-gray-700 hover:bg-primary/10 dark:hover:bg-gray-800">
                   <TableHead className="text-xs font-bold text-gray-700 dark:text-gray-300 h-10 w-12">Sr. No.</TableHead>
                   <TableHead className="text-xs font-bold text-gray-700 dark:text-gray-300 h-10 w-32"></TableHead> 
                   <TableHead className="text-xs font-bold text-gray-700 dark:text-gray-300 h-10">Clinic Name</TableHead>
@@ -190,7 +190,7 @@ export default function FinanceReconciliationPage() {
                       <TableCell className="py-2">
                         <Button
                             size="sm"
-                            className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white text-[10px] h-7 px-2 w-full rounded-sm"
+                            className="bg-primary hover:bg-primary/90 text-white text-[10px] h-7 px-2 w-full rounded-sm"
                         >
                             Add Reconciliations
                         </Button>

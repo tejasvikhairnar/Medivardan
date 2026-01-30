@@ -125,8 +125,8 @@ export default function Treatments() {
       return (
         <div className="p-6 bg-white dark:bg-gray-900 min-h-screen space-y-6">
              <div className="flex items-center gap-2 border-b border-gray-200 dark:border-gray-800 pb-4">
-                <Settings className="w-5 h-5 text-[#0f7396]" />
-                <h1 className="text-lg font-bold text-[#0f7396] uppercase tracking-wide">TREATMENT</h1>
+                <Settings className="w-5 h-5 text-primary" />
+                <h1 className="text-lg font-bold text-primary uppercase tracking-wide">TREATMENT</h1>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -172,8 +172,8 @@ export default function Treatments() {
                 </div>
 
                 <div className="flex gap-4">
-                     <Button type="submit" className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6">Submit</Button>
-                     <Button type="button" className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6" onClick={() => setViewMode("list")}>Cancel</Button>
+                     <Button type="submit" className="bg-primary hover:bg-primary/90 text-white px-6">Submit</Button>
+                     <Button type="button" className="bg-primary hover:bg-primary/90 text-white px-6" onClick={() => setViewMode("list")}>Cancel</Button>
                 </div>
             </form>
         </div>
@@ -184,8 +184,8 @@ export default function Treatments() {
     <div className="p-6 bg-white dark:bg-gray-900 min-h-screen space-y-6">
       {/* Header */}
       <div className="flex items-center gap-2 border-b border-gray-200 dark:border-gray-800 pb-4">
-        <Settings className="w-5 h-5 text-[#0f7396]" />
-        <h1 className="text-lg font-bold text-[#0f7396] uppercase tracking-wide">
+        <Settings className="w-5 h-5 text-primary" />
+        <h1 className="text-lg font-bold text-primary uppercase tracking-wide">
           TREATMENT
         </h1>
       </div>
@@ -199,12 +199,12 @@ export default function Treatments() {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 flex-1"
             />
-             <Button className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap">
+             <Button className="bg-primary hover:bg-primary/90 text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap">
                 Search
             </Button>
             <Button 
                 onClick={handleAddNew}
-                className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap"
+                className="bg-primary hover:bg-primary/90 text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap"
             >
                 Add New
             </Button>
@@ -218,8 +218,8 @@ export default function Treatments() {
       {/* Table */}
        <div className="border border-gray-200 dark:border-gray-700 rounded-t-lg overflow-hidden overflow-x-auto">
         <Table>
-          <TableHeader className="bg-[#0f7396]/10 dark:bg-gray-800">
-            <TableRow className="hover:bg-[#0f7396]/10 dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
+          <TableHeader className="bg-primary/10 dark:bg-gray-800">
+            <TableRow className="hover:bg-primary/10 dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
               <TableHead className="font-bold text-gray-700 dark:text-gray-300 w-[60px]">Sr. No.</TableHead>
               <TableHead className="font-bold text-gray-700 dark:text-gray-300">Treatment Name</TableHead>
               <TableHead className="font-bold text-gray-700 dark:text-gray-300">Cost</TableHead>

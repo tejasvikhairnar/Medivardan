@@ -15,6 +15,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Settings, Home, Plus, Trash2, FileSpreadsheet } from "lucide-react"
 import Link from "next/link"
 import CustomPagination from "@/components/ui/custom-pagination"
+import { PageHeader } from "@/components/shared/PageHeader"
 
 export default function AreaManagerLeadsPage() {
   const [searchTerm, setSearchTerm] = useState("")
@@ -67,14 +68,10 @@ export default function AreaManagerLeadsPage() {
       </div>
 
       {/* Header */}
-      <div className="flex items-center gap-3 pb-2">
-        <div className="w-8 h-8 rounded-full bg-teal-50 dark:bg-teal-900/20 flex items-center justify-center border border-teal-100 dark:border-teal-800">
-          <Settings className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-        </div>
-        <h1 className="text-xl font-bold text-teal-700 dark:text-teal-400 uppercase tracking-tight">
-          AREA MANAGER LEADS
-        </h1>
-      </div>
+      <PageHeader 
+        title="AREA MANAGER LEADS" 
+        icon={Settings} 
+      />
 
       {/* Filter & Action Section */}
       <Card className="border-none shadow-sm bg-white dark:bg-slate-900">
@@ -86,19 +83,19 @@ export default function AreaManagerLeadsPage() {
                         placeholder="Area Manager Name" 
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="bg-white dark:bg-slate-950 border-gray-200 dark:border-slate-800 dark:text-gray-200"
+                        className="bg-white dark:bg-slate-950 border-gray-200 dark:border-slate-800 dark:text-gray-200 h-10 w-full"
                     />
                 </div>
                 <div className="flex gap-2 w-full md:w-auto">
                     <Button 
                         onClick={handleSearch}
-                        className="bg-teal-600 hover:bg-teal-700 text-white min-w-[100px] dark:bg-teal-600 dark:hover:bg-teal-500"
+                        className="bg-[#0f7396] hover:bg-[#0f7396]/90 text-white min-w-[100px] h-10"
                     >
                         Search
                     </Button>
                     <Button 
                         onClick={handleAddNew}
-                        className="bg-blue-600 hover:bg-blue-700 text-white min-w-[100px] dark:bg-blue-600 dark:hover:bg-blue-500"
+                        className="bg-[#0f7396] hover:bg-[#0f7396]/90 text-white min-w-[100px] h-10"
                     >
                         Add New
                     </Button>
@@ -116,11 +113,11 @@ export default function AreaManagerLeadsPage() {
       {/* Results Table */}
       <div className="rounded-md border dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm overflow-hidden flex flex-col">
         <Table>
-          <TableHeader className="bg-teal-50 dark:bg-teal-950/30">
+          <TableHeader className="bg-[#0f7396]/10 dark:bg-[#0f7396]/20">
             <TableRow className="dark:border-slate-800">
-              <TableHead className="w-[80px] font-bold text-teal-900 dark:text-teal-100 border-r border-teal-100/50 dark:border-teal-900/30">Sr No.</TableHead>
-              <TableHead className="font-bold text-teal-900 dark:text-teal-100 border-r border-teal-100/50 dark:border-teal-900/30">Area Manager</TableHead>
-              <TableHead className="w-[80px] font-bold text-teal-900 dark:text-teal-100 text-center">#</TableHead>
+              <TableHead className="w-[80px] font-bold text-[#0f7396] dark:text-[#0f7396] border-r border-[#0f7396]/20">Sr No.</TableHead>
+              <TableHead className="font-bold text-[#0f7396] dark:text-[#0f7396] border-r border-[#0f7396]/20">Area Manager</TableHead>
+              <TableHead className="w-[80px] font-bold text-[#0f7396] dark:text-[#0f7396] text-center">#</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -141,7 +138,7 @@ export default function AreaManagerLeadsPage() {
                     <Button 
                         variant="ghost" 
                         size="icon" 
-                        className="h-8 w-8 text-gray-500 hover:text-[#0f7396] hover:bg-[#0f7396]/10 dark:text-gray-400 dark:hover:bg-red-900/20"
+                        className="h-8 w-8 text-gray-500 hover:text-primary hover:bg-primary/10 dark:text-gray-400 dark:hover:bg-red-900/20"
                         onClick={() => handleDelete(item.srNo)}
                     >
                         <Trash2 className="w-4 h-4" />

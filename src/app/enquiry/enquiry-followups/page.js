@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { getLeads } from "@/api/client/leads";
+import { getLeads } from "@/api/leads";
 import { Pagination } from "@/components/Pagination";
 
 
@@ -24,9 +24,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Settings, Phone, MessageSquare, Eye, Loader2, UserPlus } from "lucide-react";
+import { Settings, Phone, MessageSquare, Eye, Loader2, UserPlus, RotateCcw, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Virtuoso } from "react-virtuoso";
+import { PageHeader } from "@/components/shared/PageHeader";
 
 export default function EnquiryFollowupsPage() {
   const router = useRouter();
@@ -34,14 +35,12 @@ export default function EnquiryFollowupsPage() {
   const [filters, setFilters] = useState({
     visitorName: "",
     mobileNo: "",
-    source: "",
-    receivedBy: "",
     fromDate: "",
     toDate: "",
   });
   const [followups, setFollowups] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(20); // Show 20 items per page
+  const [itemsPerPage] = useState(10); // Show 10 items per page
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -54,12 +53,13 @@ export default function EnquiryFollowupsPage() {
     setIsLoading(true);
     setError(null);
     try {
-      const data = await getLeads({ PageSize: 20, PageNumber: pageNumber, ...filters });
+      const data = await getLeads({ PageSize: 10, PageNumber: pageNumber, ...filters });
       console.log('Fetched leads data:', data);
+
 
       // Transform API data to followup format
       const transformedData = Array.isArray(data) ? data.map((lead, index) => ({
-        srNo: index + 1,
+        srNo: ((pageNumber - 1) * 10) + index + 1,
         visitorName: `${lead.firstName || lead.FirstName || ''} ${lead.lastName || lead.LastName || ''}`.trim(),
         mobileNo: lead.mobile || lead.PhoneNo1 || '',
         enquiryDate: formatDate(lead.enquiryDate || lead.LeadDate),
@@ -136,6 +136,19 @@ export default function EnquiryFollowupsPage() {
     fetchFollowups();
   };
 
+  const clearFilters = () => {
+    setFilters({
+      visitorName: "",
+      mobileNo: "",
+      fromDate: "",
+      toDate: "",
+    });
+    setDateFilterType("enquiryDate");
+    // Optionally fetch immediately or wait for user to click Search
+    // The Lead page fetches immediately, let's do that for consistency
+    fetchFollowups(1); 
+  };
+
   // Helper functions for data transformation
   const formatDate = (dateString) => {
     if (!dateString) return '';
@@ -180,12 +193,6 @@ export default function EnquiryFollowupsPage() {
       return false;
     }
     if (filters.mobileNo && !followup.mobileNo.includes(filters.mobileNo)) {
-      return false;
-    }
-    if (filters.source && filters.source !== 'all' && followup.sourceType.toLowerCase() !== filters.source.toLowerCase()) {
-      return false;
-    }
-    if (filters.receivedBy && filters.receivedBy !== 'all' && followup.assignedToDoctor !== filters.receivedBy) {
       return false;
     }
     return true;
@@ -235,128 +242,89 @@ export default function EnquiryFollowupsPage() {
 
   return (
     <div className="w-full p-6 space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
-          <Settings className="w-4 h-4 text-[#0f7396]" />
-        </div>
-        <h1 className="text-xl font-bold text-[#0f7396] dark:text-[#0f7396]">
-          FOLLOWUP DETAILS
-        </h1>
-      </div>
+      <PageHeader 
+        title="FOLLOWUP DETAILS" 
+        icon={Settings} 
+      />
 
-      {/* Filters Card */}
-      <Card className="border-gray-200 dark:border-gray-800">
+      {/* Filter Section - Standardized Layout */}
+      <Card className="border-2 border-primary/10 dark:border-gray-800 shadow-sm">
         <CardContent className="p-6">
-          <div className="space-y-4">
-            {/* First Row - Text Filters */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div>
-                <Input
-                  placeholder="Visitor Name"
-                  value={filters.visitorName}
-                  onChange={(e) => handleFilterChange("visitorName", e.target.value)}
-                  className="border-gray-300 dark:border-gray-700"
-                />
-              </div>
-              <div>
-                <Input
-                  placeholder="Mobile No."
-                  value={filters.mobileNo}
-                  onChange={(e) => handleFilterChange("mobileNo", e.target.value)}
-                  className="border-gray-300 dark:border-gray-700"
-                />
-              </div>
-              <div>
-                <Select
-                  value={filters.source}
-                  onValueChange={(value) => handleFilterChange("source", value)}
-                >
-                  <SelectTrigger className="border-gray-300 dark:border-gray-700">
-                    <SelectValue placeholder="--- Select Source ---" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Sources</SelectItem>
-                    <SelectItem value="walk-in">Walk-In</SelectItem>
-                    <SelectItem value="reference">Reference</SelectItem>
-                    <SelectItem value="google">Google</SelectItem>
-                    <SelectItem value="facebook">Facebook</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Select
-                  value={filters.receivedBy}
-                  onValueChange={(value) => handleFilterChange("receivedBy", value)}
-                >
-                  <SelectTrigger className="border-gray-300 dark:border-gray-700">
-                    <SelectValue placeholder="--- Select Recieved by---" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All</SelectItem>
-                    <SelectItem value="doctor1">Dr. MADHU PAWAR</SelectItem>
-                    <SelectItem value="doctor2">Dr. pooja kumari</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 items-end">
+             {/* Visitor Name */}
+             <div className="space-y-2">
+                <Label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Visitor Name</Label>
+                <div className="relative">
+                    <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+                    <Input
+                        placeholder="Search Name"
+                        value={filters.visitorName}
+                        onChange={(e) => handleFilterChange("visitorName", e.target.value)}
+                        className="pl-9 bg-white dark:bg-gray-800 h-10"
+                    />
+                </div>
+             </div>
 
-            {/* Second Row - Date Filters */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
-              {/* Radio Group for Date Type */}
-              <div className="md:col-span-3">
+             {/* Mobile */}
+             <div className="space-y-2">
+                <Label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Mobile No</Label>
+                <Input
+                    placeholder="Search Mobile"
+                    value={filters.mobileNo}
+                    onChange={(e) => handleFilterChange("mobileNo", e.target.value)}
+                    className="bg-white dark:bg-gray-800 h-10"
+                />
+             </div>
+             
+             {/* Date Filter Type - Row 2 */}
+             <div className="space-y-2">
+                <Label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Date Type</Label>
                 <RadioGroup
                   value={dateFilterType}
                   onValueChange={setDateFilterType}
-                  className="flex gap-4"
+                  className="flex gap-4 h-10 items-center"
                 >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="enquiryDate" id="enquiryDate" />
-                    <Label htmlFor="enquiryDate" className="cursor-pointer font-normal">
-                      Enquiry Date
-                    </Label>
+                    <Label htmlFor="enquiryDate" className="cursor-pointer font-normal">Enquiry</Label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="followupDate" id="followupDate" />
-                    <Label htmlFor="followupDate" className="cursor-pointer font-normal">
-                      Followup Date
-                    </Label>
+                    <Label htmlFor="followupDate" className="cursor-pointer font-normal">Followup</Label>
                   </div>
                 </RadioGroup>
-              </div>
+             </div>
 
-              {/* From Date */}
-              <div className="md:col-span-3">
+             {/* From Date */}
+             <div className="space-y-2">
+                <Label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">From Date</Label>
                 <Input
-                  type="date"
-                  placeholder="From Enquiry Date"
-                  value={filters.fromDate}
-                  onChange={(e) => handleFilterChange("fromDate", e.target.value)}
-                  className="border-gray-300 dark:border-gray-700"
+                    type="date"
+                    value={filters.fromDate}
+                    onChange={(e) => handleFilterChange("fromDate", e.target.value)}
+                    className="bg-white dark:bg-gray-800 h-10"
                 />
-              </div>
+             </div>
 
-              {/* To Date */}
-              <div className="md:col-span-3">
+             {/* To Date */}
+             <div className="space-y-2">
+                <Label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">To Date</Label>
                 <Input
-                  type="date"
-                  placeholder="To Enquiry Date"
-                  value={filters.toDate}
-                  onChange={(e) => handleFilterChange("toDate", e.target.value)}
-                  className="border-gray-300 dark:border-gray-700"
+                    type="date"
+                    value={filters.toDate}
+                    onChange={(e) => handleFilterChange("toDate", e.target.value)}
+                    className="bg-white dark:bg-gray-800 h-10"
                 />
-              </div>
+             </div>
+          </div>
 
-              {/* Search Button */}
-              <div className="md:col-span-3">
-                <Button
-                  onClick={handleSearch}
-                  className="w-full bg-[#0f7396] hover:bg-[#0b5c7a] text-white"
-                >
-                  Search
-                </Button>
-              </div>
-            </div>
+          <div className="flex justify-start items-center mt-6 pt-4 border-t border-gray-100 dark:border-gray-800 gap-3">
+             <Button onClick={handleSearch} className="bg-[#0f7396] hover:bg-[#0f7396]/90 text-white min-w-[100px] h-10">
+                <Search className="w-4 h-4 mr-2" /> Search
+             </Button>
+             <Button onClick={clearFilters} variant="outline" className="text-gray-600 h-10">
+                <RotateCcw className="w-4 h-4 mr-2" /> Clear
+             </Button>
           </div>
         </CardContent>
       </Card>
@@ -366,7 +334,7 @@ export default function EnquiryFollowupsPage() {
         <Card className="border-gray-200 dark:border-gray-800">
           <CardContent className="p-8">
             <div className="flex items-center justify-center gap-3">
-              <Loader2 className="w-6 h-6 animate-spin text-[#0f7396]" />
+              <Loader2 className="w-6 h-6 animate-spin text-primary" />
               <p className="text-gray-600 dark:text-gray-400">Loading followups...</p>
             </div>
           </CardContent>
@@ -382,7 +350,7 @@ export default function EnquiryFollowupsPage() {
               <p className="text-gray-600 dark:text-gray-400">{error}</p>
               <Button
                 onClick={fetchFollowups}
-                className="mt-4 bg-[#0f7396] hover:bg-[#0b5c7a] text-white"
+                className="mt-4 bg-primary hover:bg-primary/90 text-white"
               >
                 Try Again
               </Button>
@@ -412,7 +380,7 @@ export default function EnquiryFollowupsPage() {
                 <CardContent className="p-0">
                   <div className="grid grid-cols-1 lg:grid-cols-12">
                     {/* Sr. No. Column */}
-                    <div className="lg:col-span-1 bg-green-50 dark:bg-green-900/20 p-4 flex items-center justify-center border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-gray-700">
+                    <div className="lg:col-span-1 bg-[#0f7396]/10 dark:bg-[#0f7396]/20 p-4 flex items-center justify-center border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-gray-700">
                       <div className="text-center">
                         <div className="text-xs text-gray-500 dark:text-gray-400 font-semibold mb-1">
                           Sr. No.
@@ -425,7 +393,7 @@ export default function EnquiryFollowupsPage() {
 
                     {/* Enquiry Details Table */}
                     <div className="lg:col-span-8 p-4">
-                      <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 bg-green-50 dark:bg-green-900/20 px-3 py-2 rounded">
+                      <h3 className="text-sm font-semibold text-[#0f7396] dark:text-[#0f7396] mb-3 bg-[#0f7396]/10 dark:bg-[#0f7396]/20 px-3 py-2 rounded">
                         Enquiry Details
                       </h3>
                       <Table>
@@ -561,7 +529,7 @@ export default function EnquiryFollowupsPage() {
                         <Button
                           size="sm"
                           variant="outline"
-                          className="border-green-500 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20"
+                          className="border-[#0f7396] text-[#0f7396] hover:bg-[#0f7396]/10 dark:hover:bg-[#0f7396]/20"
                           onClick={() => handleView(followup)}
                           title="View details"
                         >

@@ -129,9 +129,9 @@ const EnquirySettingsPage = () => {
       {/* Header */}
       <div className="flex items-center gap-3">
         <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
-          <Settings className="w-4 h-4 text-[#0f7396] dark:text-[#0f7396]" />
+          <Settings className="w-4 h-4 text-primary dark:text-primary" />
         </div>
-        <h1 className="text-xl font-bold text-[#0f7396] dark:text-[#0f7396]">
+        <h1 className="text-xl font-bold text-primary dark:text-primary">
           ENQUIRY SOURCE
         </h1>
       </div>
@@ -152,7 +152,7 @@ const EnquirySettingsPage = () => {
                  />
                </div>
               <Button 
-                className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white dark:bg-[#0f7396] dark:hover:bg-[#0b5c7a]"
+                className="bg-primary hover:bg-primary/90 text-white dark:bg-primary dark:hover:bg-primary/90"
                 onClick={handleSearch}
               >
                 Search

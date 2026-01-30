@@ -23,9 +23,7 @@ const DOCTOR_TYPE_MAP = {
 };
 
 /**
- * Transform form data to API format
- * @param {Object} formData - Form data from the UI
- * @returns {Object} Transformed data for API
+ * Speciality ID Mapping
  */
 const SPECIALITY_ID_MAP = {
   generalDentist: 1,
@@ -45,9 +43,13 @@ const SPECIALITY_ID_MAP = {
  * @param {Object} formData - Form data from the UI
  * @returns {Object} Transformed data for API
  */
+/**
+ * Transform form data to API format
+ * @param {Object} formData - Form data from the UI
+ * @returns {Object} Transformed data for API
+ */
 export const transformFormDataToAPI = (formData) => {
   console.log("Transformer received keys:", Object.keys(formData));
-  console.log("Transformer check mobile:", formData.mobileNo1, "indemnity:", formData.indemnityPolicyNo);
   
   const isUpdate = formData.doctorID && formData.doctorID > 0;
   
@@ -55,8 +57,8 @@ export const transformFormDataToAPI = (formData) => {
     // Mode and IDs
     mode: isUpdate ? 2 : 1, // 1 for Add, 2 for Update
     doctorID: formData.doctorID || 0, 
-    clinicID: formData.clinicName ? (CLINIC_ID_MAP[formData.clinicName] || 1) : 1, 
-    doctorTypeID: (formData.doctorType && DOCTOR_TYPE_MAP[formData.doctorType]) ? DOCTOR_TYPE_MAP[formData.doctorType] : 1,
+    clinicID: formData.clinicID ? parseInt(formData.clinicID) : 1, 
+    doctorTypeID: formData.doctorTypeID ? parseInt(formData.doctorTypeID) : 1,
 
     // Personal Information
     firstName: formData.firstName || "",
@@ -65,6 +67,7 @@ export const transformFormDataToAPI = (formData) => {
     gender: formData.gender || "male",
     dob: formData.dateOfBirth ? new Date(formData.dateOfBirth).toISOString() : new Date("1990-01-01").toISOString(),
     bloodGroup: formData.bloodGroup || "",
+    title: formData.title || "Dr.",
 
     // Contact Information
     mobile1: formData.mobileNo1 || "",
@@ -80,14 +83,13 @@ export const transformFormDataToAPI = (formData) => {
     stateID: null,
     countryID: null,
     locationID: null, 
+    country: formData.country,
+    state: formData.state,
+    city: formData.city,
 
     // Medical Information
-    specialityID: (() => {
-      const selectedKey = Object.keys(formData.specialities || {}).find(key => formData.specialities[key]);
-      const id = selectedKey ? (SPECIALITY_ID_MAP[selectedKey] || 1) : 1;
-      return null; // Try sending null as it matches DB state
-    })(),
-    basicDegree: formData.currentEducation?.degree || "BDS", 
+    specialityID: formData.specialityID ? parseInt(formData.specialityID) : 1,
+    basicDegree: formData.currentEducation?.degree || formData.basicDegree || "BDS", 
     degreeUpload1: formData.degreeUpload1 || "",
     degreeUpload2: formData.degreeUpload2 || "",
     
@@ -98,16 +100,16 @@ export const transformFormDataToAPI = (formData) => {
     panCardImageUrl: formData.panCardImageUrl || "",
     adharCardNo: formData.adharCardNo || "",
     adharCardImageUrl: formData.adharCardImageUrl || "", 
-    identityPolicyNo: formData.indemnityPolicyNo || "",
+    identityPolicyNo: formData.identityPolicyNo || formData.indemnityPolicyNo || "",
     identityPolicyImageUrl: formData.identityPolicyImageUrl || "",
     profileImageUrl: formData.profileImageUrl || "",
 
     // Work Information
-    inTime: formData.inTime ? `${formData.inTime}:00` : "09:00:00", 
-    outTime: formData.outTime ? `${formData.outTime}:00` : "18:00:00", 
+    inTime: formData.inTime ? (formData.inTime.includes(':') && formData.inTime.length === 5 ? `${formData.inTime}:00` : formData.inTime) : "09:00:00", 
+    outTime: formData.outTime ? (formData.outTime.includes(':') && formData.outTime.length === 5 ? `${formData.outTime}:00` : formData.outTime) : "18:00:00", 
     regDate: formData.date ? new Date(formData.date).toISOString() : new Date().toISOString(), 
     
-    // User credentials 
+    // User credentials (Todo: Should be dynamic)
     userName: formData.email || "", 
     password: "Password@123", 
     roleID: 2, 
@@ -136,11 +138,13 @@ export const transformAPIDoctorToDisplay = (apiDoctor) => {
   return {
     srNo: apiDoctor.srNo || apiDoctor.doctorID || apiDoctor.DoctorID,
     doctorID: apiDoctor.doctorID || apiDoctor.DoctorID,
-    photo: apiDoctor.profilePhoto || "/placeholder-doctor.png",
+    photo: apiDoctor.profilePhoto || apiDoctor.profileImageUrl || "/placeholder-doctor.png",
     name: `${apiDoctor.title || ''} ${apiDoctor.firstName || ''} ${apiDoctor.lastName || ''}`.trim(),
-    mobileNo: apiDoctor.mobile1 || apiDoctor.mobileNo || apiDoctor.MobileNo || apiDoctor.phoneNo1 || apiDoctor.PhoneNo1 || apiDoctor.phoneNo || '',
-    emailId: apiDoctor.email || apiDoctor.emailID || apiDoctor.EmailID || apiDoctor.emailid || apiDoctor.Emailid || '',
-    regDate: formatDate(apiDoctor.regDate || apiDoctor.createdDate || apiDoctor.registrationDate || apiDoctor.RegistrationDate),
+    mobileNo: apiDoctor.mobile1 || apiDoctor.mobileNo || apiDoctor.MobileNo || apiDoctor.phoneNo1 || '',
+    emailId: apiDoctor.email || apiDoctor.emailID || apiDoctor.EmailID || '',
+    regDate: formatDate(apiDoctor.regDate || apiDoctor.createdDate),
+    clinicID: apiDoctor.clinicID || apiDoctor.ClinicID,
+    clinicName: apiDoctor.clinicName || apiDoctor.ClinicName || "Unknown",
   };
 };
 
@@ -164,13 +168,10 @@ export const normalizeDoctorData = (doctor) => {
     clinicName: doctor.clinicName || doctor.ClinicName,
     firstName: doctor.firstName || doctor.FirstName,
     lastName: doctor.lastName || doctor.LastName,
-    mobileNo: doctor.mobileNo || doctor.MobileNo || doctor.phoneNo1,
-    MobileNo: doctor.mobileNo || doctor.MobileNo || doctor.phoneNo1,
-    emailID: doctor.emailID || doctor.EmailID || doctor.emailid,
-    EmailID: doctor.emailID || doctor.EmailID || doctor.emailid,
-    profilePhoto: doctor.profilePhoto || doctor.ProfilePhoto,
+    mobileNo: doctor.mobileNo || doctor.MobileNo || doctor.phoneNo1 || doctor.mobile1,
+    emailID: doctor.emailID || doctor.EmailID || doctor.email,
+    profilePhoto: doctor.profilePhoto || doctor.ProfilePhoto || doctor.profileImageUrl,
     registrationDate: doctor.registrationDate || doctor.RegistrationDate || doctor.regDate,
-    RegistrationDate: doctor.registrationDate || doctor.RegistrationDate || doctor.regDate,
     ...doctor,
   };
 };
@@ -182,33 +183,6 @@ export const normalizeDoctorData = (doctor) => {
  */
 export const transformAPItoForm = (apiDoctor) => {
   if (!apiDoctor) return null;
-
-  // Reverse Maps
-  const CLINIC_NAME_MAP = {
-    1: 'panvel',
-    2: 'pune',
-    3: 'mumbai',
-    4: 'nashik',
-  };
-
-  const DOCTOR_TYPE_NAME_MAP = {
-    1: 'full-time',
-    2: 'part-time',
-    3: 'visiting',
-  };
-
-  const SPECIALITY_NAME_MAP = {
-    1: 'generalDentist',
-    2: 'orthodontics',
-    3: 'periodontics',
-    4: 'prosthodontics',
-    5: 'endodontics',
-    6: 'pedodontics',
-    7: 'oralMaxillofacial',
-    8: 'oralPathology',
-    9: 'conservativeDentist',
-    10: 'asthesticDentist',
-  };
 
   // Safe date helper
   const toISODate = (dateStr) => {
@@ -223,7 +197,7 @@ export const transformAPItoForm = (apiDoctor) => {
   // Safe time helper (HH:MM)
   const toTime = (timeStr) => {
     if (!timeStr) return "";
-    // If it's full ISO string
+    // If it's full ISO string or contains T
     if (timeStr.includes('T')) {
        const date = new Date(timeStr);
        const hours = String(date.getHours()).padStart(2, '0');
@@ -240,8 +214,8 @@ export const transformAPItoForm = (apiDoctor) => {
 
   return {
     doctorID: apiDoctor.doctorID || apiDoctor.DoctorID || 0,
-    clinicName: CLINIC_NAME_MAP[apiDoctor.clinicID] || 'panvel',
-    doctorType: DOCTOR_TYPE_NAME_MAP[apiDoctor.doctorTypeID] || 'full-time',
+    clinicID: apiDoctor.clinicID || apiDoctor.ClinicID || "",
+    doctorTypeID: apiDoctor.doctorTypeID || apiDoctor.DoctorTypeID || "",
     date: toISODate(apiDoctor.createdDate),
 
     // Personal
@@ -252,11 +226,11 @@ export const transformAPItoForm = (apiDoctor) => {
     gender: apiDoctor.gender ? apiDoctor.gender.toLowerCase() : "male",
     addressLine1: apiDoctor.residential_Address || apiDoctor.line1 || "",
     addressLine2: apiDoctor.line2 || "",
-    country: "India", // Default or map if available
-    state: "Maharashtra", // Default
-    city: "Mumbai", // Default
+    country: apiDoctor.country || "India", 
+    state: apiDoctor.state || "Maharashtra", 
+    city: apiDoctor.city || "Mumbai", 
     areaPin: apiDoctor.areaPin || "",
-    mobileNo1: apiDoctor.mobile1 || "",
+    mobileNo1: apiDoctor.mobile1 || apiDoctor.mobileNo || "",
     mobileNo2: apiDoctor.mobile2 || "",
     email: apiDoctor.email || "",
     bloodGroup: apiDoctor.bloodGroup || "",
@@ -264,31 +238,19 @@ export const transformAPItoForm = (apiDoctor) => {
     outTime: toTime(apiDoctor.outTime),
 
     // Education
-    educationList: [], // Complex to map back if not in response, leave empty for now
+    educationList: [], 
     currentEducation: {
       degree: apiDoctor.basicDegree || "",
       board: "",
       upload: null,
     },
 
-    // Speciality
-    specialities: {
-      asthesticDentist: false,
-      generalDentist: false,
-      orthodontics: false,
-      periodontics: false,
-      conservativeDentist: false,
-      oralMaxillofacial: false,
-      pedodontics: false,
-      prosthodontics: false,
-      endodontics: false,
-      oralPathology: false,
-      [SPECIALITY_NAME_MAP[apiDoctor.specialityID]]: true, // Set the primary one
-    },
+    // Speciality - mapped to single ID now
+    specialityID: apiDoctor.specialityID || apiDoctor.SpecialityID || "",
 
     // Documents (URLs)
-    profilePhoto: null, // Files can't be set from URL
-    profileImageUrl: apiDoctor.profileImageUrl, // Keep URL to show preview
+    profilePhoto: null, 
+    profileImageUrl: apiDoctor.profileImageUrl, 
     
     adharCardNo: apiDoctor.adharCardNo || "",
     adharCardImage: null,

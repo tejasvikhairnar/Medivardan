@@ -14,6 +14,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Settings, Home, Plus } from "lucide-react"
 import Link from "next/link"
 import CustomPagination from "@/components/ui/custom-pagination"
+import { PageHeader } from "@/components/shared/PageHeader"
 
 export default function UploadLeadsPage() {
   // Dummy data
@@ -115,14 +116,10 @@ export default function UploadLeadsPage() {
       </div>
 
       {/* Header */}
-      <div className="flex items-center gap-3 pb-2">
-        <div className="w-8 h-8 rounded-full bg-teal-50 dark:bg-teal-900/20 flex items-center justify-center border border-teal-100 dark:border-teal-800">
-          <Settings className="w-4 h-4 text-teal-600 dark:text-teal-400" />
-        </div>
-        <h1 className="text-xl font-bold text-teal-700 dark:text-teal-400 uppercase tracking-tight">
-          LEADS
-        </h1>
-      </div>
+      <PageHeader 
+        title="LEADS" 
+        icon={Settings} 
+      />
 
       {/* Action Section */}
       <div className="bg-white dark:bg-slate-900 p-4 rounded-md shadow-sm border border-gray-100 dark:border-slate-800 flex items-center">
@@ -140,31 +137,31 @@ export default function UploadLeadsPage() {
         {/* We need horizontal scroll for this table due to many columns */}
         <div className="overflow-x-auto">
             <Table style={{ minWidth: '2500px' }}>
-            <TableHeader className="bg-teal-50 dark:bg-teal-950/30">
+            <TableHeader className="bg-[#0f7396]/10 dark:bg-[#0f7396]/20">
                 <TableRow className="dark:border-slate-800">
-                <TableHead className="w-[50px] font-bold text-teal-900 dark:text-teal-100 border-r border-teal-100/50 dark:border-teal-900/30">Sr. No.</TableHead>
-                <TableHead className="font-bold text-teal-900 dark:text-teal-100 w-[100px] border-r border-teal-100/50 dark:border-teal-900/30">Enquiry Date</TableHead>
-                <TableHead className="font-bold text-teal-900 dark:text-teal-100 w-[120px] border-r border-teal-100/50 dark:border-teal-900/30">Name</TableHead>
-                <TableHead className="font-bold text-teal-900 dark:text-teal-100 w-[150px] border-r border-teal-100/50 dark:border-teal-900/30">Ad Id</TableHead>
-                <TableHead className="font-bold text-teal-900 dark:text-teal-100 w-[120px] border-r border-teal-100/50 dark:border-teal-900/30">Ad Name</TableHead>
-                <TableHead className="font-bold text-teal-900 dark:text-teal-100 w-[150px] border-r border-teal-100/50 dark:border-teal-900/30">Ad Set Id</TableHead>
-                <TableHead className="font-bold text-teal-900 dark:text-teal-100 w-[150px] border-r border-teal-100/50 dark:border-teal-900/30">Ad Set Name</TableHead>
-                <TableHead className="font-bold text-teal-900 dark:text-teal-100 w-[200px] border-r border-teal-100/50 dark:border-teal-900/30">Campaign Name</TableHead>
-                <TableHead className="font-bold text-teal-900 dark:text-teal-100 w-[150px] border-r border-teal-100/50 dark:border-teal-900/30">Form Id</TableHead>
-                <TableHead className="font-bold text-teal-900 dark:text-teal-100 w-[150px] border-r border-teal-100/50 dark:border-teal-900/30">Form Name</TableHead>
-                <TableHead className="font-bold text-teal-900 dark:text-teal-100 w-[80px] border-r border-teal-100/50 dark:border-teal-900/30">Is Organic</TableHead>
-                <TableHead className="font-bold text-teal-900 dark:text-teal-100 w-[80px] border-r border-teal-100/50 dark:border-teal-900/30">Plat Form</TableHead>
-                <TableHead className="font-bold text-teal-900 dark:text-teal-100 w-[200px] border-r border-teal-100/50 dark:border-teal-900/30">Email Id</TableHead>
+                <TableHead className="w-[50px] font-bold text-[#0f7396] dark:text-[#0f7396] border-r border-[#0f7396]/20">Sr. No.</TableHead>
+                <TableHead className="font-bold text-[#0f7396] dark:text-[#0f7396] w-[100px] border-r border-[#0f7396]/20">Enquiry Date</TableHead>
+                <TableHead className="font-bold text-[#0f7396] dark:text-[#0f7396] w-[120px] border-r border-[#0f7396]/20">Name</TableHead>
+                <TableHead className="font-bold text-[#0f7396] dark:text-[#0f7396] w-[150px] border-r border-[#0f7396]/20">Ad Id</TableHead>
+                <TableHead className="font-bold text-[#0f7396] dark:text-[#0f7396] w-[120px] border-r border-[#0f7396]/20">Ad Name</TableHead>
+                <TableHead className="font-bold text-[#0f7396] dark:text-[#0f7396] w-[150px] border-r border-[#0f7396]/20">Ad Set Id</TableHead>
+                <TableHead className="font-bold text-[#0f7396] dark:text-[#0f7396] w-[150px] border-r border-[#0f7396]/20">Ad Set Name</TableHead>
+                <TableHead className="font-bold text-[#0f7396] dark:text-[#0f7396] w-[200px] border-r border-[#0f7396]/20">Campaign Name</TableHead>
+                <TableHead className="font-bold text-[#0f7396] dark:text-[#0f7396] w-[150px] border-r border-[#0f7396]/20">Form Id</TableHead>
+                <TableHead className="font-bold text-[#0f7396] dark:text-[#0f7396] w-[150px] border-r border-[#0f7396]/20">Form Name</TableHead>
+                <TableHead className="font-bold text-[#0f7396] dark:text-[#0f7396] w-[80px] border-r border-[#0f7396]/20">Is Organic</TableHead>
+                <TableHead className="font-bold text-[#0f7396] dark:text-[#0f7396] w-[80px] border-r border-[#0f7396]/20">Plat Form</TableHead>
+                <TableHead className="font-bold text-[#0f7396] dark:text-[#0f7396] w-[200px] border-r border-[#0f7396]/20">Email Id</TableHead>
                 
                 {/* New Columns */}
-                <TableHead className="font-bold text-teal-900 dark:text-teal-100 w-[120px] border-r border-teal-100/50 dark:border-teal-900/30">Mobile</TableHead>
-                <TableHead className="font-bold text-teal-900 dark:text-teal-100 w-[120px] border-r border-teal-100/50 dark:border-teal-900/30">City Name</TableHead>
-                <TableHead className="font-bold text-teal-900 dark:text-teal-100 w-[100px] border-r border-teal-100/50 dark:border-teal-900/30">Post Code</TableHead>
-                <TableHead className="font-bold text-teal-900 dark:text-teal-100 w-[120px] border-r border-teal-100/50 dark:border-teal-900/30">Retailer Item Id</TableHead>
-                <TableHead className="font-bold text-teal-900 dark:text-teal-100 w-[150px] border-r border-teal-100/50 dark:border-teal-900/30">Region</TableHead>
-                <TableHead className="font-bold text-teal-900 dark:text-teal-100 w-[150px] border-r border-teal-100/50 dark:border-teal-900/30">Clinic Name</TableHead>
-                <TableHead className="font-bold text-teal-900 dark:text-teal-100 w-[100px] border-r border-teal-100/50 dark:border-teal-900/30">Status</TableHead>
-                <TableHead className="font-bold text-teal-900 dark:text-teal-100 w-[100px]">lblClinic</TableHead>
+                <TableHead className="font-bold text-[#0f7396] dark:text-[#0f7396] w-[120px] border-r border-[#0f7396]/20">Mobile</TableHead>
+                <TableHead className="font-bold text-[#0f7396] dark:text-[#0f7396] w-[120px] border-r border-[#0f7396]/20">City Name</TableHead>
+                <TableHead className="font-bold text-[#0f7396] dark:text-[#0f7396] w-[100px] border-r border-[#0f7396]/20">Post Code</TableHead>
+                <TableHead className="font-bold text-[#0f7396] dark:text-[#0f7396] w-[120px] border-r border-[#0f7396]/20">Retailer Item Id</TableHead>
+                <TableHead className="font-bold text-[#0f7396] dark:text-[#0f7396] w-[150px] border-r border-[#0f7396]/20">Region</TableHead>
+                <TableHead className="font-bold text-[#0f7396] dark:text-[#0f7396] w-[150px] border-r border-[#0f7396]/20">Clinic Name</TableHead>
+                <TableHead className="font-bold text-[#0f7396] dark:text-[#0f7396] w-[100px] border-r border-[#0f7396]/20">Status</TableHead>
+                <TableHead className="font-bold text-[#0f7396] dark:text-[#0f7396] w-[100px]">lblClinic</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>

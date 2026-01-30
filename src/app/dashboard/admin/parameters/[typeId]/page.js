@@ -1,6 +1,6 @@
 "use client";
 
-import { getParameterTypeData } from "@/api/client/parameterType";
+import { getParameterTypeData } from "@/api/common";
 import { Card, CardContent } from "@/components/ui/card";
 import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState, useMemo } from "react";
@@ -9,7 +9,7 @@ import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import GenericTable from "@/components/common/GenericTable";
 import { Spinner } from "@/components/ui/spinner";
-import { getUser } from "@/api/client/getUser";
+import { useUser } from "@/hooks/useUser";
 
 function ParameterType() {
   const router = useRouter();
@@ -25,10 +25,11 @@ function ParameterType() {
   }, []);
 
 
-    let userDetails=getUser();
-
-    const UserID=userDetails?.userData?.userId;
-    const UserRole=userDetails?.userData?.roleName;
+    const user = useUser();
+    
+    // Check if user is loaded
+    const UserID=user?.userData?.userId;
+    const UserRole=user?.userData?.roleName;
 
 
   // Only fetch when user + other dependencies are ready

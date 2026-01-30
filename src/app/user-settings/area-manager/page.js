@@ -114,9 +114,9 @@ const AreaManagerPage = () => {
       {/* Header */}
       <div className="flex items-center gap-3">
         <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
-          <Settings className="w-4 h-4 text-[#0f7396] dark:text-[#0f7396]" />
+          <Settings className="w-4 h-4 text-primary dark:text-primary" />
         </div>
-        <h1 className="text-xl font-bold text-[#0f7396] dark:text-[#0f7396]">
+        <h1 className="text-xl font-bold text-primary dark:text-primary">
           AREA MANAGER SUB ADMIN
         </h1>
       </div>
@@ -130,20 +130,20 @@ const AreaManagerPage = () => {
               <div className="relative flex-1">
                 <Input 
                   placeholder="Area Manager Name" 
-                  className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 active:border-[#0f7396] focus:border-[#0f7396] pl-3"
+                  className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 active:border-primary focus:border-primary pl-3"
                   value={searchName}
                   onChange={(e) => setSearchName(e.target.value)}
                 />
               </div>
               <Button 
-                className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white dark:bg-[#0f7396] dark:hover:bg-[#0b5c7a]"
+                className="bg-primary hover:bg-primary/90 text-white dark:bg-primary dark:hover:bg-primary/90"
                 onClick={handleSearch}
               >
                 Search
               </Button>
               <Button 
                 onClick={openAddDialog}
-                className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white dark:bg-[#0f7396] dark:hover:bg-[#0b5c7a]"
+                className="bg-primary hover:bg-primary/90 text-white dark:bg-primary dark:hover:bg-primary/90"
             >
                 Add New
               </Button>
@@ -156,7 +156,7 @@ const AreaManagerPage = () => {
           {/* Table */}
           <div className="rounded-md border border-gray-200 dark:border-gray-700 overflow-hidden">
             <Table>
-              <TableHeader className="bg-[#0f7396]/10 dark:bg-[#0f7396]/20">
+              <TableHeader className="bg-primary/10 dark:bg-primary/20">
                 <TableRow className="border-b border-gray-200 dark:border-gray-700 hover:bg-transparent">
                   <TableHead className="w-16 text-gray-700 dark:text-gray-200 font-bold">Sr No.</TableHead>
                   <TableHead className="text-gray-700 dark:text-gray-200 font-bold">Area Manager</TableHead>
@@ -247,7 +247,7 @@ const AreaManagerPage = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit" onClick={handleSave} className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white">
+            <Button type="submit" onClick={handleSave} className="bg-primary hover:bg-primary/90 text-white">
                 {isEditing ? "Update" : "Save"}
             </Button>
           </DialogFooter>

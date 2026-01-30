@@ -56,8 +56,8 @@ export default function ViewTodaysConfirmedAppointments() {
     <div className="p-6 bg-white dark:bg-gray-900 min-h-screen">
       {/* Header */}
       <div className="flex items-center gap-2 mb-6 border-b border-gray-200 dark:border-gray-800 pb-4">
-        <Settings className="w-5 h-5 text-[#0f7396] animate-spin-slow" />
-        <h1 className="text-lg font-bold text-[#0f7396] uppercase tracking-wide">
+        <Settings className="w-5 h-5 text-primary animate-spin-slow" />
+        <h1 className="text-lg font-bold text-primary uppercase tracking-wide">
           Todays Appointment
         </h1>
       </div>
@@ -83,7 +83,7 @@ export default function ViewTodaysConfirmedAppointments() {
         <div>
           <Button
             onClick={handleSearch}
-            className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-8 font-medium shadow-sm transition-all"
+            className="bg-primary hover:bg-primary/90 text-white px-8 font-medium shadow-sm transition-all"
           >
             Search
           </Button>
@@ -93,8 +93,8 @@ export default function ViewTodaysConfirmedAppointments() {
       {/* Table Section */}
       <div className="border border-gray-200 dark:border-gray-700 rounded-t-lg overflow-hidden">
         <Table>
-          <TableHeader className="bg-[#0f7396]/10 dark:bg-gray-800">
-            <TableRow className="hover:bg-[#0f7396]/20 dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
+          <TableHeader className="bg-primary/10 dark:bg-gray-800">
+            <TableRow className="hover:bg-primary/20 dark:hover:bg-gray-700/50 border-gray-200 dark:border-gray-700">
               <TableHead className="text-center font-bold text-gray-700 dark:text-gray-300 w-[100px]">Sr. No.</TableHead>
               <TableHead className="text-center font-bold text-gray-700 dark:text-gray-300">Patient No</TableHead>
               <TableHead className="text-center font-bold text-gray-700 dark:text-gray-300">Patient Name</TableHead>

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { LogOut, Menu } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { getUser } from "@/api/client/getUser";
+import { useUser } from "@/hooks/useUser";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export default function HeaderLayout({ onToggle, sidebarOpen }) {
@@ -17,7 +17,7 @@ export default function HeaderLayout({ onToggle, sidebarOpen }) {
 
 
 
-  let User=getUser();
+  const user = useUser();
 
   return (
     <header
@@ -39,12 +39,12 @@ export default function HeaderLayout({ onToggle, sidebarOpen }) {
 
       {/* Right Section: User + Theme Toggle + Logout */}
       <div className="flex items-center gap-3">
-        <span className="text-sm">{User?.userData?.userName}</span>
+        <span className="text-sm">{user?.userData?.userName}</span>
         <ThemeToggle />
         <Button
-          variant="outline"
+          variant="ghost"
           size="sm"
-          className="rounded-full px-3 text-red-600 border-red-400 hover:bg-red-100 dark:hover:bg-red-950"
+          className="rounded-full px-3 text-destructive hover:bg-destructive/10"
           onClick={handleLogout}
         >
           <LogOut className="w-4 h-4 mr-1" /> Logout

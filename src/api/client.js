@@ -1,5 +1,6 @@
 import axios from "axios";
-import { API_CONFIG } from "@/config/api.config";
+import { toast } from "sonner";
+import { API_CONFIG } from "./config"; // Updated import path
 
 const axiosClient = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL || API_CONFIG.BASE_URL,
@@ -53,10 +54,8 @@ axiosClient.interceptors.request.use(
 
 // Add response interceptor for error handling
 axiosClient.interceptors.response.use(
-    (response) => response,
+    (response) => response.data, // IMPORTANT: Unwrap data to match previous behavior
     (error) => {
-        // Enhanced error logging - log the entire error object first
-        console.error('[Axios Error - Full Details]', error);
 
         if (error.response) {
             // Server responded with error status
@@ -71,46 +70,48 @@ axiosClient.interceptors.response.use(
             };
             console.error('[Axios Error Response]', errorDetails);
 
+            const errorMessage = error.response.data?.message || error.response.data?.error || "An unexpected error occurred.";
+
             // Handle specific HTTP status codes
             switch (error.response.status) {
+                case 400:
+                    toast.error(`Error: ${errorMessage}`);
+                    break;
                 case 401:
-                    // Token expired or unauthorized
+                    toast.error("Session expired. Please login again.");
                     // Only access localStorage in browser environment
                     if (typeof window !== 'undefined' && window.localStorage) {
                         localStorage.removeItem("token");
                         localStorage.removeItem("user");
                         localStorage.removeItem("userID");
                         // Redirect to login page
-                        window.location.href = '/';
+                        if (window.location.pathname !== '/') {
+                             window.location.href = '/';
+                        }
                     }
                     break;
                 case 403:
-                    // Forbidden
-                    console.error("Access forbidden");
+                    toast.error("Access Forbidden. You do not have permission.");
                     break;
                 case 404:
-                    // Not found - likely endpoint doesn't exist
-                    console.error("❌ 404 Endpoint not found. Check your API URL and endpoint path.");
-                    console.error("Full URL attempted:", errorDetails.fullUrl);
+                    // Suppress 404 toasts for specific endpoints if needed, but generally good to show
+                    console.error("❌ 404 Endpoint not found.");
+                    // toast.error("Resource not found (404)."); 
                     break;
                 case 500:
-                    // Server error
-                    console.error("Server error occurred");
-                    console.error("Full URL attempted:", errorDetails.fullUrl);
+                    toast.error("Internal Server Error. Please contact support.");
                     break;
                 default:
+                    toast.error(`Error ${error.response.status}: ${errorMessage}`);
                     break;
             }
         } else if (error.request) {
             // Request made but no response received
-            console.error('[Axios Network Error]', {
-                message: 'No response received from server',
-                url: error.config?.url,
-                fullUrl: error.config?.baseURL + error.config?.url,
-                request: error.request,
-            });
+            console.error('[Axios Network Error]', error.request);
+            toast.error("Network Error. Please check your internet connection.");
         } else {
             console.error('[Axios Error]', error.message);
+            toast.error("An error occurred while setting up the request.");
         }
         return Promise.reject(error);
     }

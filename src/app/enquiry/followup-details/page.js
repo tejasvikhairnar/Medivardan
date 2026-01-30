@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import { Settings } from "lucide-react";
+import { PageHeader } from "@/components/shared/PageHeader";
 
 export default function FollowupDetailsPage() {
   const searchParams = useSearchParams();
@@ -101,14 +102,10 @@ export default function FollowupDetailsPage() {
   return (
     <div className="w-full p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
-          <Settings className="w-4 h-4 text-[#0f7396]" />
-        </div>
-        <h1 className="text-xl font-bold text-[#0f7396] dark:text-[#0f7396]">
-          FOLLOWUP DETAILS
-        </h1>
-      </div>
+      <PageHeader 
+        title="FOLLOWUP DETAILS" 
+        icon={Settings} 
+      />
 
       {/* Followup Summary Section */}
       <Card className="border-gray-200 dark:border-gray-800">
@@ -148,13 +145,13 @@ export default function FollowupDetailsPage() {
           <div className="mt-4">
             <Table>
               <TableBody>
-                <TableRow className="bg-green-50 dark:bg-green-900/20">
-                  <TableCell className="font-semibold text-gray-700 dark:text-gray-300">Sr. No.</TableCell>
-                  <TableCell className="font-semibold text-gray-700 dark:text-gray-300">Conversation Date</TableCell>
-                  <TableCell className="font-semibold text-gray-700 dark:text-gray-300">Follow up Mode</TableCell>
-                  <TableCell className="font-semibold text-gray-700 dark:text-gray-300">Conversation Details</TableCell>
-                  <TableCell className="font-semibold text-gray-700 dark:text-gray-300">Follow up Status</TableCell>
-                  <TableCell className="font-semibold text-gray-700 dark:text-gray-300">Follow up By</TableCell>
+                <TableRow className="bg-[#0f7396]/10 dark:bg-[#0f7396]/20 border-b border-[#0f7396]/20">
+                  <TableCell className="font-semibold text-[#0f7396] dark:text-[#0f7396]">Sr. No.</TableCell>
+                  <TableCell className="font-semibold text-[#0f7396] dark:text-[#0f7396]">Conversation Date</TableCell>
+                  <TableCell className="font-semibold text-[#0f7396] dark:text-[#0f7396]">Follow up Mode</TableCell>
+                  <TableCell className="font-semibold text-[#0f7396] dark:text-[#0f7396]">Conversation Details</TableCell>
+                  <TableCell className="font-semibold text-[#0f7396] dark:text-[#0f7396]">Follow up Status</TableCell>
+                  <TableCell className="font-semibold text-[#0f7396] dark:text-[#0f7396]">Follow up By</TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell>1</TableCell>
@@ -173,7 +170,7 @@ export default function FollowupDetailsPage() {
       {/* Today's Followup Information Form */}
       <Card className="border-gray-200 dark:border-gray-800">
         <CardContent className="p-4">
-          <h3 className="text-lg font-bold text-[#0f7396] mb-4 flex items-center gap-2">
+          <h3 className="text-lg font-bold text-primary mb-4 flex items-center gap-2">
             <Settings className="w-4 h-4" />
             TODAY'S FOLLOWUP INFORMATION
           </h3>
@@ -188,7 +185,7 @@ export default function FollowupDetailsPage() {
                   id="followupId"
                   value={followupForm.followupId}
                   readOnly
-                  className="bg-gray-100 dark:bg-gray-800"
+                  className="bg-gray-100 dark:bg-gray-800 h-10"
                 />
               </div>
               <div className="space-y-2">
@@ -200,7 +197,7 @@ export default function FollowupDetailsPage() {
                   type="date"
                   value={followupForm.todayFollowupDate}
                   onChange={(e) => handleFollowupFormChange('todayFollowupDate', e.target.value)}
-                  className="border-gray-300 dark:border-gray-700"
+                  className="border-gray-300 dark:border-gray-700 h-10"
                 />
               </div>
             </div>
@@ -215,7 +212,7 @@ export default function FollowupDetailsPage() {
                   id="firstName"
                   value={followupForm.firstName}
                   onChange={(e) => handleFollowupFormChange('firstName', e.target.value)}
-                  className="border-gray-300 dark:border-gray-700"
+                  className="border-gray-300 dark:border-gray-700 h-10"
                 />
               </div>
               <div className="space-y-2">
@@ -226,7 +223,7 @@ export default function FollowupDetailsPage() {
                   id="lastName"
                   value={followupForm.lastName}
                   onChange={(e) => handleFollowupFormChange('lastName', e.target.value)}
-                  className="border-gray-300 dark:border-gray-700"
+                  className="border-gray-300 dark:border-gray-700 h-10"
                 />
               </div>
             </div>
@@ -256,7 +253,7 @@ export default function FollowupDetailsPage() {
                   type="date"
                   value={followupForm.nextFollowupDate}
                   onChange={(e) => handleFollowupFormChange('nextFollowupDate', e.target.value)}
-                  className="border-gray-300 dark:border-gray-700"
+                  className="border-gray-300 dark:border-gray-700 h-10"
                 />
               </div>
               <div className="space-y-2">
@@ -267,7 +264,7 @@ export default function FollowupDetailsPage() {
                   value={followupForm.status}
                   onValueChange={(value) => handleFollowupFormChange('status', value)}
                 >
-                  <SelectTrigger className="border-gray-300 dark:border-gray-700">
+                  <SelectTrigger className="border-gray-300 dark:border-gray-700 h-10">
                     <SelectValue placeholder="--- Select ---" />
                   </SelectTrigger>
                   <SelectContent>
@@ -317,7 +314,7 @@ export default function FollowupDetailsPage() {
                   id="followUpMode"
                   value={followupForm.followUpMode}
                   onChange={(e) => handleFollowupFormChange('followUpMode', e.target.value)}
-                  className="border-gray-300 dark:border-gray-700"
+                  className="border-gray-300 dark:border-gray-700 h-10"
                 />
               </div>
             </div>
@@ -340,14 +337,15 @@ export default function FollowupDetailsPage() {
             <div className="flex items-center justify-center gap-4 pt-4">
               <Button
                 type="submit"
-                className="bg-green-600 hover:bg-green-700 text-white px-8"
+                className="bg-[#0f7396] hover:bg-[#0f7396]/90 text-white px-8 h-10"
               >
                 Submit
               </Button>
               <Button
                 type="button"
                 onClick={handleCancel}
-                className="bg-[#0f7396] hover:bg-[#0f7396] text-white px-8"
+                variant="outline"
+                className="border-gray-300 text-gray-700 hover:bg-gray-50 px-8 h-10"
               >
                 Cancel
               </Button>

@@ -86,9 +86,9 @@ export default function RequestInventory() {
       {/* Header */}
       <div className="flex items-center gap-3">
         <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
-            <Settings className="w-4 h-4 text-[#0f7396]" />
+            <Settings className="w-4 h-4 text-primary" />
         </div>
-        <h1 className="text-xl font-bold text-[#0f7396] dark:text-[#0f7396] uppercase">
+        <h1 className="text-xl font-bold text-primary dark:text-primary uppercase">
           CLINIC REQUEST STOCK
         </h1>
       </div>
@@ -111,10 +111,10 @@ export default function RequestInventory() {
       </div>
 
       {/* Dynamic Table */}
-      <div className="border border-gray-200 dark:border-gray-700 rounded-t-lg overflow-hidden overflow-x-auto bg-[#0f7396]/5 dark:bg-gray-800/20 p-2">
+      <div className="border border-gray-200 dark:border-gray-700 rounded-t-lg overflow-hidden overflow-x-auto bg-primary/5 dark:bg-gray-800/20 p-2">
         <Table>
-          <TableHeader className="bg-[#0f7396]/10">
-            <TableRow className="border-b-0 hover:bg-[#0f7396]/10">
+          <TableHeader className="bg-primary/10">
+            <TableRow className="border-b-0 hover:bg-primary/10">
               <TableHead className="font-bold text-gray-800 dark:text-gray-200 min-w-[200px]">Inventory Type</TableHead>
               <TableHead className="font-bold text-gray-800 dark:text-gray-200 min-w-[200px]">Item Name</TableHead>
               <TableHead className="font-bold text-gray-800 dark:text-gray-200 min-w-[150px]">Packaging</TableHead>
@@ -213,7 +213,7 @@ export default function RequestInventory() {
         <div className="flex justify-end p-2">
             <Button
                 onClick={handleAddRow}
-                className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white font-medium shadow-sm transition-all"
+                className="bg-primary hover:bg-primary/90 text-white font-medium shadow-sm transition-all"
             >
                 Add New
             </Button>
@@ -222,7 +222,7 @@ export default function RequestInventory() {
 
        {/* Submit Button */}
        <div className="flex justify-center pt-6">
-        <Button onClick={handleSubmit} className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-8 font-medium shadow-sm transition-all h-10">
+        <Button onClick={handleSubmit} className="bg-primary hover:bg-primary/90 text-white px-8 font-medium shadow-sm transition-all h-10">
           Submit
         </Button>
       </div>

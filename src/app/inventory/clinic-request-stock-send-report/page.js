@@ -149,9 +149,9 @@ export default function ClinicRequestStockSendReportPage() {
       {/* Header */}
       <div className="flex items-center gap-3">
         <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
-          <Settings className="w-4 h-4 text-[#0f7396]" />
+          <Settings className="w-4 h-4 text-primary" />
         </div>
-        <h1 className="text-xl font-bold text-[#0f7396] dark:text-[#0f7396] uppercase">
+        <h1 className="text-xl font-bold text-primary dark:text-primary uppercase">
           CLINIC REQUEST STOCK SEND REPORT
         </h1>
       </div>
@@ -211,7 +211,7 @@ export default function ClinicRequestStockSendReportPage() {
         {/* Search Button */}
         <div className="w-full md:w-auto">
           <Button
-            className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-8 h-10 w-full md:w-auto transition-colors"
+            className="bg-primary hover:bg-primary/90 text-white px-8 h-10 w-full md:w-auto transition-colors"
           >
             Search
           </Button>
@@ -226,8 +226,8 @@ export default function ClinicRequestStockSendReportPage() {
       {/* Table */}
       <div className="border border-gray-200 dark:border-gray-700 rounded-t-lg overflow-hidden">
         <Table>
-          <TableHeader className="bg-[#0f7396]/10 dark:bg-[#0f7396]/20">
-            <TableRow className="hover:bg-[#0f7396]/10">
+          <TableHeader className="bg-primary/10 dark:bg-primary/20">
+            <TableRow className="hover:bg-primary/10">
               <TableHead className="w-[60px] font-bold text-gray-800 dark:text-gray-200 border-r border-white dark:border-gray-600">
                 Sr No.
               </TableHead>
@@ -300,7 +300,7 @@ export default function ClinicRequestStockSendReportPage() {
       <div className="flex justify-between items-center mt-4">
         {/* Excel Export */}
         <div className="cursor-pointer" onClick={handleExport} title="Download Excel">
-           <div className="w-8 h-8 flex items-center justify-center bg-[#0f7396] hover:bg-[#0b5c7a] text-white rounded shadow transition-colors">
+           <div className="w-8 h-8 flex items-center justify-center bg-primary hover:bg-primary/90 text-white rounded shadow transition-colors">
             <FileSpreadsheet className="w-5 h-5" />
            </div>
         </div>

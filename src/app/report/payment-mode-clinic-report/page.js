@@ -175,9 +175,9 @@ export default function PaymentModeClinicReportPage() {
       {/* Header */}
       <div className="flex items-center gap-3">
         <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
-          <Settings className="w-4 h-4 text-[#0f7396]" />
+          <Settings className="w-4 h-4 text-primary" />
         </div>
-        <h1 className="text-xl font-bold text-[#0f7396] dark:text-[#0f7396] uppercase">
+        <h1 className="text-xl font-bold text-primary dark:text-primary uppercase">
           PAYMENT MODE CLINIC REPORT
         </h1>
       </div>
@@ -297,13 +297,13 @@ export default function PaymentModeClinicReportPage() {
         <div className="flex gap-2">
           <Button
              onClick={handleSearch}
-            className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white flex-1 h-10 transition-colors"
+            className="bg-primary hover:bg-primary/90 text-white flex-1 h-10 transition-colors"
           >
             Search
           </Button>
            <Button
              onClick={handleClear}
-              className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white flex-1 h-10 transition-colors"
+              className="bg-primary hover:bg-primary/90 text-white flex-1 h-10 transition-colors"
           >
             Clear
           </Button>
@@ -318,7 +318,7 @@ export default function PaymentModeClinicReportPage() {
       {/* Table */}
       <div className="border border-gray-200 dark:border-gray-700 rounded-t-lg overflow-hidden">
         <Table>
-          <TableHeader className="bg-[#0f7396]/10 dark:bg-[#e6ffcc]/20">
+          <TableHeader className="bg-primary/10 dark:bg-[#e6ffcc]/20">
             <TableRow className="hover:bg-transparent">
               <TableHead className="w-[60px] font-bold text-gray-800 dark:text-gray-200 border-r border-white dark:border-gray-600">
                 Sr. No.

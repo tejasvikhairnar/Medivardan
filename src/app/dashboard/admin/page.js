@@ -55,7 +55,7 @@ import {
 } from "@tanstack/react-table";
 import GenericTable from "@/components/common/GenericTable";
 import { Spinner } from "@/components/ui/spinner";
-import { getUser } from "@/api/client/getUser";
+import { useUser } from "@/hooks/useUser";
 // import { useDashboardData } from "@/hooks/useDashboardData";
 
 
@@ -63,10 +63,10 @@ export default function DashboardPage() {
   const [region, setRegion] = useState("0");
   const [period, setPeriod] = useState("All");
   const router = useRouter(); // ✅ Initialize router
-  
+  const user = useUser();
 
 
-  let userDetails=getUser();
+  let userDetails=user;
 
 
 
@@ -364,7 +364,7 @@ header: key.includes("W2") || key.includes("M2") || key.includes("Q2") || key.in
                 setPeriod(p.id);
                 dispatch(setHeaderData({ region: null, period: p.id }));
               }}
-              className={`rounded-full px-4 ${period === p.id ? 'bg-[#0f7396] hover:bg-[#0b5c7a]' : 'text-[#0f7396] border-[#0f7396] hover:bg-[#0f7396]/10'}`}
+              className={`rounded-full px-4 ${period === p.id ? 'bg-primary hover:bg-primary/90' : 'text-primary border-primary hover:bg-primary/10'}`}
             >
               {p.label}
             </Button>
@@ -532,7 +532,7 @@ header: key.includes("W2") || key.includes("M2") || key.includes("Q2") || key.in
            <Table className="overflow-x-auto">
       {/* <TableCaption>A list of your recent invoices.</TableCaption> */}
       <TableHeader>
-        <TableRow className="bg-[#0f7396]/10 hover:bg-[#0f7396]/20">
+        <TableRow className="bg-primary/10 hover:bg-primary/20">
           <TableHead className="w-[100px]">Branch</TableHead>
           <TableHead className="text-right">Patients</TableHead>
           <TableHead className="text-right">Procedures</TableHead>

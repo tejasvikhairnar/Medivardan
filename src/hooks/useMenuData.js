@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { getMenuService } from "@/api/client/menu";
+import { getAllMenu } from "@/api/menu";
 
 
 export const useMenuData = (RoleId) => {
     return useQuery({
         queryKey: ['menuData', RoleId],
-// queryFn: () => getMenuService.getAllMenu(RoleId),
+// queryFn: () => getAllMenu(RoleId),
         queryFn: async () => [],
         enabled: !!RoleId,
     })

@@ -19,7 +19,7 @@ import { Settings } from "lucide-react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { addDoctor } from "@/api/doctor";
-import { transformFormDataToAPI } from "@/api/doctor/transformers";
+import { transformFormDataToAPI } from "@/utils/doctorTransformers";
 
 export default function AddDoctorPage() {
   const router = useRouter();
@@ -269,10 +269,10 @@ export default function AddDoctorPage() {
     <div className="w-full p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-[#0f7396]/10 flex items-center justify-center">
-          <Settings className="w-4 h-4 text-[#0f7396]" />
+        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+          <Settings className="w-4 h-4 text-primary" />
         </div>
-        <h1 className="text-xl font-bold text-[#0f7396]">
+        <h1 className="text-xl font-bold text-primary">
           DOCTOR
         </h1>
       </div>
@@ -308,19 +308,19 @@ export default function AddDoctorPage() {
           <TabsList className="w-full grid grid-cols-3 bg-gray-100 dark:bg-gray-800">
             <TabsTrigger
               value="personal"
-              className="data-[state=active]:bg-[#0f7396] data-[state=active]:text-white"
+              className="data-[state=active]:bg-primary data-[state=active]:text-white"
             >
               Personal Information
             </TabsTrigger>
             <TabsTrigger
               value="education"
-              className="data-[state=active]:bg-[#0f7396] data-[state=active]:text-white"
+              className="data-[state=active]:bg-primary data-[state=active]:text-white"
             >
               Education
             </TabsTrigger>
             <TabsTrigger
               value="documents"
-              className="data-[state=active]:bg-[#0f7396] data-[state=active]:text-white"
+              className="data-[state=active]:bg-primary data-[state=active]:text-white"
             >
               Documents
             </TabsTrigger>
@@ -646,7 +646,7 @@ export default function AddDoctorPage() {
               <div className="flex justify-end pt-4">
                 <Button
                   onClick={handleNext}
-                  className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-8"
+                  className="bg-primary hover:bg-primary/90 text-white px-8"
                 >
                   Next
                 </Button>
@@ -1123,7 +1123,7 @@ export default function AddDoctorPage() {
                 <Button
                   onClick={() => router.push("/doctor/doctor-registration")}
                   variant="outline"
-                  className="bg-[#0f7396] hover:bg-[#0f7396] text-white border-[#0f7396] px-8"
+                  className="bg-primary hover:bg-primary text-white border-primary px-8"
                 >
                   Cancel
                 </Button>

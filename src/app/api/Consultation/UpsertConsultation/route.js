@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { API_CONFIG } from '@/config/api.config';
-import { authService } from '@/services/authService';
+import { API_CONFIG } from '@/api/config';
+import { authService } from '@/api/auth';
 
 export async function POST(request) {
   try {

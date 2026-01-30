@@ -113,7 +113,7 @@ export default function PatientMergeDeletePage() {
         {/* Footer Actions */}
         {showSelection && (
             <div className="p-6 bg-muted/20 border-t border-border flex justify-end gap-3 animated-in slide-in-from-bottom-2">
-                <Button variant="outline" onClick={() => setShowSelection(false)} className="border-[#0f7396]/30 text-[#0f7396] hover:bg-[#0f7396]/10 hover:text-[#0b5c7a]">
+                <Button variant="outline" onClick={() => setShowSelection(false)} className="border-primary/30 text-primary hover:bg-primary/10 hover:text-[#0b5c7a]">
                     Cancel
                 </Button>
                 <Button className="bg-medivardaan-teal hover:bg-medivardaan-teal-dark text-white px-8 shadow-sm">

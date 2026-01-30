@@ -1,15 +1,8 @@
 /**
- * Invoice API Service
- * Handles all invoice-related API calls using Axios
+ * Invoice API
  */
+import axiosClient from "./client";
 
-import axiosClient from "@/lib/axiosClient";
-
-/**
- * Fetch all invoices with filters
- * @param {Object} params - Query parameters
- * @returns {Promise<Array>} List of invoices
- */
 export const getAllInvoices = async (params = {}) => {
   // Mock data since API is not ready
   return [
@@ -35,6 +28,7 @@ export const getAllInvoices = async (params = {}) => {
       paidAmount: 10000,
       pendingAmount: 0,
     },
+    // ... rest of mock data
     {
       invoiceID: 3,
       invoiceNo: "INV-003",
@@ -67,49 +61,19 @@ export const getAllInvoices = async (params = {}) => {
       grandTotal: 12000,
       paidAmount: 6000,
       pendingAmount: 6000,
+      pendingAmount: 6000,
     }
   ];
-  /*
-  try {
-    const response = await axiosClient.get("/api/Invoice/GetAllInvoices", {
-      params,
-    });
-    return response.data;
-  } catch (error) {
-    console.error("[Invoice API] Error fetching invoices:", error);
-    throw error;
-  }
-  */
 };
 
-/**
- * Delete an invoice
- * @param {number} invoiceId
- * @returns {Promise<boolean>}
- */
 export const deleteInvoice = async (invoiceId) => {
-  try {
-    await axiosClient.delete(`/Invoice/DeleteInvoice/${invoiceId}`);
-    return true;
-  } catch (error) {
-    console.error("[Invoice API] Error deleting invoice:", error);
-    throw error;
-  }
+  await axiosClient.delete(`/Invoice/DeleteInvoice/${invoiceId}`);
+  return true;
 };
 
-/**
- * Fetch cheque details
- * @param {Object} params
- * @returns {Promise<Array>}
- */
 export const getChequeDetails = async (params = {}) => {
-  try {
-    const response = await axiosClient.get("/Invoice/GetChequeDetails", {
-      params,
-    });
-    return response.data;
-  } catch (error) {
-    console.error("[Invoice API] Error fetching cheque details:", error);
-    throw error;
-  }
+  const response = await axiosClient.get("/Invoice/GetChequeDetails", {
+    params,
+  });
+  return response; // axiosClient returns data
 };

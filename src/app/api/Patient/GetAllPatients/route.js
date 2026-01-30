@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import axiosClient from '@/lib/axiosClient';
+import axiosClient from '@/api/client';
 
 // Flag to enable/disable mock data fallback
 const USE_MOCK_FALLBACK = false;
