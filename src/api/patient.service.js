@@ -1,4 +1,4 @@
-import axiosClient from "@/lib/axiosClient";
+import axiosClient from "@/api/client";
 
 export const patientService = {
   // Get patient by ID
