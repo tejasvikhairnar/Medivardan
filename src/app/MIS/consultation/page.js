@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, MinusSquare, Trash2, Save, Loader2 } from "lucide-react";
-import { upsertConsultation } from "@/api/client/consultation";
+import { upsertConsultation } from "@/api/consultation";
 import { patientService } from "@/api/client/patients";
 import { toast } from "sonner";
 
