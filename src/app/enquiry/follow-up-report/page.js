@@ -28,8 +28,8 @@ export default function FollowUpReportPage() {
   const [filters, setFilters] = useState({
     clinic: "",
     doctorName: "",
-    fromDate: "2025-11-23", 
-    toDate: "2025-12-23",
+    fromDate: "", 
+    toDate: "",
   })
 
   // Dummy data
@@ -134,26 +134,25 @@ export default function FollowUpReportPage() {
               />
             </div>
 
-             {/* Search Button */}
-            <div className="w-full">
+            {/* Search Button */}
+            <div className="w-full flex items-center gap-3">
               <Button 
                 onClick={handleSearch}
-                className="w-full bg-[#0f7396] hover:bg-[#0f7396]/90 text-white dark:bg-[#0f7396] dark:hover:bg-[#0f7396]/90 h-10"
+                className="flex-1 bg-[#0f7396] hover:bg-[#0f7396]/90 text-white dark:bg-[#0f7396] dark:hover:bg-[#0f7396]/90 h-10"
               >
                 Search
               </Button>
+              <div className="text-sm font-medium text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                Records Found : {totalItems}
+              </div>
             </div>
           </div>
         </CardContent>
       </Card>
 
+
       {/* Results Table */}
       <div className="rounded-md border dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm overflow-hidden flex flex-col">
-         {/* Total Count Bar */}
-        <div className="flex justify-end px-4 py-2 bg-gray-50 dark:bg-slate-900 border-b dark:border-slate-800 text-sm font-medium text-gray-600 dark:text-gray-400">
-          Total : {totalItems}
-        </div>
-        
         <Table>
           <TableHeader className="bg-[#0f7396]/10 dark:bg-[#0f7396]/20">
             <TableRow className="dark:border-slate-800">

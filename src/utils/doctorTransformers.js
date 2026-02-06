@@ -57,8 +57,8 @@ export const transformFormDataToAPI = (formData) => {
     // Mode and IDs
     mode: isUpdate ? 2 : 1, // 1 for Add, 2 for Update
     doctorID: formData.doctorID || 0, 
-    clinicID: formData.clinicID ? parseInt(formData.clinicID) : 1, 
-    doctorTypeID: formData.doctorTypeID ? parseInt(formData.doctorTypeID) : 1,
+    clinicID: formData.clinicID ? String(formData.clinicID) : "1", 
+    doctorTypeID: formData.doctorTypeID ? String(formData.doctorTypeID) : "1",
 
     // Personal Information
     firstName: formData.firstName || "",
@@ -88,7 +88,7 @@ export const transformFormDataToAPI = (formData) => {
     city: formData.city,
 
     // Medical Information
-    specialityID: formData.specialityID ? parseInt(formData.specialityID) : 1,
+    specialityID: formData.specialityID ? String(formData.specialityID) : "1",
     basicDegree: formData.currentEducation?.degree || formData.basicDegree || "BDS", 
     degreeUpload1: formData.degreeUpload1 || "",
     degreeUpload2: formData.degreeUpload2 || "",

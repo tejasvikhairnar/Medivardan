@@ -106,13 +106,13 @@ export const upsertDoctor = async (doctorData) => {
     if (isUpdate) {
       console.log("Updating existing doctor (ID:", cleanPayload.doctorID, ")...");
       response = await axiosClient.post(
-        "/api/doctors/upsert",
+        API_CONFIG.ENDPOINTS.DOCTOR.UPDATE,
         cleanPayload
       );
     } else {
       console.log("Creating new doctor...");
       response = await axiosClient.post(
-        "/api/doctors/upsert",
+        API_CONFIG.ENDPOINTS.DOCTOR.ADD,
         cleanPayload
       );
     }

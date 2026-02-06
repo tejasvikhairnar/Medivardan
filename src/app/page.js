@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import { setCredentials } from "@/store/slices/authSlice";
 import { Spinner } from "@/components/ui/spinner";
 import Image from "next/image";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -80,14 +81,17 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-medivardaan-teal/20 via-medivardaan-blue/20 to-medivardaan-blue-light/20 p-4 relative overflow-hidden">
+    <div className="flex min-h-screen items-center justify-center bg-background p-4 relative overflow-hidden">
+      <div className="absolute top-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-medivardaan-teal/10 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-medivardaan-blue/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
       </div>
 
-      <Card className="w-full max-w-md border border-gray-200 bg-white shadow-2xl backdrop-blur-sm relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <Card className="w-full max-w-md border-border bg-card shadow-2xl backdrop-blur-sm relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <CardHeader className="space-y-4 pb-8">
           <div className="flex flex-col items-center justify-center gap-4">
             <div className="relative group">
@@ -103,7 +107,7 @@ export default function LoginPage() {
             <CardTitle className="text-3xl font-bold bg-gradient-to-r from-medivardaan-teal to-medivardaan-blue bg-clip-text text-transparent">
               Welcome Back
             </CardTitle>
-            <CardDescription className="text-center text-gray-600">
+            <CardDescription className="text-center text-muted-foreground">
               Sign in to access your MediVardaan account
             </CardDescription>
           </div>
@@ -113,7 +117,7 @@ export default function LoginPage() {
           <form onSubmit={handleSignIn} className="space-y-5">
             {/* Error Alert */}
             {loginError && (
-              <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 animate-in slide-in-from-top-2 duration-300">
+              <div className="flex items-start gap-3 p-4 bg-destructive/10 border border-destructive/20 rounded-lg text-destructive animate-in slide-in-from-top-2 duration-300">
                 <AlertCircle className="w-5 h-5 mt-0.5 flex-shrink-0" />
                 <p className="text-sm">{loginError}</p>
               </div>
@@ -121,19 +125,19 @@ export default function LoginPage() {
 
             {/* Username Field */}
             <div className="space-y-2">
-              <Label htmlFor="username" className="text-sm font-medium text-gray-700">
+              <Label htmlFor="username" className="text-sm font-medium text-foreground">
                 Username
               </Label>
               <div className="relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
                   <User size={18} />
                 </div>
                 <Input
                   id="username"
                   type="text"
                   placeholder="Enter your username"
-                  className={`pl-10 h-11 bg-gray-50 border-gray-300 focus:bg-white focus:border-medivardaan-teal focus:ring-2 focus:ring-medivardaan-teal/20 transition-all ${
-                    errors.UserId ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : ""
+                  className={`pl-10 h-11 bg-background border-input focus:bg-background focus:border-medivardaan-teal focus:ring-2 focus:ring-medivardaan-teal/20 transition-all ${
+                    errors.UserId ? "border-destructive focus:border-destructive focus:ring-destructive/20" : ""
                   }`}
                   value={form.UserId}
                   onChange={(e) => handleInputChange("UserId", e.target.value)}
@@ -141,7 +145,7 @@ export default function LoginPage() {
                 />
               </div>
               {errors.UserId && (
-                <p className="text-sm text-red-600 flex items-center gap-1 animate-in slide-in-from-top-1 duration-200">
+                <p className="text-sm text-destructive flex items-center gap-1 animate-in slide-in-from-top-1 duration-200">
                   <AlertCircle size={14} />
                   {errors.UserId}
                 </p>
@@ -150,19 +154,19 @@ export default function LoginPage() {
 
             {/* Password Field */}
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium text-gray-700">
+              <Label htmlFor="password" className="text-sm font-medium text-foreground">
                 Password
               </Label>
               <div className="relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
                   <Lock size={18} />
                 </div>
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
-                  className={`pl-10 pr-10 h-11 bg-gray-50 border-gray-300 focus:bg-white focus:border-medivardaan-teal focus:ring-2 focus:ring-medivardaan-teal/20 transition-all ${
-                    errors.UserPassword ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : ""
+                  className={`pl-10 pr-10 h-11 bg-background border-input focus:bg-background focus:border-medivardaan-teal focus:ring-2 focus:ring-medivardaan-teal/20 transition-all ${
+                    errors.UserPassword ? "border-destructive focus:border-destructive focus:ring-destructive/20" : ""
                   }`}
                   value={form.UserPassword}
                   onChange={(e) => handleInputChange("UserPassword", e.target.value)}
@@ -171,7 +175,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors focus:outline-none focus:text-medivardaan-teal"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:text-medivardaan-teal"
                   disabled={isPending}
                   tabIndex={-1}
                 >
@@ -179,7 +183,7 @@ export default function LoginPage() {
                 </button>
               </div>
               {errors.UserPassword && (
-                <p className="text-sm text-red-600 flex items-center gap-1 animate-in slide-in-from-top-1 duration-200">
+                <p className="text-sm text-destructive flex items-center gap-1 animate-in slide-in-from-top-1 duration-200">
                   <AlertCircle size={14} />
                   {errors.UserPassword}
                 </p>
@@ -189,7 +193,7 @@ export default function LoginPage() {
             {/* Login Button */}
             <Button
               type="submit"
-              className="w-full h-11 bg-gradient-to-r from-medivardaan-teal to-medivardaan-blue hover:from-medivardaan-teal-dark hover:to-medivardaan-blue-dark text-white font-medium shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
+              className="w-full h-11 bg-medivardaan-teal hover:bg-medivardaan-teal-dark text-primary-foreground font-medium shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
               disabled={isPending}
             >
               {isPending ? (
@@ -204,8 +208,8 @@ export default function LoginPage() {
           </form>
 
           {/* Footer */}
-          <div className="pt-4 text-center border-t border-gray-200">
-            <p className="text-sm text-gray-500">
+          <div className="pt-4 text-center border-t border-border">
+            <p className="text-sm text-muted-foreground">
               Secure healthcare management platform
             </p>
           </div>

@@ -815,7 +815,7 @@ export default function Sidebar({ open }) {
         <CollapsibleTrigger asChild>
           <button
             className={cn(
-              "w-full flex items-center gap-1.5 py-1.5 rounded-lg hover:bg-[#4DB8AC]/10 hover:text-[#1E6B8C] transition-all duration-200 text-left group",
+              "w-full flex items-center gap-1.5 py-1.5 rounded-lg hover:bg-medivardaan-teal/10 hover:text-medivardaan-blue transition-all duration-200 text-left group",
                depth > 0 ? nestedPadding : "px-2"
             )}
           >
@@ -826,14 +826,14 @@ export default function Sidebar({ open }) {
               <>
                 <span className={cn(
                   "flex-1 text-sm font-medium truncate",
-                   depth > 0 && "text-gray-600 dark:text-gray-400 group-hover:text-[#1E6B8C]"
+                   depth > 0 && "text-muted-foreground group-hover:text-medivardaan-blue"
                 )}>
                   {menu.menuName}
                 </span>
                 {isExpanded ? (
-                  <ChevronDown size={16} className="text-gray-400 group-hover:text-[#1E6B8C]" />
+                  <ChevronDown size={16} className="text-muted-foreground group-hover:text-medivardaan-blue" />
                 ) : (
-                  <ChevronRight size={16} className="text-gray-400 group-hover:text-[#1E6B8C]" />
+                  <ChevronRight size={16} className="text-muted-foreground group-hover:text-medivardaan-blue" />
                 )}
               </>
             )}
@@ -852,11 +852,11 @@ export default function Sidebar({ open }) {
   return (
     <aside
       className={cn(
-        "fixed top-0 left-0 h-screen flex flex-col transition-all duration-300 border-r border-[#4DB8AC]/30 shadow-sm bg-gradient-to-b from-[#4DB8AC]/5 via-white/90 to-[#1E6B8C]/5 dark:bg-gradient-to-b dark:from-[#1E6B8C]/20 dark:via-gray-900/90 dark:to-[#4DB8AC]/10 text-foreground",
+        "fixed top-0 left-0 h-screen flex flex-col transition-all duration-300 border-r border-medivardaan-teal/30 shadow-sm bg-gradient-to-b from-medivardaan-teal/5 via-card/90 to-medivardaan-blue/5 text-foreground",
         open ? "w-64" : "w-16"
       )}
     >
-      <div className="flex items-center justify-center h-16 border-b border-[#4DB8AC]/30 flex-shrink-0">
+      <div className="flex items-center justify-center h-16 border-b border-medivardaan-teal/30 flex-shrink-0">
         {open ? (
           <>
             <Image 

@@ -94,12 +94,12 @@ export default function PatientSearchPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-6 px-4">
+    <div className="min-h-screen bg-background py-6 px-4">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Search Patient Section */}
-        <Card className="border border-gray-200 dark:border-gray-700 shadow-md bg-white dark:bg-gray-800">
+        <Card className="border-border shadow-md bg-card">
           <CardHeader className="p-4 bg-primary/10 dark:bg-primary/20 border-b border-primary/20 dark:border-primary/30">
-            <h2 className="text-lg font-semibold text-primary dark:text-primary flex items-center gap-2">
+            <h2 className="text-lg font-semibold text-primary flex items-center gap-2">
               <span className="text-primary">⚙</span> PATIENT
             </h2>
           </CardHeader>
@@ -111,7 +111,7 @@ export default function PatientSearchPage() {
                   placeholder="First Name"
                   value={searchForm.firstName}
                   onChange={handleSearchChange}
-                  className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600"
+                  className="bg-background border-input"
                 />
               </div>
               <div className="space-y-2">
@@ -120,7 +120,7 @@ export default function PatientSearchPage() {
                   placeholder="Last Name"
                   value={searchForm.lastName}
                   onChange={handleSearchChange}
-                  className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600"
+                  className="bg-background border-input"
                 />
               </div>
               <div className="space-y-2">
@@ -129,7 +129,7 @@ export default function PatientSearchPage() {
                   placeholder="Mobile No"
                   value={searchForm.mobileNo}
                   onChange={handleSearchChange}
-                  className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600"
+                  className="bg-background border-input"
                 />
               </div>
               <div className="space-y-2">
@@ -137,7 +137,7 @@ export default function PatientSearchPage() {
                   value={searchForm.clinic}
                   onValueChange={(value) => setSearchForm({ ...searchForm, clinic: value })}
                 >
-                  <SelectTrigger className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600">
+                  <SelectTrigger className="bg-background border-input">
                     <SelectValue placeholder="-- Select Clinic --" />
                   </SelectTrigger>
                   <SelectContent>
@@ -189,24 +189,24 @@ export default function PatientSearchPage() {
             {/* Patient List Table */}
             <div className="mt-6">
               <div className="flex justify-end mb-2">
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-muted-foreground">
                   Total: <span className="font-semibold">{totalItems}</span>
                 </p>
               </div>
-              <div className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+              <div className="overflow-x-auto rounded-lg border border-border">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-primary/10 dark:bg-primary/20">
-                      <th className="p-3 text-left font-medium text-gray-700 dark:text-gray-300">Sr. No.</th>
-                      <th className="p-3 text-left font-medium text-gray-700 dark:text-gray-300">Case Paper No.</th>
-                      <th className="p-3 text-left font-medium text-gray-700 dark:text-gray-300">Name</th>
-                      <th className="p-3 text-left font-medium text-gray-700 dark:text-gray-300">Mobile No</th>
-                      <th className="p-3 text-left font-medium text-gray-700 dark:text-gray-300">Registration Date</th>
-                      <th className="p-3 text-left font-medium text-gray-700 dark:text-gray-300">Clinic Name</th>
-                      <th className="p-3 text-center font-medium text-gray-700 dark:text-gray-300">#</th>
+                    <tr className="bg-primary/10">
+                      <th className="p-3 text-left font-medium text-foreground">Sr. No.</th>
+                      <th className="p-3 text-left font-medium text-foreground">Case Paper No.</th>
+                      <th className="p-3 text-left font-medium text-foreground">Name</th>
+                      <th className="p-3 text-left font-medium text-foreground">Mobile No</th>
+                      <th className="p-3 text-left font-medium text-foreground">Registration Date</th>
+                      <th className="p-3 text-left font-medium text-foreground">Clinic Name</th>
+                      <th className="p-3 text-center font-medium text-foreground">#</th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white dark:bg-gray-800">
+                  <tbody className="bg-background">
                     {isLoading ? (
                       <tr>
                         <td colSpan="7" className="p-8 text-center text-gray-500">Loading...</td>
@@ -216,21 +216,21 @@ export default function PatientSearchPage() {
                         .map((patient, index) => (
                         <tr
                           key={patient.patientID || patient.id || index}
-                          className="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900"
+                          className="border-t border-border hover:bg-muted/50"
                         >
-                          <td className="p-3 text-gray-800 dark:text-gray-100">{((currentPage - 1) * pageSize) + index + 1}</td>
-                          <td className="p-3 text-gray-800 dark:text-gray-100">{patient.patientCode || patient.casePaperNo || "-"}</td>
-                          <td className="p-3 text-gray-800 dark:text-gray-100">
+                          <td className="p-3 text-foreground">{((currentPage - 1) * pageSize) + index + 1}</td>
+                          <td className="p-3 text-foreground">{patient.patientCode || patient.casePaperNo || "-"}</td>
+                          <td className="p-3 text-foreground">
                              {/* Handle typo in API response 'fristName' */}
                              {patient.fristName || patient.firstName 
                                ? `${patient.fristName || patient.firstName} ${patient.lastName || ""}` 
                                : (patient.name || "-")}
                           </td>
-                          <td className="p-3 text-gray-800 dark:text-gray-100">{patient.mobile || patient.mobileNo || "-"}</td>
-                          <td className="p-3 text-gray-800 dark:text-gray-100">
+                          <td className="p-3 text-foreground">{patient.mobile || patient.mobileNo || "-"}</td>
+                          <td className="p-3 text-foreground">
                             {patient.registrationDate ? new Date(patient.registrationDate).toLocaleDateString("en-GB") : "-"}
                           </td>
-                          <td className="p-3 text-gray-800 dark:text-gray-100">{patient.clinicName || patient.ClinicName || "-"}</td>
+                          <td className="p-3 text-foreground">{patient.clinicName || patient.ClinicName || "-"}</td>
                           <td className="p-3 text-center">
                             <div className="flex justify-center gap-2">
                               <Button

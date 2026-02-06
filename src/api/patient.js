@@ -13,6 +13,7 @@ import axiosClient from "./client";
 export const getPatientById = async (patientId) => {
   const data = await axiosClient.get(`/api/Patient/GetPatientById`, {
     params: { patientId },
+    baseURL: '',
   });
   return data; // axiosClient returns data
 };
@@ -23,7 +24,9 @@ export const getPatientById = async (patientId) => {
  * @returns {Promise<Object>}
  */
 export const updatePatient = async (patientData) => {
-  const data = await axiosClient.put(`/api/Patient/UpdatePatient`, patientData);
+  const data = await axiosClient.put(`/api/Patient/UpdatePatient`, patientData, {
+      baseURL: ''
+  });
   return data;
 };
 
@@ -33,7 +36,9 @@ export const updatePatient = async (patientData) => {
  * @returns {Promise<Object>}
  */
 export const createPatient = async (patientData) => {
-  const data = await axiosClient.post(`/api/Patient/CreatePatient`, patientData);
+  const data = await axiosClient.post(`/api/Patient/CreatePatient`, patientData, {
+      baseURL: ''
+  });
   return data;
 };
 
@@ -45,6 +50,7 @@ export const createPatient = async (patientData) => {
 export const searchPatients = async (searchParams) => {
   const data = await axiosClient.get(`/api/Patient/SearchPatients`, {
     params: searchParams,
+    baseURL: '',
   });
   return data;
 };
@@ -64,6 +70,7 @@ export const uploadPatientImage = async (patientId, imageFile) => {
     headers: {
       "Content-Type": "multipart/form-data",
     },
+    baseURL: '',
   });
   return data;
 };
@@ -76,6 +83,7 @@ export const uploadPatientImage = async (patientId, imageFile) => {
 export const getAllPatients = async (params = {}) => {
   const data = await axiosClient.get(`/api/Patient/GetAllPatients`, {
     params,
+    baseURL: '', // Force relative path to hit Next.js API proxy
   });
   return data;
 };

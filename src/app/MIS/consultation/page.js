@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, MinusSquare, Trash2, Save, Loader2 } from "lucide-react";
-import { upsertConsultation } from "@/api/client/consultation";
+import { upsertConsultation } from "@/api/consultation";
 import { patientService } from "@/api/client/patients";
 import { toast } from "sonner";
 
@@ -267,6 +267,12 @@ export default function ConsultationPage() {
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
+        if (!clinicInfo.id || !doctorInfo.id || !patientInfo.patientId) {
+            toast.error("Missing clinic, doctor, or patient information.");
+            setIsSubmitting(false);
+            return;
+        }
+
         // Prepare Payload based on schema provided
         const payload = {
             consultationID: 0, // 0 for new
@@ -274,12 +280,12 @@ export default function ConsultationPage() {
             patientId: patientInfo.patientId,
             doctorId: doctorInfo.id,
             consultationDate: new Date().toISOString(),
-            height: form.height,
-            weight: form.weight,
-            bloodPressure: form.bloodPressure,
-            pulseRate: form.pulseRate,
-            diagnosisDetails: form.diagnosis,
-            notes: form.notes,
+            height: form.height || "", // Ensure string
+            weight: form.weight || "", // Ensure string
+            bloodPressure: form.bloodPressure || "", // Ensure string
+            pulseRate: form.pulseRate || "", // Ensure string
+            diagnosisDetails: form.diagnosis || "", // Ensure string
+            notes: form.notes || "",
             createBy: 1, // Start with assumed user ID 1
             
             // Treatments
@@ -293,14 +299,14 @@ export default function ConsultationPage() {
             medicines: ongoingMedicines.map(m => ({
                 consultationID: 0,
                 medicinesTypeId: 0, // Needs mapping from string type to ID if backend requires it. Sending 0 for now.
-                medicinesName: m.name,
+                medicinesName: m.name || "",
                 dose: parseFloat(m.dose) || 0, // Ensure number
                 noOfDays: parseInt(m.noOfDays) || 0, // Ensure number
                 morning: m.morning ? 1 : 0,
                 afternoon: m.afternoon ? 1 : 0,
                 evening: m.evening ? 1 : 0,
                 strip: parseFloat(m.strip) || 0,
-                remarks: m.remarks
+                remarks: m.remarks || ""
             })),
 
             // Lab Tests
@@ -308,7 +314,7 @@ export default function ConsultationPage() {
                 consultationLabTestID: 0,
                 labID: 0, // If we had a lab ID we'd use it, else 0
                 consultationId: 0,
-                reportName: testName,
+                reportName: testName || "",
                 remarks: "",
                 reportStatus: "Pending"
             }))
@@ -337,64 +343,7 @@ export default function ConsultationPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-6 px-4">
       <div className="max-w-6xl mx-auto space-y-6" ref={printRef}>
-        {/* Clinic & Doctor Details */}
-        <Card className="border border-gray-200 dark:border-gray-700 shadow-md bg-white dark:bg-gray-800">
-          <CardHeader className="p-6 bg-[#0f7396] border-b border-[#0f7396]">
-            <div className="flex items-start justify-between">
-              <div>
-                <h1 className="text-2xl font-bold text-white">{clinicInfo.name}</h1>
-                <p className="text-sm text-gray-100 mt-1">{clinicInfo.address}</p>
-                <p className="text-sm text-gray-100">
-                  Reg: {clinicInfo.regNo} | {clinicInfo.phone}
-                </p>
-              </div>
-              <div className="text-right">
-                <p className="text-sm text-gray-200 uppercase tracking-wide">Doctor</p>
-                <h2 className="font-semibold text-white text-lg">{doctorInfo.name}</h2>
-                <p className="text-sm text-gray-100">{doctorInfo.qualification}</p>
-                <p className="text-sm text-gray-100">Reg Date: {doctorInfo.regDate}</p>
-              </div>
-            </div>
-          </CardHeader>
-        </Card>
-
-        {/* Patient Info Section */}
-        <Card className="border border-gray-200 dark:border-gray-700 shadow-md bg-white dark:bg-gray-800">
-          <CardContent className="p-6 grid md:grid-cols-2 gap-6">
-            <div className="space-y-1">
-              <p className="font-semibold text-xl text-gray-900 dark:text-white">{patientInfo.name}</p>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
-                {patientInfo.age} yrs • {patientInfo.gender}
-              </p>
-              <p className="text-sm text-gray-600 dark:text-gray-300">{patientInfo.contact}</p>
-            </div>
-            <div className="grid grid-cols-2 gap-4 text-sm text-gray-700 dark:text-gray-300">
-              <p><span className="font-medium">Reg Date:</span> {patientInfo.registrationDate}</p>
-              <p><span className="font-medium">DOB:</span> {patientInfo.dob}</p>
-              <p><span className="font-medium">Visits:</span> {patientInfo.visits}</p>
-              <div className="flex items-center justify-between col-span-2">
-                <p><span className="font-medium">Last Diagnosis:</span> {patientInfo.lastDiagnosis}</p>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button variant="outline" data-no-print size="sm" className="print:hidden border-[#0f7396] text-[#0f7396] hover:bg-[#0f7396] hover:text-white">
-                      View Details
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Previous Diagnosis History</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-2 text-sm">
-                      <p>15/04/2023 - Tooth Extraction</p>
-                      <p>10/02/2023 - Root Canal</p>
-                      <p>05/01/2023 - Cleaning</p>
-                    </div>
-                  </DialogContent>
-                </Dialog>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        {/* Header and Patient Info removed as per request */}
 
         {/* Consultation Section */}
         <Card className="border border-gray-200 dark:border-gray-700 shadow-md bg-white dark:bg-gray-800">
@@ -438,14 +387,24 @@ export default function ConsultationPage() {
             <div className="space-y-3">
               <div className="flex justify-between items-center">
                 <Label className="text-sm font-medium text-gray-700 dark:text-gray-200">Ongoing Treatments</Label>
-                <div className="flex gap-2 print:hidden">
-                  <Input
-                    placeholder="Add new treatment"
-                    value={newTreatment}
-                    onChange={(e) => setNewTreatment(e.target.value)}
-                    className="w-48 bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:ring-2 focus:ring-[#4DB8AC] focus:border-[#4DB8AC]"
-                    data-no-print
-                  />
+                <div className="flex gap-2 print:hidden w-1/2 justify-end">
+                   <div className="w-64">
+                    <Select
+                      value={newTreatment}
+                      onValueChange={(value) => setNewTreatment(value)}
+                    >
+                      <SelectTrigger className="bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600">
+                        <SelectValue placeholder="Select Treatment" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="1">Scaling</SelectItem>
+                        <SelectItem value="2">Cavity Filling</SelectItem>
+                        <SelectItem value="3">Root Canal</SelectItem>
+                        <SelectItem value="4">Tooth Extraction</SelectItem>
+                        <SelectItem value="5">Braces Consultation</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                   <Button onClick={addTreatment} data-no-print className="bg-[#0f7396] hover:bg-[#0b5c7a] text-white"><Plus className="h-4 w-4"/></Button>
                 </div>
               </div>
@@ -497,18 +456,17 @@ export default function ConsultationPage() {
                           onValueChange={(value) => setNewMedicine({ ...newMedicine, type: value })}
                         >
                           <SelectTrigger className="w-full h-9 text-xs">
-                            <SelectValue placeholder="---Medicines Type---" />
+                            <SelectValue placeholder="---Type---" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="Tablet">Dental Floss</SelectItem>
-                            <SelectItem value="Capsule">Toothbrush</SelectItem>
-                            <SelectItem value="Syrup">Toothpaste</SelectItem>
-                            <SelectItem value="Injection">Mouthwash</SelectItem>
-                            <SelectItem value="Cream">CAP</SelectItem>
-                            <SelectItem value="Drops">GEL</SelectItem>
-                            <SelectItem value="Drops">Tablet</SelectItem>
-                            <SelectItem value="Drops">Syrup</SelectItem>
-                            <SelectItem value="Drops">Injection</SelectItem>
+                            <SelectItem value="1">Tablet</SelectItem>
+                            <SelectItem value="2">Capsule</SelectItem>
+                            <SelectItem value="3">Syrup</SelectItem>
+                            <SelectItem value="4">Injection</SelectItem>
+                            <SelectItem value="5">Cream</SelectItem>
+                            <SelectItem value="6">Drops</SelectItem>
+                            <SelectItem value="7">Gel</SelectItem>
+                            <SelectItem value="8">Mouthwash</SelectItem>
                           </SelectContent>
                         </Select>
                       </td>
@@ -755,32 +713,8 @@ export default function ConsultationPage() {
                 />
               </div>
 
-              {/* Next Consultation */}
-              <div className="p-5 border border-gray-200 dark:border-teal-700/40 rounded-lg bg-gradient-to-br from-gray-50 to-teal-50/30 dark:from-gray-800/95 dark:to-teal-900/10 space-y-4 shadow-sm dark:shadow-teal-900/20">
-                <h3 className="text-base font-semibold text-gray-800 dark:text-teal-100 mb-3">Next Consultation</h3>
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-700 dark:text-teal-200">Date</Label>
-                  <Input
-                    type="date"
-                    name="nextConsultationDate"
-                    value={form.nextConsultationDate}
-                    onChange={handleChange}
-                    className="bg-white dark:bg-gray-900/50 border-gray-300 dark:border-teal-800/50 text-gray-900 dark:text-teal-50 focus:ring-2 focus:ring-[#4DB8AC] focus:border-[#4DB8AC] dark:focus:border-teal-500"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-700 dark:text-teal-200">Time</Label>
-                  <Input
-                    type="time"
-                    name="nextConsultationTime"
-                    value={form.nextConsultationTime}
-                    onChange={handleChange}
-                    className="bg-white dark:bg-gray-900/50 border-gray-300 dark:border-teal-800/50 text-gray-900 dark:text-teal-50 focus:ring-2 focus:ring-[#4DB8AC] focus:border-[#4DB8AC] dark:focus:border-teal-500"
-                  />
-                </div>
-                <Button className="w-full mt-4 print:hidden bg-[#0f7396] hover:bg-[#0b5c7a] text-white dark:bg-[#0f7396] dark:hover:bg-[#0b5c7a] dark:shadow-lg dark:shadow-teal-900/30" data-no-print>Book Appointment</Button>
-              </div>
             </div>
+            {/* Next Consultation removed as not in API */}
 
             {/* Bottom Buttons */}
             <div className="mt-8 flex justify-end gap-3 print:hidden border-t border-gray-200 dark:border-gray-700 pt-6">
