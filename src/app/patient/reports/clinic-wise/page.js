@@ -102,7 +102,7 @@ function page() {
       </div> */}
 
         {/* Card */}
-        <Card className="bg-gradient-to-br from-[#4DB8AC]/5 via-white/50 to-[#1E6B8C]/5 dark:bg-gradient-to-br dark:from-[#1E6B8C]/20 dark:via-[#4DB8AC]/10 dark:to-[#1E6B8C]/20 backdrop-blur-sm border border-[#4DB8AC]/20 dark:border-[#4DB8AC]/30 mt-0">
+        <Card className="card-gradient mt-0">
           <CardContent className="p-6">
             <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-6">
               Clinic Wise Report

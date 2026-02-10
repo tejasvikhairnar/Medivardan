@@ -6,19 +6,19 @@ export const patientService = {
     const response = await axiosClient.get(`/api/Patient/GetPatientById/${patientId}`, {
       baseURL: '',
     });
-    return response.data;
+    return response;
   },
 
   // Update patient details
   updatePatient: async (patientData) => {
     const response = await axiosClient.put(`/api/Patient/UpdatePatient`, patientData, { baseURL: '' });
-    return response.data;
+    return response;
   },
 
   // Create new patient
   createPatient: async (patientData) => {
     const response = await axiosClient.post(`/api/Patient/CreatePatient`, patientData, { baseURL: '' });
-    return response.data;
+    return response;
   },
 
   // Search patients
@@ -27,7 +27,7 @@ export const patientService = {
       baseURL: '',
       params: searchParams,
     });
-    return response.data;
+    return response;
   },
 
   // Upload patient profile image
@@ -42,7 +42,7 @@ export const patientService = {
         "Content-Type": "multipart/form-data",
       },
     });
-    return response.data;
+    return response;
   },
 
   // Get all patients
@@ -51,6 +51,6 @@ export const patientService = {
       baseURL: '',
       params,
     });
-    return response.data;
+    return response;
   },
 };

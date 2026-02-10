@@ -29,7 +29,7 @@ export default function TreatmentUpdates() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6 flex items-start justify-center">
       <div className="w-full max-w-4xl mt-8">
         <Card className="w-full shadow-md border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden bg-white dark:bg-gray-800">
-          <CardHeader className="bg-[#1E6B8C] p-6">
+          <CardHeader className="bg-medivardaan-blue p-6">
             <h2 className="text-2xl font-semibold text-white text-center">
               Treatment Updates
             </h2>
@@ -41,7 +41,7 @@ export default function TreatmentUpdates() {
               <div>
                 <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">Patient</Label>
                 <Select onValueChange={setPatient}>
-                  <SelectTrigger className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-[#4DB8AC] focus:border-[#4DB8AC] w-full">
+                  <SelectTrigger className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-medivardaan-teal-light focus:border-medivardaan-teal-light w-full">
                     <SelectValue placeholder="Select Patient" />
                   </SelectTrigger>
                   <SelectContent>
@@ -58,7 +58,7 @@ export default function TreatmentUpdates() {
               <div>
                 <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">Ongoing Treatment</Label>
                 <Select onValueChange={setTreatment}>
-                  <SelectTrigger className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-[#4DB8AC] focus:border-[#4DB8AC] w-full">
+                  <SelectTrigger className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-medivardaan-teal-light focus:border-medivardaan-teal-light w-full">
                     <SelectValue placeholder="Select Treatment" />
                   </SelectTrigger>
                   <SelectContent>
@@ -90,7 +90,7 @@ export default function TreatmentUpdates() {
                 placeholder="Enter procedure details..."
                 value={details}
                 onChange={(e) => setDetails(e.target.value)}
-                className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-[#4DB8AC] focus:border-[#4DB8AC] min-h-[120px] w-full text-gray-700 dark:text-gray-300"
+                className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-medivardaan-teal-light focus:border-medivardaan-teal-light min-h-[120px] w-full text-gray-700 dark:text-gray-300"
               />
             </div>
 
@@ -98,7 +98,7 @@ export default function TreatmentUpdates() {
             <div className="w-full md:w-1/2">
               <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">Status</Label>
               <Select onValueChange={setStatus}>
-                <SelectTrigger className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-[#4DB8AC] focus:border-[#4DB8AC] w-full">
+                <SelectTrigger className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-medivardaan-teal-light focus:border-medivardaan-teal-light w-full">
                   <SelectValue placeholder="Select Status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -114,7 +114,7 @@ export default function TreatmentUpdates() {
             <div className="pt-6 flex justify-center">
               <Button
                 onClick={handleUpdate}
-                className="px-12 py-3 text-base font-medium rounded-md bg-[#4DB8AC] hover:bg-[#3a9d92] text-white shadow-md hover:shadow-lg transition-all duration-200 w-full md:w-auto"
+                className="px-12 py-3 text-base font-medium rounded-md bg-medivardaan-teal-light hover:bg-[#3a9d92] text-white shadow-md hover:shadow-lg transition-all duration-200 w-full md:w-auto"
               >
                 Update Treatment
               </Button>

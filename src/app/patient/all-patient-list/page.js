@@ -18,7 +18,6 @@ import { Card, CardContent } from '@/components/ui/card'
 
 export default function AllPatientListPage() {
   const [searchTerm, setSearchTerm] = useState('')
-  const [selectedGender, setSelectedGender] = useState('all')
   const [selectedCity, setSelectedCity] = useState('all')
   
   const [patients, setPatients] = useState([])
@@ -34,15 +33,20 @@ export default function AllPatientListPage() {
     setLoading(true);
     setError(null);
     try {
-      const data = await patientService.getAllPatients({
-          PageNumber: pageNumber,
-          PageSize: itemsPerPage
-      });
+      const data = await patientService.getAllPatients();
       
+      console.log('Fetched patients data:', data);
+
       if (Array.isArray(data)) {
         setPatients(data);
+      } else if (data && Array.isArray(data.data)) {
+          // Handle wrapped response (e.g. { data: [...], ... })
+          setPatients(data.data);
+      } else if (data && Array.isArray(data.result)) {
+           // Handle another common wrapped response pattern
+          setPatients(data.result);
       } else {
-        console.warn('API returned empty or invalid data');
+        console.warn('API returned empty or invalid data structure:', data);
         setPatients([]);
       }
     } catch (err) {
@@ -79,13 +83,7 @@ export default function AllPatientListPage() {
         }
     }
 
-    // 2. Gender Filter
-    if (selectedGender !== 'all') {
-        const gender = (patient.gender || patient.Gender || '').toLowerCase();
-        if (gender !== selectedGender.toLowerCase()) return false;
-    }
-    
-    // 3. City Filter
+    // 2. City Filter
     if (selectedCity !== 'all') {
          const city = (patient.cityName || patient.city || patient.CityName || patient.City || patient.address || '').toLowerCase();
          if (!city.includes(selectedCity.toLowerCase())) return false;
@@ -110,10 +108,10 @@ export default function AllPatientListPage() {
       <div className="max-w-[1600px] mx-auto p-6 space-y-6">
         
         <div className="flex items-center gap-3 pb-2 border-b border-gray-200 dark:border-gray-800">
-          <div className="p-2 rounded-lg bg-[#0f7396]/10 dark:bg-[#0f7396]/20">
-            <User className="w-5 h-5 text-[#0f7396] dark:text-[#3aaecb]" />
+          <div className="p-2 rounded-lg bg-primary/10 dark:bg-primary/20">
+            <User className="w-5 h-5 text-primary dark:text-[#3aaecb]" />
           </div>
-          <h1 className="text-xl font-bold text-[#0f7396] dark:text-[#3aaecb] uppercase tracking-wide">
+          <h1 className="text-xl font-bold text-primary dark:text-[#3aaecb] uppercase tracking-wide">
             All Patient List
           </h1>
         </div>
@@ -133,24 +131,10 @@ export default function AllPatientListPage() {
                     />
                     </div>
                     
-                    <div className="space-y-2">
-                    <Label className="text-sm font-medium text-foreground/80">Gender</Label>
-                    <Select value={selectedGender} onValueChange={setSelectedGender}>
-                        <SelectTrigger className="h-10 w-full bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-600">
-                        <SelectValue placeholder="Select Gender" />
-                        </SelectTrigger>
-                        <SelectContent>
-                        <SelectItem value="all">All</SelectItem>
-                        <SelectItem value="male">Male</SelectItem>
-                        <SelectItem value="female">Female</SelectItem>
-                        </SelectContent>
-                    </Select>
-                    </div>
-
                     <div className="flex items-end">
                       <Button
                       onClick={handleSearch}
-                      className="h-10 bg-[#0f7396] hover:bg-[#0b5c7a] text-white px-8 shadow-sm w-full"
+                      className="h-10 bg-primary hover:bg-[#0b5c7a] text-white px-8 shadow-sm w-full"
                       >
                       <Search className="w-4 h-4 mr-2" />
                       Search
@@ -167,7 +151,7 @@ export default function AllPatientListPage() {
                     ) : (
                     <table className="w-full">
                     <thead>
-                        <tr className="bg-[#0f7396]/10 dark:bg-[#0f7396]/20">
+                        <tr className="bg-primary/10 dark:bg-primary/20">
                         <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-200">Sr. No.</th>
                         <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-200">Patient Name</th>
                         <th className="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-200">Mobile No.</th>

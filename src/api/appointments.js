@@ -19,7 +19,16 @@ export const getAppointments = async (params = {}) => {
     const response = await fetch(url, { headers, cache: 'no-store' });
     
     if (!response.ok) {
-        throw new Error(`Failed to fetch appointments: ${response.status}`);
+        let errorMsg = `Failed to fetch appointments: ${response.status}`;
+        try {
+            const errorData = await response.json();
+            errorMsg += ` - ${errorData.details || errorData.error || JSON.stringify(errorData)}`;
+        } catch (e) {
+            // response might be text
+            const errorText = await response.text();
+            if (errorText) errorMsg += ` - ${errorText}`;
+        }
+        throw new Error(errorMsg);
     }
     
     return response.json();

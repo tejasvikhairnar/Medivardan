@@ -200,13 +200,13 @@ const groupedData=[
       title: "Patients",
       value: "124",
       key: "patients",
-      icon: <Users className="w-5 h-5 text-[#4DB8AC] dark:text-[#4DB8AC]/80" />,
+      icon: <Users className="w-5 h-5 text-medivardaan-teal-light dark:text-medivardaan-teal-light/80" />,
     },
     {
       title: "Procedures",
       value: "89",
       key: "procedures",
-      icon: <Activity className="w-5 h-5 text-[#4DB8AC] dark:text-[#4DB8AC]/80" />,
+      icon: <Activity className="w-5 h-5 text-medivardaan-teal-light dark:text-medivardaan-teal-light/80" />,
     },
     {
       title: "Revenue",
@@ -218,13 +218,13 @@ const groupedData=[
       title: "Revenue / Patient",
       value: "₹ 2,250",
       key: "revenuePatient",
-      icon: <DivideSquare className="w-5 h-5 text-[#1E6B8C] dark:text-[#1E6B8C]/80" />,
+      icon: <DivideSquare className="w-5 h-5 text-medivardaan-blue dark:text-medivardaan-blue/80" />,
     },
     {
       title: "Revenue / Procedure",
       value: "₹ 3,150",
       key: "revenueProcedure",
-      icon: <DivideCircle className="w-5 h-5 text-[#1E6B8C] dark:text-[#1E6B8C]/80" />,
+      icon: <DivideCircle className="w-5 h-5 text-medivardaan-blue dark:text-medivardaan-blue/80" />,
     },
   ];
 
@@ -257,7 +257,7 @@ const groupedData=[
     }));
   }, [piechartData]);
 
-  const COLORS = ["#4DB8AC", "#1E6B8C", "#22c55e", "#f59e0b"];
+  const COLORS = ["var(--medivardaan-teal-light)", "var(--medivardaan-blue)", "#22c55e", "#f59e0b"];
 
   const inventorySummaryData = [
     { name: "Medicines", value: 520 },
@@ -287,7 +287,7 @@ const groupedData=[
               })
             );
           }}
-          className="underline text-[#1E6B8C] dark:text-[#4DB8AC] hover:text-[#4DB8AC] dark:hover:text-[#1E6B8C] hover:cursor-pointer"
+          className="underline text-medivardaan-blue dark:text-medivardaan-teal-light hover:text-medivardaan-teal-light dark:hover:text-medivardaan-blue hover:cursor-pointer"
         >
           {row.original.rpl}
         </span>
@@ -387,7 +387,7 @@ header: key.includes("W2") || key.includes("M2") || key.includes("Q2") || key.in
 
   const value = stats?.[item?.key];
           return (
-          <Card key={item.title} className="bg-gradient-to-br from-[#4DB8AC]/5 via-white/50 to-[#1E6B8C]/5 dark:bg-gradient-to-br dark:from-[#1E6B8C]/20 dark:via-[#4DB8AC]/10 dark:to-[#1E6B8C]/20 text-center shadow-md hover:shadow-xl transition-all border border-[#4DB8AC]/20">
+          <Card key={item.title} className="card-gradient text-center shadow-md hover:shadow-xl transition-all">
             <CardContent className="p-5 flex flex-col items-center space-y-2">
               <div>{item.icon}</div>
               <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
@@ -403,7 +403,7 @@ header: key.includes("W2") || key.includes("M2") || key.includes("Q2") || key.in
       {/* Revenue Charts */}
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Revenue Growth - Line Chart */}
-        <Card className="bg-gradient-to-br from-[#4DB8AC]/10 via-white/60 to-[#1E6B8C]/10 dark:bg-gradient-to-br dark:from-[#1E6B8C]/25 dark:via-[#4DB8AC]/15 dark:to-[#1E6B8C]/25 backdrop-blur-sm border border-[#4DB8AC]/30 dark:border-[#4DB8AC]/40 p-0">
+        <Card className="card-gradient p-0">
           <CardContent className="p-6">
             <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
               Revenue Growth
@@ -419,7 +419,7 @@ header: key.includes("W2") || key.includes("M2") || key.includes("Q2") || key.in
                   <Line
                     type="monotone"
                     dataKey="revenue"
-                    stroke="#4DB8AC"
+                    stroke="var(--medivardaan-teal-light)"
                     strokeWidth={2}
                     dot={{ r: 4 }}
                   />
@@ -430,7 +430,7 @@ header: key.includes("W2") || key.includes("M2") || key.includes("Q2") || key.in
         </Card>
 
         {/* Revenue Breakup - Pie Chart */}
-        <Card className="bg-gradient-to-br from-[#4DB8AC]/10 via-white/60 to-[#1E6B8C]/10 dark:bg-gradient-to-br dark:from-[#1E6B8C]/25 dark:via-[#4DB8AC]/15 dark:to-[#1E6B8C]/25 backdrop-blur-sm border border-[#4DB8AC]/30 dark:border-[#4DB8AC]/40 p-0">
+        <Card className="card-gradient p-0">
           <CardContent className="p-6">
             <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
               Revenue Breakup
@@ -463,7 +463,7 @@ header: key.includes("W2") || key.includes("M2") || key.includes("Q2") || key.in
       {/* Inventory & Expenditure */}
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Inventory Summary - Bar Chart */}
-        <Card className="bg-gradient-to-br from-[#4DB8AC]/10 via-white/60 to-[#1E6B8C]/10 dark:bg-gradient-to-br dark:from-[#1E6B8C]/25 dark:via-[#4DB8AC]/15 dark:to-[#1E6B8C]/25 backdrop-blur-sm border border-[#4DB8AC]/30 dark:border-[#4DB8AC]/40 p-0">
+        <Card className="card-gradient p-0">
           <CardContent className="p-6">
             <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
               Inventory Consumption
@@ -475,7 +475,7 @@ header: key.includes("W2") || key.includes("M2") || key.includes("Q2") || key.in
                   <XAxis dataKey="name" />
                   <YAxis />
                   <Tooltip />
-                  <Bar dataKey="value" fill="#4DB8AC" radius={[5, 5, 0, 0]} />
+                  <Bar dataKey="value" fill="var(--medivardaan-teal-light)" radius={[5, 5, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -483,7 +483,7 @@ header: key.includes("W2") || key.includes("M2") || key.includes("Q2") || key.in
         </Card>
 
         {/* Expenditure Breakdown - Table */}
-        <Card className="bg-gradient-to-br from-[#4DB8AC]/10 via-white/60 to-[#1E6B8C]/10 dark:bg-gradient-to-br dark:from-[#1E6B8C]/25 dark:via-[#4DB8AC]/15 dark:to-[#1E6B8C]/25 backdrop-blur-sm border border-[#4DB8AC]/30 dark:border-[#4DB8AC]/40 p-0">
+        <Card className="card-gradient p-0">
           <CardContent className="p-6">
             <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
               Expenditure Breakdown
@@ -566,7 +566,7 @@ header: key.includes("W2") || key.includes("M2") || key.includes("Q2") || key.in
       </Card>
       </div>:
    <div className="pt-5 space-y-8">
-          <Card className="bg-gradient-to-br from-[#4DB8AC]/10 via-white/60 to-[#1E6B8C]/10 dark:bg-gradient-to-br dark:from-[#1E6B8C]/25 dark:via-[#4DB8AC]/15 dark:to-[#1E6B8C]/25 backdrop-blur-sm border border-[#4DB8AC]/30 dark:border-[#4DB8AC]/40 p-0">
+          <Card className="card-gradient p-0">
             <CardContent className="p-4">
               <h3 className="text-sm font-semibold text-gray-800 dark:text-white mb-4">
                 Overall Summary

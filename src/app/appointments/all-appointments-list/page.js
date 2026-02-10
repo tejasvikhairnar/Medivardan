@@ -303,7 +303,7 @@ export default function AllAppointmentsListPage() {
                           value="all"
                           checked={approvalFilter === 'all'}
                           onChange={(e) => setApprovalFilter(e.target.value)}
-                          className="w-4 h-4 cursor-pointer accent-[#0f7396]"
+                          className="w-4 h-4 cursor-pointer accent-primary"
                           />
                           <span className="text-sm font-medium">All</span>
                       </label>
@@ -314,7 +314,7 @@ export default function AllAppointmentsListPage() {
                           value="approve"
                           checked={approvalFilter === 'approve'}
                           onChange={(e) => setApprovalFilter(e.target.value)}
-                          className="w-4 h-4 cursor-pointer accent-[#0f7396]"
+                          className="w-4 h-4 cursor-pointer accent-primary"
                           />
                           <span className="text-sm font-medium">Approved</span>
                       </label>
@@ -325,7 +325,7 @@ export default function AllAppointmentsListPage() {
                           value="reject"
                           checked={approvalFilter === 'reject'}
                           onChange={(e) => setApprovalFilter(e.target.value)}
-                          className="w-4 h-4 cursor-pointer accent-[#0f7396]"
+                          className="w-4 h-4 cursor-pointer accent-primary"
                           />
                           <span className="text-sm font-medium">Rejected</span>
                       </label>

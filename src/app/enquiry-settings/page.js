@@ -128,7 +128,7 @@ const EnquirySettingsPage = () => {
     <div className="w-full p-6 space-y-6 bg-background text-foreground min-h-screen">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
           <Settings className="w-4 h-4 text-primary dark:text-primary" />
         </div>
         <h1 className="text-xl font-bold text-primary dark:text-primary">

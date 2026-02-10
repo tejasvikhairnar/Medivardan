@@ -34,6 +34,8 @@ export async function GET(request) {
     const apiUrl = `${BASE_URL}${endpoint}?${backendParams.toString()}`;
     
     console.log('[DEBUG] Fetching appointments from:', apiUrl);
+    console.log('[DEBUG] Outgoing Request URL:', apiUrl);
+    // console.log('[DEBUG] Outgoing Request Headers:', { ...headers, Authorization: 'Bearer ***' }); // Mask token
 
     let response = await fetch(apiUrl, {
         method: 'GET',
@@ -78,6 +80,14 @@ export async function GET(request) {
 
     if (!response.ok) {
         console.error('External API Error:', response.status, text);
+        console.error('[DEBUG] Full Upstream Response Text:', text);
+        try {
+             const errorData = JSON.parse(text);
+             console.error('[DEBUG] Upstream Error Data:', JSON.stringify(errorData, null, 2));
+        } catch(e) {
+             console.error('[DEBUG] Upstream Response is not JSON');
+        }
+
         return NextResponse.json(
             { error: `External API Error: ${response.status}`, details: data },
             { status: response.status }

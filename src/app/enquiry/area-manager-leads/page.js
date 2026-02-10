@@ -89,13 +89,13 @@ export default function AreaManagerLeadsPage() {
                 <div className="flex gap-2 w-full md:w-auto">
                     <Button 
                         onClick={handleSearch}
-                        className="bg-[#0f7396] hover:bg-[#0f7396]/90 text-white min-w-[100px] h-10"
+                        className="bg-primary hover:bg-primary/90 text-white min-w-[100px] h-10"
                     >
                         Search
                     </Button>
                     <Button 
                         onClick={handleAddNew}
-                        className="bg-[#0f7396] hover:bg-[#0f7396]/90 text-white min-w-[100px] h-10"
+                        className="bg-primary hover:bg-primary/90 text-white min-w-[100px] h-10"
                     >
                         Add New
                     </Button>
@@ -113,11 +113,11 @@ export default function AreaManagerLeadsPage() {
       {/* Results Table */}
       <div className="rounded-md border dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm overflow-hidden flex flex-col">
         <Table>
-          <TableHeader className="bg-[#0f7396]/10 dark:bg-[#0f7396]/20">
+          <TableHeader className="bg-primary/10 dark:bg-primary/20">
             <TableRow className="dark:border-slate-800">
-              <TableHead className="w-[80px] font-bold text-[#0f7396] dark:text-[#0f7396] border-r border-[#0f7396]/20">Sr No.</TableHead>
-              <TableHead className="font-bold text-[#0f7396] dark:text-[#0f7396] border-r border-[#0f7396]/20">Area Manager</TableHead>
-              <TableHead className="w-[80px] font-bold text-[#0f7396] dark:text-[#0f7396] text-center">#</TableHead>
+              <TableHead className="w-[80px] font-bold text-primary dark:text-primary border-r border-primary/20">Sr No.</TableHead>
+              <TableHead className="font-bold text-primary dark:text-primary border-r border-primary/20">Area Manager</TableHead>
+              <TableHead className="w-[80px] font-bold text-primary dark:text-primary text-center">#</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

@@ -153,7 +153,7 @@ export default function AllAppointmentsPage() {
           <div
             className={`text-sm font-semibold mb-1 ${
               isToday
-                ? "bg-gradient-to-r from-[#1E6B8C] to-[#4DB8AC] text-white w-6 h-6 rounded-full flex items-center justify-center"
+                ? "bg-gradient-to-r from-medivardaan-blue to-medivardaan-teal-light text-white w-6 h-6 rounded-full flex items-center justify-center"
                 : "text-gray-700 dark:text-gray-300"
             }`}
           >
@@ -165,7 +165,7 @@ export default function AllAppointmentsPage() {
                 key={apt.id}
                 className={`text-xs p-1.5 rounded-md ${
                   apt.status === "confirmed"
-                    ? "bg-gradient-to-r from-[#1E6B8C]/10 to-[#4DB8AC]/10 border-l-2 border-[#1E6B8C]"
+                    ? "bg-gradient-to-r from-medivardaan-blue/10 to-medivardaan-teal-light/10 border-l-2 border-medivardaan-blue"
                     : "bg-amber-50 dark:bg-amber-900/20 border-l-2 border-amber-500"
                 }`}
               >
@@ -203,7 +203,7 @@ export default function AllAppointmentsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-[#1E6B8C] to-[#4DB8AC] bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-medivardaan-blue to-medivardaan-teal-light bg-clip-text text-transparent">
             APPOINTMENTS
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
@@ -214,12 +214,12 @@ export default function AllAppointmentsPage() {
           <Button
             variant="outline"
             size="sm"
-            className="border-[#1E6B8C]/20 hover:bg-[#1E6B8C]/10"
+            className="border-medivardaan-blue/20 hover:bg-[#1E6B8C]/10"
           >
             <Calendar className="w-4 h-4 mr-2" />
             Export
           </Button>
-          <Button className="bg-gradient-to-r from-[#1E6B8C] to-[#4DB8AC] hover:from-[#1E6B8C]/90 hover:to-[#4DB8AC]/90">
+          <Button className="bg-gradient-to-r from-medivardaan-blue to-medivardaan-teal-light hover:from-medivardaan-blue/90 hover:to-medivardaan-teal-light/90">
             <Clock className="w-4 h-4 mr-2" />
             Book Appointment
           </Button>
@@ -368,8 +368,8 @@ export default function AllAppointmentsPage() {
                   {appointments.length}
                 </p>
               </div>
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#1E6B8C]/20 to-[#4DB8AC]/20 flex items-center justify-center">
-                <Calendar className="w-6 h-6 text-[#1E6B8C]" />
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-medivardaan-blue/20 to-medivardaan-teal-light/20 flex items-center justify-center">
+                <Calendar className="w-6 h-6 text-medivardaan-blue" />
               </div>
             </div>
           </CardContent>

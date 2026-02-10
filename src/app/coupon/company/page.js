@@ -131,7 +131,7 @@ export default function Company() {
           </Button>
           <Button
             onClick={handleAddNew}
-            className="bg-[#1E6B8C] hover:bg-[#15526d] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap"
+            className="bg-medivardaan-blue hover:bg-medivardaan-blue-dark text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap"
           >
             Add New
           </Button>
@@ -262,7 +262,7 @@ export default function Company() {
                 >
                   Cancel
                 </Button>
-                <Button type="submit" className="bg-[#1E6B8C] hover:bg-[#15526d]">
+                <Button type="submit" className="bg-medivardaan-blue hover:bg-medivardaan-blue-dark">
                   Submit
                 </Button>
               </div>

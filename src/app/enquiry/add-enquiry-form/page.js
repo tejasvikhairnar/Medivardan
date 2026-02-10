@@ -275,7 +275,7 @@ export default function AddLeadFormPage() {
                 <h3 className="font-semibold text-lg text-primary border-b pb-2">Assignment</h3>
                 <div className="grid grid-cols-2 gap-y-4 text-sm">
                    <div className="text-gray-500">Clinic:</div>
-                   <div className="font-medium text-blue-600">{getClinicName(formData.clinicID)}</div>
+                   <div className="font-medium text-primary00">{getClinicName(formData.clinicID)}</div>
                    
                    <div className="text-gray-500">Assigned To:</div>
                    <div className="font-medium">{getDoctorName(formData.assignToEmpID)}</div>
@@ -565,11 +565,11 @@ export default function AddLeadFormPage() {
             {/* Action Buttons */}
             <div className="flex items-center justify-center gap-4 pt-6">
               {!isViewMode && (
-                <Button type="submit" disabled={loading} className="bg-[#0f7396] hover:bg-[#0f7396]/90 text-white px-8 h-10 disabled:opacity-50 disabled:cursor-not-allowed">
+                <Button type="submit" disabled={loading} className="bg-primary hover:bg-primary/90 text-white px-8 h-10 disabled:opacity-50 disabled:cursor-not-allowed">
                   {loading ? "Submitting..." : mode === 'edit' ? "Update" : "Submit"}
                 </Button>
               )}
-              <Button type="button" onClick={handleCancel} variant="outline" className="border-gray-300 text-gray-700 hover:bg-gray-50 px-8 h-10">Cancel</Button>
+              <Button type="button" onClick={handleCancel} variant="outline" className="border-primary00 text-gray-700 hover:bg-gray-50 px-8 h-10">Cancel</Button>
             </div>
           </form>
         </CardContent>

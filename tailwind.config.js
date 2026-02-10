@@ -47,6 +47,7 @@ module.exports = {
           blue: 'hsl(var(--medivardaan-blue))',
           'blue-dark': 'hsl(var(--medivardaan-blue-dark))',
           'blue-light': 'hsl(var(--medivardaan-blue-light))',
+          'teal-light': 'hsl(var(--medivardaan-teal-light))',
         },
       },
       borderRadius: {

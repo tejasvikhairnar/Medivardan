@@ -105,7 +105,7 @@ export default function AssignedCoupon() {
             </Button>
               <Button 
                 onClick={handleAddNew}
-                className="bg-[#1E6B8C] hover:bg-[#15526d] text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap"
+                className="bg-medivardaan-blue hover:bg-medivardaan-blue-dark text-white px-6 font-medium shadow-sm transition-all whitespace-nowrap"
             >
                 Add New
             </Button>
@@ -202,7 +202,7 @@ export default function AssignedCoupon() {
               
               <div className="flex justify-end gap-3 pt-4">
                 <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
-                <Button type="submit" className="bg-[#1E6B8C] hover:bg-[#15526d]">Submit</Button>
+                <Button type="submit" className="bg-medivardaan-blue hover:bg-medivardaan-blue-dark">Submit</Button>
               </div>
             </form>
           </div>

@@ -43,6 +43,8 @@
   /* #154E6B */
   --medivardaan-blue-light: 200 63% 43%;
   /* #2887B3 */
+  --medivardaan-teal-light: 173 43% 51%;
+  /* #4DB8AC */
 
   --chart-1: 12 76% 61%;
   --chart-2: 173 58% 39%;
@@ -170,5 +172,9 @@
 
   .scrollbar-thin:hover {
     scrollbar-color: rgba(77, 184, 172, 0.4) transparent;
+  }
+
+  .card-gradient {
+    @apply bg-gradient-to-br from-medivardaan-teal-light/5 via-white/50 to-medivardaan-blue/5 dark:bg-gradient-to-br dark:from-medivardaan-blue/20 dark:via-medivardaan-teal-light/10 dark:to-medivardaan-blue/20 backdrop-blur-sm border border-medivardaan-teal-light/20 dark:border-medivardaan-teal-light/30;
   }
 }

@@ -63,13 +63,13 @@ function page() {
           title: "Patients",
           value: Number(cardsData?.patients),
           key: "patients",
-          icon: <Users className="w-5 h-5 text-[#4DB8AC] dark:text-[#4DB8AC]/80" />,
+          icon: <Users className="w-5 h-5 text-medivardaan-teal-light dark:text-medivardaan-teal-light/80" />,
         },
         {
           title: "Procedures",
           value: Number(cardsData?.procedures),
           key: "procedures",
-          icon: <Activity className="w-5 h-5 text-[#4DB8AC] dark:text-[#4DB8AC]/80" />,
+          icon: <Activity className="w-5 h-5 text-medivardaan-teal-light dark:text-medivardaan-teal-light/80" />,
         },
         {
           title: "Revenue",
@@ -81,13 +81,13 @@ function page() {
           title: "Revenue / Patient",
           value: Number(cardsData?.revenuePatient),
           key: "revenuePatient",
-          icon: <DivideSquare className="w-5 h-5 text-[#1E6B8C] dark:text-[#1E6B8C]/80" />,
+          icon: <DivideSquare className="w-5 h-5 text-medivardaan-blue dark:text-medivardaan-blue/80" />,
         },
         {
           title: "Revenue / Procedure",
           value: Number(cardsData?.revenueProcedure),
           key: "revenueProcedure",
-          icon: <DivideCircle className="w-5 h-5 text-[#1E6B8C] dark:text-[#1E6B8C]/80" />,
+          icon: <DivideCircle className="w-5 h-5 text-medivardaan-blue dark:text-medivardaan-blue/80" />,
         },
       ];
 
@@ -383,7 +383,7 @@ function page() {
       ? `₹ ${Number(rawValue || 0).toLocaleString("en-IN")}`
       : Number(rawValue || 0).toLocaleString("en-IN");
           return (  
-          <Card key={item.title} className="bg-gradient-to-br from-[#4DB8AC]/5 via-white/50 to-[#1E6B8C]/5 dark:bg-gradient-to-br dark:from-[#1E6B8C]/20 dark:via-[#4DB8AC]/10 dark:to-[#1E6B8C]/20 text-center shadow-md hover:shadow-xl transition-all border border-[#4DB8AC]/20">
+          <Card key={item.title} className="card-gradient text-center shadow-md hover:shadow-xl transition-all">
             <CardContent className="p-5 flex flex-col items-center space-y-2">
               <div>{item.icon}</div>
               <p className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
@@ -397,7 +397,7 @@ function page() {
       </section>
 
 <section className='grid grid-cols-2 gap-4'>
-<Card className="bg-gradient-to-br from-[#4DB8AC]/10 via-white/60 to-[#1E6B8C]/10 dark:bg-gradient-to-br dark:from-[#1E6B8C]/25 dark:via-[#4DB8AC]/15 dark:to-[#1E6B8C]/25 backdrop-blur-sm border border-[#4DB8AC]/30 dark:border-[#4DB8AC]/40 p-0 transition-all">
+<Card className="card-gradient p-0 transition-all">
                 <CardContent className="p-4">
                   <h3 className="text-sm font-semibold text-gray-800 dark:text-white mb-4">
                     Last 3 days Summary
@@ -406,7 +406,7 @@ function page() {
                  <GenericTable data={clinicData?.[0]?.daysSummarylist} columns={columns}  showSorting={false} showPagination={false} />
     </CardContent>
     </Card>
-<Card className="bg-gradient-to-br from-[#4DB8AC]/10 via-white/60 to-[#1E6B8C]/10 dark:bg-gradient-to-br dark:from-[#1E6B8C]/25 dark:via-[#4DB8AC]/15 dark:to-[#1E6B8C]/25 backdrop-blur-sm border border-[#4DB8AC]/30 dark:border-[#4DB8AC]/40 p-0 transition-all">
+<Card className="card-gradient p-0 transition-all">
                 <CardContent className="p-4">
                   <h3 className="text-sm font-semibold text-gray-800 dark:text-white mb-4">
                     Last 3 Weeks Summary
@@ -415,7 +415,7 @@ function page() {
                  <GenericTable data={clinicData?.[0]?.weeksSummarylist} columns={columnsWeeks}  showSorting={false} showPagination={false}/>
     </CardContent>
     </Card>
-<Card className="bg-gradient-to-br from-[#4DB8AC]/10 via-white/60 to-[#1E6B8C]/10 dark:bg-gradient-to-br dark:from-[#1E6B8C]/25 dark:via-[#4DB8AC]/15 dark:to-[#1E6B8C]/25 backdrop-blur-sm border border-[#4DB8AC]/30 dark:border-[#4DB8AC]/40 p-0 transition-all">
+<Card className="card-gradient p-0 transition-all">
                 <CardContent className="p-4">
                   <h3 className="text-sm font-semibold text-gray-800 dark:text-white mb-4">
                     Last 3 Months Summary
@@ -424,7 +424,7 @@ function page() {
                  <GenericTable data={clinicData?.[0]?.monthsSummarylist} columns={columnsMonths}  showSorting={false} showPagination={false}/>
     </CardContent>
     </Card>
-<Card className="bg-gradient-to-br from-[#4DB8AC]/10 via-white/60 to-[#1E6B8C]/10 dark:bg-gradient-to-br dark:from-[#1E6B8C]/25 dark:via-[#4DB8AC]/15 dark:to-[#1E6B8C]/25 backdrop-blur-sm border border-[#4DB8AC]/30 dark:border-[#4DB8AC]/40 p-0 transition-all">
+<Card className="card-gradient p-0 transition-all">
                 <CardContent className="p-4">
                   <h3 className="text-sm font-semibold text-gray-800 dark:text-white mb-4">
                     Last 3 Quarters Summary
@@ -433,7 +433,7 @@ function page() {
                  <GenericTable data={clinicData?.[0]?.quartersSummarylist} columns={columnsQuarters}  showSorting={false} showPagination={false}/>
     </CardContent>
     </Card>
-<Card className="bg-gradient-to-br from-[#4DB8AC]/10 via-white/60 to-[#1E6B8C]/10 dark:bg-gradient-to-br dark:from-[#1E6B8C]/25 dark:via-[#4DB8AC]/15 dark:to-[#1E6B8C]/25 backdrop-blur-sm border border-[#4DB8AC]/30 dark:border-[#4DB8AC]/40 p-0 transition-all">
+<Card className="card-gradient p-0 transition-all">
                 <CardContent className="p-4">
                   <h3 className="text-sm font-semibold text-gray-800 dark:text-white mb-4">
                     Last 3 Years Summary

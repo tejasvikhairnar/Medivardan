@@ -231,7 +231,7 @@ export default function NewAppointmentPage() {
                           value="Male"
                           checked={formData.gender === 'Male'}
                           onChange={(e) => handleInputChange('gender', e.target.value)}
-                          className="w-4 h-4 text-primary focus:ring-[#0f7396] cursor-pointer accent-[#0f7396]"
+                          className="w-4 h-4 text-primary focus:ring-[#0f7396] cursor-pointer accent-primary"
                         />
                         <span className="text-sm">Male</span>
                       </label>
@@ -242,7 +242,7 @@ export default function NewAppointmentPage() {
                           value="Female"
                           checked={formData.gender === 'Female'}
                           onChange={(e) => handleInputChange('gender', e.target.value)}
-                          className="w-4 h-4 text-primary focus:ring-[#0f7396] cursor-pointer accent-[#0f7396]"
+                          className="w-4 h-4 text-primary focus:ring-[#0f7396] cursor-pointer accent-primary"
                         />
                         <span className="text-sm">Female</span>
                       </label>

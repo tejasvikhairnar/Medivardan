@@ -15,8 +15,8 @@ import { Settings } from "lucide-react"
 export default function NewPatientReportPage() {
   const [filters, setFilters] = useState({
     clinic: "",
-    fromDate: "2025-12-24",
-    toDate: "2025-12-24"
+    fromDate: "",
+    toDate: ""
   })
 
   // Mock Data
